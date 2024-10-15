@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard/Dashboard';
-import ImportList from './pages/Import/ImportList';
 import SideMenu from './components/SideMenu/SideMenu';
 import AppHeader from './components/AppHeader';
+import SupplyManagement from './pages/SupplyManagement/SupplyManagement';
 
 const AppRouter = () => {
   return (
@@ -10,10 +10,11 @@ const AppRouter = () => {
       <SideMenu />
       <div className='flex flex-col w-full'>
         <AppHeader />
-        <div className="h-full mt-6 ml-6 mr-6 overflow-y-auto">
+        <div className="h-full mt-6 ml-6 mr-6 overflow-y-auto ">
+
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/importList" element={<ImportList />} />
+            <Route path="/importList" element={<SupplyManagement />} />
           </Routes>
         </div>
 

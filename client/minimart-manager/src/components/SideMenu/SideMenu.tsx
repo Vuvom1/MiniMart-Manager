@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from 'react-router-dom';
 
 function SideMenu() {
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [activeIndex, setActiveIndex] = useState<number | null>(0);
     const handleItemClick = (index: number) => {
         setActiveIndex(index); 
     };
@@ -16,7 +16,7 @@ function SideMenu() {
     ];
 
     return (
-        <div className="flex flex-col shadow-lg text-slate-800 font-medium">
+        <div className="flex flex-col shadow-lg text-slate-800 font-medium bg-white">
             <a>
                 <span className="material-icons mr-2 flex gap-x-1 py-8 px-2">
                     <p className="font-bold primary-color">MINIMART</p>

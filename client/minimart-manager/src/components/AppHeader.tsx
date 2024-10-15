@@ -4,7 +4,7 @@ import TextField from "./TextField";
 import { Popover } from '@headlessui/react';
 
 function AppHeader() {
-    return <div className="shadow-md py-4 px-4 w-full flex align-middle">
+    return <div className="shadow-md py-4 px-4 w-full flex align-middle bg-white">
         <div className="w-2/5">
             <TextField placeholder="Search something here..."
                 prefix={

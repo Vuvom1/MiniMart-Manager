@@ -17,3 +17,8 @@
 * {
   scrollbar-width: none;  
 }
+
+div#root {
+  background-color: #F3F5F6;
+}
+
