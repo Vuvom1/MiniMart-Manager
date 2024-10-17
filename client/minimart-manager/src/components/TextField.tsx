@@ -8,8 +8,8 @@ interface TextFieldProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  height?: string; // Prop cho chiều cao
-  width?: string;  // Prop cho chiều rộng
+  height?: string; 
+  width?: string;  
 }
 
 export default function TextField({
@@ -25,10 +25,12 @@ export default function TextField({
 }: TextFieldProps) {
   return (
     <div style={{ width }}>
-      <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
-        {label}
-      </label>
-      <div className="relative mt-2 rounded-md shadow-sm" style={{ height }}>
+       {label && (
+        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
+          {label}
+        </label>
+      )}
+      <div className="relative rounded-md shadow-sm" style={{ height }}>
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}

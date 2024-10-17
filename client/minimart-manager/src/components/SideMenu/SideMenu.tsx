@@ -10,9 +10,10 @@ function SideMenu() {
     const menuItems = [
         { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
         { label: 'Employees', icon: <EmployeesIcon />, path: '/' },
-        { label: 'Customers', icon: <CustomersIcon />, path: '/' },
+        { label: 'Customers', icon: <CustomersIcon />, path: '/customers' },
         { label: 'Products', icon: <ProductsIcon />, path: '/' },
-        { label: 'Import', icon: <ImportIcon />, path: '/importList' },
+        { label: 'Import', icon: <ImportIcon />, path: '/supplies' },
+        { label: 'Promotion', icon: <PromotionIcon />, path: '/promotions' },
     ];
 
     return (
@@ -69,6 +70,14 @@ const ImportIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
     </svg>
+);
+
+const PromotionIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+</svg>
+
 );
 
 export default SideMenu;

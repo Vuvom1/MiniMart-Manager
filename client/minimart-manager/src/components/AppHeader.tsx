@@ -1,5 +1,5 @@
 import Avatar from "./Avatar";
-import CircleButton from "./CircleButton";
+import CircleButton from "./Button/CircleButton";
 import TextField from "./TextField";
 import { Popover } from '@headlessui/react';
 
