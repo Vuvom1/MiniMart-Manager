@@ -50,7 +50,7 @@ function CustomerManage() {
             onSelect={handleSelect}
           />
          
-            <RoundedButton label="Export" color="text-white bg-blue-600" />
+            <RoundedButton label="Export" color="text-white bg-cyan-500" />
            
             </div>
             

@@ -34,7 +34,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
     <button
       onClick={onClick}
       style={{ height, width }}
-      className={`rounded-md items-center justify-center ml-4 shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}
+      className={`rounded-md items-center justify-center shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}
     >
       {label}
       {suffixIcon}

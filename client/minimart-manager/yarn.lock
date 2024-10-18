@@ -1674,6 +1674,11 @@ type-check@^0.4.0, type-check@~0.4.0:
   dependencies:
     prelude-ls "^1.2.1"
 
+typeface-roboto@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.npmjs.org/typeface-roboto/-/typeface-roboto-1.1.13.tgz"
+  integrity sha512-YXvbd3a1QTREoD+FJoEkl0VQNJoEjewR2H11IjVv4bp6ahuIcw0yyw/3udC4vJkHw3T3cUh85FTg8eWef3pSaw==
+
 typescript-eslint@^8.7.0:
   version "8.8.1"
   resolved "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.8.1.tgz"

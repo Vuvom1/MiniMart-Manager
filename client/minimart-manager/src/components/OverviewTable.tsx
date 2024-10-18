@@ -1,5 +1,5 @@
 import React from 'react';
-import TextField from './TextField';
+import TextField from '../InputField/TextField';
 import RoundedButton from './Button/RoundedButton';
 import RoundedIcon from './Icon/RoundedIcon';
 

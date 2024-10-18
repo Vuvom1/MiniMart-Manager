@@ -4,9 +4,9 @@ import { CheckIcon } from '@heroicons/react/16/solid'
 import RoundedButton from "../../components/Button/RoundedButton";
 import PasswordField from "../../InputField/PasswordField";
 import TextField from "../../InputField/TextField";
-import MinimartStaffImage from "../../assets/images/minimart_staff.png"
+import MinimartStaffImage from "../../assets/images/woman-cashier.png"
 
-function Login() {
+function Signup() {
     const [enabled, setEnabled] = useState(true)
 
     return <div className="w-full h-full flex bg-cyan-500">
@@ -17,14 +17,22 @@ function Login() {
 
         <div className="flex flex-col w-full bg-white justify-center place-items-center gap-y-2 shadow-lg rounded-lg">
 
-            <h1 className="text-2xl font-bold text-gray-800 mb-8 text-center">Sign in to MINIMART MANAGER</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-8 text-center">Get Started - Create Your Free Account</h1>
 
             <div className="px-2 flex flex-col gap-y-8 w-3/5">
-                <TextField label="Username or email" placeholder='Enter username or email...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <TextField label="Username" placeholder='Enter username...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
                 } />
-                <PasswordField label="Password" placeholder='Enter password...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <TextField label="Email" placeholder='Enter email...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+                } />
+                 <PasswordField label="Password" placeholder='Confirm password...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+                } />
+                <PasswordField label="Confirmed Password" placeholder='Confirm your password...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                 </svg>
                 } />
@@ -56,4 +64,4 @@ function Login() {
     </div>
 }
 
-export default Login;
+export default Signup;

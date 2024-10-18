@@ -20,7 +20,7 @@ function SideMenu() {
         <div className="flex flex-col shadow-lg text-slate-800 font-medium bg-white">
             <a>
                 <span className="material-icons mr-2 flex gap-x-1 py-8 px-2">
-                    <p className="font-bold primary-color">MINIMART</p>
+                    <p className="font-bold text-cyan-500">MINIMART</p>
                     <p className="font-bold">MANAGER</p>
                 </span>
             </a>
@@ -31,7 +31,7 @@ function SideMenu() {
                     key={index}
                     onClick={() => setActiveIndex(index)}
                     className={`flex items-center px-6 py-2 transition duration-200 
-                        ${activeIndex === index ? 'bg-blue-100 text-blue-600 border-l-4 border-l-blue-600' : 'text-gray-600 hover:bg-blue-100 '}`}
+                        ${activeIndex === index ? 'bg-blue-100 text-cyan-500 border-l-4 border-l-cyan-500' : 'text-gray-600 hover:bg-blue-100 '}`}
                 >
                     <span className="material-icons mr-2 flex gap-x-2">{item.icon}</span>
                     {item.label}

@@ -9,7 +9,7 @@ interface RoundedIcon {
 function RoundedIcon ({ 
   icon, 
   color = "white",
-  bgColor = "bg-blue-500", 
+  bgColor = "bg-cyan-500", 
   width = "40px",
   heigh= "40px",
 } : RoundedIcon) {

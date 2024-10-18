@@ -57,7 +57,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
 
   return (
     <div className="relative" ref={comboBoxRef} style={{ width, height }}>
-      <div className="flex items-center bg-white justify-center border rounded-md shadow-sm focus-within:ring-2 focus-within:ring-blue-500">
+      <div className="flex items-center bg-white justify-center border rounded-md shadow-sm focus-within:ring-2 focus-within:ring-cyan-500">
         {prefixIcon && prefixIcon}
         <input
           type="text"
