@@ -10,16 +10,17 @@ function SideMenu() {
     const menuItems = [
         { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
         { label: 'Employees', icon: <EmployeesIcon />, path: '/' },
-        { label: 'Customers', icon: <CustomersIcon />, path: '/' },
+        { label: 'Customers', icon: <CustomersIcon />, path: '/customers' },
         { label: 'Products', icon: <ProductsIcon />, path: '/' },
-        { label: 'Import', icon: <ImportIcon />, path: '/importList' },
+        { label: 'Import', icon: <ImportIcon />, path: '/supplies' },
+        { label: 'Promotion', icon: <PromotionIcon />, path: '/promotions' },
     ];
 
     return (
         <div className="flex flex-col shadow-lg text-slate-800 font-medium bg-white">
             <a>
                 <span className="material-icons mr-2 flex gap-x-1 py-8 px-2">
-                    <p className="font-bold primary-color">MINIMART</p>
+                    <p className="font-bold text-cyan-500">MINIMART</p>
                     <p className="font-bold">MANAGER</p>
                 </span>
             </a>
@@ -30,7 +31,7 @@ function SideMenu() {
                     key={index}
                     onClick={() => setActiveIndex(index)}
                     className={`flex items-center px-6 py-2 transition duration-200 
-                        ${activeIndex === index ? 'bg-blue-100 text-blue-600 border-l-4 border-l-blue-600' : 'text-gray-600 hover:bg-blue-100 '}`}
+                        ${activeIndex === index ? 'bg-blue-100 text-cyan-500 border-l-4 border-l-cyan-500' : 'text-gray-600 hover:bg-blue-100 '}`}
                 >
                     <span className="material-icons mr-2 flex gap-x-2">{item.icon}</span>
                     {item.label}
@@ -69,6 +70,14 @@ const ImportIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
     </svg>
+);
+
+const PromotionIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+</svg>
+
 );
 
 export default SideMenu;

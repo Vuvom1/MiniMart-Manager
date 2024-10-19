@@ -1,6 +1,6 @@
 import Avatar from "./Avatar";
-import CircleButton from "./CircleButton";
-import TextField from "./TextField";
+import CircleButton from "./Button/CircleButton";
+import TextField from "../InputField/TextField";
 import { Popover } from '@headlessui/react';
 
 function AppHeader() {

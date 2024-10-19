@@ -1,4 +1,4 @@
-import CircleIcon from "./CircleIcon";
+import CircleIcon from "../Icon/CircleIcon";
 
 interface MetricCard {
     title: string,

@@ -8,8 +8,9 @@ interface TextFieldProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  height?: string; // Prop cho chiều cao
-  width?: string;  // Prop cho chiều rộng
+  height?: string; 
+  width?: string;  
+  error?: string | null,
 }
 
 export default function TextField({
@@ -21,14 +22,17 @@ export default function TextField({
   onChange,
   placeholder,
   height = '40px', 
-  width = '100%',   
+  width = '100%', 
+  error = null,  
 }: TextFieldProps) {
   return (
     <div style={{ width }}>
-      <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
-        {label}
-      </label>
-      <div className="relative mt-2 rounded-md shadow-sm" style={{ height }}>
+       {label && (
+        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
+          {label}
+        </label>
+      )}
+      <div className="relative rounded-md shadow-sm" style={{ height }}>
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}
@@ -43,9 +47,10 @@ export default function TextField({
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
           style={{ height }}  
         />
+         {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
       </div>
     </div>
   );
