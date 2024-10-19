@@ -7,40 +7,50 @@ import CustomerManage from '../pages/CustomerManagement/CustomerManange';
 import PromotionManage from '../pages/PromotionManagement/PromotionManage';
 import Login from '../pages/Authientication/Login';
 import Signup from '../pages/Authientication/Signup';
-import PrivateRoute from '../routes/PrivateRoute'
+import PrivateRoute from '../routes/PrivateRoute';
+import { useAuth } from '../providers/AuthProvider';
+import { Role } from '../components/constant/enum';
 
 const AppRouter = () => {
+    const location = useLocation();
+    const hideLayout = location.pathname === '/login' || location.pathname === '/signup';
+    const {user} = useAuth();
 
-  const location = useLocation();
-  const hideLayout = location.pathname === '/login' || location.pathname === '/signup';
+    return (
+        <>
+            {!hideLayout && <SideMenu />}
+            <div className='flex flex-col w-full'>
+                {!hideLayout && <AppHeader />}
+                <div className={`h-full ${hideLayout ? '' : 'mt-6 ml-6 mr-6'} overflow-y-auto`}>
+                    <Routes>
+                        <Route path='/login' element={<Login />} />
+                        <Route path='/signup' element={<Signup />} />
+                        
+                        { (user?.role == Role.ADMIN) &&   <Route element={<PrivateRoute/>}>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/supplies" element={<SupplyManagement />} />
+                            <Route path='/customers' element={<CustomerManage />} />
+                            <Route path='/promotions' element={<PromotionManage />} />
+                        </Route>}
+                      
 
-  return (
-    <>
-      {!hideLayout && <SideMenu />}
-      <div className='flex flex-col w-full'>
-        {!hideLayout && <AppHeader />}
-        <div className={`h-full ${hideLayout ? '' : 'mt-6 ml-6 mr-6'} overflow-y-auto`}>
+                        { (user?.role == Role.MANAGER) &&   <Route element={<PrivateRoute/>}>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/supplies" element={<SupplyManagement />} />
+                            <Route path='/customers' element={<CustomerManage />} />
+                            <Route path='/promotions' element={<PromotionManage />} />
+                        </Route>}
 
-          <Routes>
-            <Route element={<PrivateRoute/>}>
-              <Route element={<PrivateRoute />} />
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/supplies" element={<SupplyManagement />} />
-              <Route path='/customers' element={<CustomerManage />} />
-              <Route path='/promotions' element={<PromotionManage />} />
-            </Route>
+                        { (user?.role == Role.STAFF) &&   <Route element={<PrivateRoute/>}>
+                            <Route path='/customers' element={<CustomerManage />} />
+                        </Route>}
 
-            <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Signup />} />
-
-
-          </Routes>
-        </div>
-
-      </div></>
-
-
-  );
+                        <Route path='/unauthorized' element={<div>You do not have permission to access this page.</div>} />
+                    </Routes>
+                </div>
+            </div>
+        </>
+    );
 };
 
 export default AppRouter;
