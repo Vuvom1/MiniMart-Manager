@@ -10,6 +10,7 @@ interface PasswordFieldProps {
     placeholder?: string;
     height?: string;
     width?: string;
+    error?: string | null
 }
 
 export default function PasswordField({
@@ -22,6 +23,7 @@ export default function PasswordField({
     placeholder,
     height = '40px',
     width = '100%',
+    error = null, 
 }: PasswordFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -67,7 +69,9 @@ export default function PasswordField({
                         </svg>
                     }
                 </button>
+                {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
             </div>
+            
         </div>
     );
 }

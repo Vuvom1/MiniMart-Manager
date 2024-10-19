@@ -10,6 +10,7 @@ interface RoundedButtonProps {
   height?: string; 
   width?: string;  
   suffixIcon?: JSX.Element,
+  disable?: boolean,
 }
 
 const RoundedButton: React.FC<RoundedButtonProps> = ({
@@ -22,6 +23,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
   height = '40px', 
   width = '100%',   
   suffixIcon,
+  disable = false
 }) => {
  
   const sizeClasses = {
@@ -32,6 +34,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
 
   return (
     <button
+      disabled={disable}
       onClick={onClick}
       style={{ height, width }}
       className={`rounded-md items-center justify-center shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}

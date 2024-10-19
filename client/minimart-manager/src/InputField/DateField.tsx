@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface TextFieldProps {
+interface DateFieldProps {
   id?: string;
   label?: string;
   name?: string;
@@ -8,12 +8,12 @@ interface TextFieldProps {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  height?: string; 
-  width?: string;  
-  error?: string | null,
+  height?: string;
+  width?: string;
+  error?: string | null;
 }
 
-export default function TextField({
+export default function DateField({
   id,
   label,
   name,
@@ -21,13 +21,13 @@ export default function TextField({
   value,
   onChange,
   placeholder,
-  height = '40px', 
-  width = '100%', 
-  error = null,  
-}: TextFieldProps) {
+  height = '40px',
+  width = '100%',
+  error = null,
+}: DateFieldProps) {
   return (
     <div style={{ width }}>
-       {label && (
+      {label && (
         <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
           {label}
         </label>
@@ -41,16 +41,16 @@ export default function TextField({
         <input
           id={id}
           name={name}
-          type="text"
+          type="date"
           value={value}
           onChange={onChange}
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
           } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
-          style={{ height }}  
+          style={{ height }}
         />
-         {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
+        {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>}
       </div>
     </div>
   );

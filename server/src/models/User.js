@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
+    firstname: {
+        type: String,
+        required: [true, 'Please enter firstname']
+    },
+    lastname: {
+        type: String,
+        required: [true, 'Please enter lastname']
+    },
     username: {
         type: String,
         required: [true, 'Please enter username']
@@ -26,9 +34,17 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: false,       
     },
+    dateOfBirth: {
+        type: String,
+        required: [true, 'Please enter date of birth']
+    },
     phone: {
         type: Number,
         required: [true, 'Please enter phone number']
+    },
+    address: {
+        type: String,
+        required: [true, 'Please enter address']
     }
 })
 

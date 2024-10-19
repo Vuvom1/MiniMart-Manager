@@ -16,7 +16,7 @@ class AuthController {
 
     signup_post = async (req, res, next) => {
         try {
-            const { username, email, password, type, image, phone } = req.body;
+            const {firstname, lastname, username, email, password, type, image, dateOfBirth, phone, address} = req.body;
 
             const existingEmail = await User.findOne({ email });
             const existingUsername = await User.findOne({ username });
@@ -33,9 +33,9 @@ class AuthController {
                 throw error;
             }
 
-            const user = await User.create({ username, email, password, type, image, phone });
+            const user = await User.create({firstname, lastname, username, email, password, type, image, dateOfBirth, phone, address});
             const token = createToken(user)
-            res.cookie('jwt', token, {httpOnly: true, maxAge: 3600000})
+            res.cookie('jwt', token, {httpOnly: true, secure: false, maxAge: 3600000})
             res.status(201).json(user);
         } catch (error) {
             next(error);
@@ -50,7 +50,7 @@ class AuthController {
             const user = await User.login(email, password)
             const token = createToken(user)
             res.cookie('jwt', token, {httpOnly: true, maxAge: 3600000})
-            res.status(200).json({user: user._id}) 
+            res.status(200).json({user: user._id, username: user.username, email: user.email ,type: user.type}) 
         } catch(error) {
             next(error);
         } 
