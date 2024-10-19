@@ -2,8 +2,20 @@ import Avatar from "./Avatar";
 import CircleButton from "./Button/CircleButton";
 import TextField from "../InputField/TextField";
 import { Popover } from '@headlessui/react';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
+
 
 function AppHeader() {
+    const navigate = useNavigate();
+    const auth = useAuth();
+
+    function handleLogout() {
+        auth.logout(),
+        
+        navigate('/login')
+    }
+
     return <div className="shadow-md py-4 px-4 w-full flex align-middle bg-white">
         <div className="w-2/5">
             <TextField placeholder="Search something here..."
@@ -54,7 +66,7 @@ function AppHeader() {
                         <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
                             Settings
                         </button>
-                        <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
+                        <button onClick={handleLogout} className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
                             Logout
                         </button>
                     </div>

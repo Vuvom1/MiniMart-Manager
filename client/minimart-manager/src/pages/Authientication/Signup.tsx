@@ -8,7 +8,7 @@ import MinimartStaffImage from "../../assets/images/woman-cashier.png"
 import { useNavigate } from 'react-router-dom';
 import DateField from '../../InputField/DateField';
 import ValidationUtil from '../../utils/ValidationUtil';
-import { registerUser } from "../../services/api/AuthApi";
+import { useAuth } from '../../providers/AuthProvider';
 
 function Signup() {
     const [enabled, setEnabled] = useState(true)
@@ -35,6 +35,7 @@ function Signup() {
         signupError: null
     });
     const navigate = useNavigate();
+    const auth = useAuth();
 
     const handleSingup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -80,9 +81,8 @@ function Signup() {
         }
 
         try {
-            const data = await registerUser(firstname, lastname, username, email, password, dateOfBirth, phone, address);
+            await auth.signup(firstname, lastname, username, email, password, dateOfBirth, phone, address)
 
-            localStorage.setItem('token', data.token);
             navigate('/');
         } catch (err: any) {
             setErrors({
@@ -101,6 +101,10 @@ function Signup() {
             setLoading(false);
         }
     };
+
+    function navigateLogin() {
+        navigate('/login')
+    }
 
     return <div className="w-full h-full flex bg-cyan-500">
         <div className='grid w-9/12 place-items-center'>
@@ -254,8 +258,8 @@ function Signup() {
 
                 <div className='flex gap-x-2 justify-center'>
                     <p className=''>Already have an account?</p>
-                    <p className='text-cyan-500'>Sign In</p>
-                </div>
+                    <p onClick={navigateLogin} className='cursor-pointer text-cyan-500'>Login</p>
+                    </div>
 
             </form>
 

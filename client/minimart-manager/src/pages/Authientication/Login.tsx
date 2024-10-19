@@ -5,9 +5,9 @@ import RoundedButton from "../../components/Button/RoundedButton";
 import PasswordField from "../../InputField/PasswordField";
 import TextField from "../../InputField/TextField";
 import MinimartStaffImage from "../../assets/images/minimart_staff.png";
-import { loginUser } from "../../services/api/AuthApi";
 import { useNavigate } from 'react-router-dom';
 import ValidationUtil from '../../utils/ValidationUtil';
+import { useAuth } from '../../providers/AuthProvider';
 
 function Login() {
     const [enabled, setEnabled] = useState(true);
@@ -21,6 +21,7 @@ function Login() {
     });
     const [error, setError] = useState<string | null>(null); 
     const navigate = useNavigate();
+    const auth = useAuth();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         setErrors({
@@ -45,17 +46,19 @@ function Login() {
         }
 
         try {
-            const data = await loginUser(email, password);
+            await auth.login(email, password);
 
-            localStorage.setItem('token', data.token);
             navigate('/');
         } catch (err: any) {
             setError(`Login failed: ${err || "An unknown error occurred"}`);
-            console.error('Login error:', err);
         } finally {
             setLoading(false);
         }
     };
+
+    function navigateSignup() {
+      navigate('/signup')
+    }
 
     return (
         <div className="w-full h-full flex bg-cyan-500">
@@ -110,7 +113,7 @@ function Login() {
 
                     <div className='flex gap-x-2 justify-center'>
                         <p>Don't have any account?</p>
-                        <p className='text-cyan-500'>Sign Up</p>
+                        <p onClick={navigateSignup} className='cursor-pointer text-cyan-500'>Sign Up</p>
                     </div>
                 </form>
             </div>

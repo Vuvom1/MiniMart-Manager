@@ -1,17 +1,21 @@
 import './index.css'
 import './App.css'
-import AppRouter from './AppRouter'
+import AppRouter from './routes/AppRouter'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { AuthProvider } from './providers/AuthProvider'
 
-function App() { 
+function App() {
   return (
     <>
-        <div className='flex h-screen'>
+      <div className='flex h-screen'>
+        <AuthProvider>
           <Router>
-          <AppRouter/>
+            <AppRouter />
           </Router>
-         
-        </div>
+        </AuthProvider>
+
+
+      </div>
     </>
   )
 }

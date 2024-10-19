@@ -23,7 +23,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({ title, itemData, columnHe
                     <h2 className="text-xl font-bold ">{title}</h2>
                 </div>
 
-                <div className='flex'>
+                <div className='flex gap-x-4'>
                     <TextField placeholder="Search here..."
                         prefix={
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
