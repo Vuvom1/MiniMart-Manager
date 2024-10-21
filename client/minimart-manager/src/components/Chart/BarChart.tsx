@@ -35,13 +35,13 @@ const BarChart: React.FC<BarChartProps> = ({height = '300px', width = '500px', d
     },
     plugins: {
       legend: {
-        position: 'right' as const,
+        position: 'bottom' as const,
       },
     },
   };
 
   return (
-    <div  style={{ width: width, height: height }} className='p-4 shadow-lg'>
+    <div  style={{ width: width, height: height }} className='p-4 '>
       <Bar 
         data={{
           labels: labels,

@@ -1,4 +1,4 @@
-import TextField from "../../InputField/TextField";
+import TextField from "../../components/InputField/TextField";
 
 function Dashboard() {
     return (

@@ -5,18 +5,22 @@ const supplierSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    email: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
     address: {
         type: String,
         required: true,
     },
-    phoneNumber: {
+    description: {
         type: String,
-        required: true,
     },
-    email: {
-        type: String,
-        required: true,
-    }
+    
 });
 
 const Supplier = mongoose.model('Supplier', supplierSchema);

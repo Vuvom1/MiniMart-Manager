@@ -1,9 +1,9 @@
 import Avatar from "./Avatar";
 import CircleButton from "./Button/CircleButton";
-import TextField from "../InputField/TextField";
+import TextField from "./InputField/TextField";
 import { Popover } from '@headlessui/react';
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "./providers/AuthProvider";
 
 
 function AppHeader() {
@@ -45,8 +45,8 @@ function AppHeader() {
             <Popover className="relative align-middle">
                 <Popover.Button className="bg-blue-500 flex gap-x-2 bg-white rounded-md text-black">
                     <div className="text-start">
-                        <p className="font-semibold">Username</p>
-                        <p className="text-slate-500">username@gmail.com</p>
+                        <p className="font-semibold">{auth?.user?.username}</p>
+                        <p className="text-slate-500">{auth?.user?.email}</p>
                     </div>
                     <div className="h-full">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">

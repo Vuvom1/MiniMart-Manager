@@ -34,9 +34,8 @@ export const registerUser = async (firstname: string, lastname: string, username
 
 export  const logoutUser = async () => {
     try {
-      await fetch('http://localhost:8000/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include', 
+      await  axios.get(`${BASE_URL}/logout`, {
+        withCredentials: true, 
       });
       console.log('Logged out successfully');
     } catch (err) {

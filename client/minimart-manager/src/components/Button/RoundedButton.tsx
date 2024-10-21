@@ -9,6 +9,7 @@ interface RoundedButtonProps {
   border?: string,
   height?: string; 
   width?: string;  
+  prefixIcon?: JSX.Element,
   suffixIcon?: JSX.Element,
   disable?: boolean,
 }
@@ -21,7 +22,8 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
   borderColor = 'transparent', 
   border = 'border',
   height = '40px', 
-  width = '100%',   
+  width = '100%',  
+  prefixIcon, 
   suffixIcon,
   disable = false
 }) => {
@@ -39,6 +41,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
       style={{ height, width }}
       className={`rounded-md items-center justify-center shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}
     >
+      {prefixIcon}
       {label}
       {suffixIcon}
     </button>

@@ -17,7 +17,7 @@ interface BarChartCardProps {
 const BarChartCard: React.FC<BarChartCardProps> = ({height, width, data }) => {
   return (
     <div className="bg-white flex flex-col shadow-md rounded-lg w-full h-full">
-      <p  className="text-xl font-bold ml-8 mt-4">Age Distribution and Total</p>
+      <p  className="text-xl font-bold ml-8 mt-4 mb-4">Age Distribution and Total</p>
       <BarChart height={height} width={width} data={data} />
     </div>
   );
