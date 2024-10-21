@@ -2,7 +2,7 @@ import RoundedButton from "../../components/Button/RoundedButton";
 import MetricCard from "../../components/Card/MetricCard";
 import BarChartCard from "../../components/Card/BarChartCard";
 import ComboBox from "../../components/ComboBox";
-import OverviewTable from "../../components/OverviewTable";
+import OverviewTable from "../../components/Table/OverviewTable";
 import RankingCard from "../../components/Card/RankingCard";
 
 function CustomerManage() {

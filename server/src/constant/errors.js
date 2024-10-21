@@ -24,6 +24,11 @@ const errors = {
         message: "Username already exists. Please choose a different username.",
         code: "alreadyExistUsername",
     },
+    alreadyExistName: {
+        statusCode: 400,
+        message: "Name already exists. Please use a different name.",
+        code: "alreadyExistName",
+    },
     incorrectEmailOrPassword: {
         statusCode: 400,
         message: "Incorrect email or password.",

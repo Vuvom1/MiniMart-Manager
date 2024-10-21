@@ -1,8 +1,8 @@
 import './index.css'
 import './App.css'
-import AppRouter from './routes/AppRouter'
+import AppRouter from './routes/AppRouters'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { AuthProvider } from './providers/AuthProvider'
+import {AuthProvider } from './components/providers/AuthProvider';
 
 function App() {
   return (
@@ -13,8 +13,6 @@ function App() {
             <AppRouter />
           </Router>
         </AuthProvider>
-
-
       </div>
     </>
   )

@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { Checkbox } from "@headlessui/react";
 import { CheckIcon } from '@heroicons/react/16/solid'
 import RoundedButton from "../../components/Button/RoundedButton";
-import PasswordField from "../../InputField/PasswordField";
-import TextField from "../../InputField/TextField";
+import PasswordField from "../../components/InputField/PasswordField";
+import TextField from "../../components/InputField/TextField";
 import MinimartStaffImage from "../../assets/images/woman-cashier.png"
 import { useNavigate } from 'react-router-dom';
-import DateField from '../../InputField/DateField';
+import DateField from '../../components/InputField/DateField';
 import ValidationUtil from '../../utils/ValidationUtil';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../components/providers/AuthProvider';
+
 
 function Signup() {
     const [enabled, setEnabled] = useState(true)
