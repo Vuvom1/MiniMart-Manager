@@ -27,8 +27,8 @@ export default function TextField({
 }: TextFieldProps) {
   return (
     <div style={{ width }}>
-       {label && (
-        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
+      {label && (
+        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900 mb-1"> {/* Added margin-bottom for spacing */}
           {label}
         </label>
       )}
@@ -47,10 +47,10 @@ export default function TextField({
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-left`} // Keep text-left for left alignment
           style={{ height }}  
         />
-         {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
+         {error != null && <p className='text-xs text-red-500'>{error}</p>} {/* Changed to use Tailwind class for color */}
       </div>
     </div>
   );

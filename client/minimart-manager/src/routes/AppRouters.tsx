@@ -7,7 +7,7 @@ import PromotionManage from '../pages/PromotionManagement/PromotionManage';
 import Login from '../pages/Authientication/Login';
 import Signup from '../pages/Authientication/Signup';
 import PrivateRoute from './PrivateRoute';
-import { Role } from '../components/constant/enum';
+import { Role } from '../constant/enum';
 import SuppliesPackageRoot from './SupplyRoutes';
 import Unauthorized from '../pages/Unauthorized/Unauthorized';
 import { useAuth } from '../components/providers/AuthProvider';

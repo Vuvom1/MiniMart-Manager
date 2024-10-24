@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { Role } from '../components/constant/enum';
-import { useAuth } from '../components/providers/AuthProvider';
+import { Role } from '../constant/enum';
 
 
 const PrivateRoute = ({userRole, allowedRoles = [] }: {userRole: Role, allowedRoles?: Role[] }) => {

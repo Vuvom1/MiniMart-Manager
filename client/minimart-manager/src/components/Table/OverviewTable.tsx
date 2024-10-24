@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TextField from '../InputField/TextField';
 import RoundedButton from '../Button/RoundedButton';
 import RoundedIcon from '../Icon/RoundedIcon';
+import useSearch from '../../utils/SearchUtil';
 
 interface ItemsOverviewProps {
     title: string;
@@ -10,7 +11,7 @@ interface ItemsOverviewProps {
     dataFields: string[];
     seeAll?: () => void;
     addItem?: () => void;
-    itemsPerPageOptions?: number[]; // Options for items per page
+    itemsPerPageOptions?: number[];
 }
 
 const OverviewTable: React.FC<ItemsOverviewProps> = ({
@@ -20,7 +21,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     dataFields,
     seeAll,
     addItem,
-    itemsPerPageOptions = [5, 10, 20], // Default options for items per page
+    itemsPerPageOptions = [5, 10, 20],
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
@@ -30,13 +31,26 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     const endIndex = startIndex + itemsPerPage;
     const currentItems = itemData.slice(startIndex, endIndex);
 
+    const { searchTerm, handleSearchChange, filteredData } = useSearch(currentItems);
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
 
+    const getNestedValue = (obj: any, path: string) => {
+        console.log(path)
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    };
+
+    console.log(filteredData)
+
     const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setItemsPerPage(Number(e.target.value)); // Update items per page
-        setCurrentPage(1); // Reset to the first page
+        setItemsPerPage(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
+    const handleCopyId = (id: string) => {
+        navigator.clipboard.writeText(id);
     };
 
     return (
@@ -52,7 +66,10 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                 </div>
 
                 <div className='flex gap-x-4'>
-                    <TextField placeholder="Search here..."
+                    <TextField
+                        value={searchTerm}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        placeholder="Search here..."
                         prefix={
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -61,7 +78,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
 
                     {seeAll && <RoundedButton onClick={seeAll} suffixIcon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>} label='See All' width='150px' />}
+                    </svg>} label='See All' width='180px' />}
 
                     {addItem && <RoundedButton color='bg-cyan-500 text-white' label={title} onClick={addItem} prefixIcon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -79,30 +96,62 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                         ))}
                     </tr>
                 </thead>
-                <tbody className='table-body font-semibold'>
-                    {currentItems.map((item, index) => (
-                        <tr key={index} className="border-t border-gray-200">
-                            {dataFields.map((field, fieldIndex) => (
-                               <td key={fieldIndex} className="px-4 py-4">
-                               {field === "_id" ? (
-                                   <span className="relative group">
-                                       {item[field].slice(0, 8) + '...'}
-                                       <span className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg">
-                                           {item[field]}
-                                       </span>
-                                   </span>
-                               ) : (
-                                   item[field]
-                               )}
-                           </td>
-                            ))}
-                        </tr>
+                <tbody className="table-body font-normal">
+                    {filteredData.map((item, index) => (
+                        <>
+                            <tr
+                                key={index}
+                                className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
+
+                            >
+                                {dataFields.map((field, fieldIndex) => (
+                                    <td key={fieldIndex} className="px-4 py-4 border-b border-gray-200">
+                                        {field === "_id" ? (
+                                            <span className="relative group flex gap-x-2 items-center">
+                                                <button
+                                                    className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
+                                                    onClick={() => handleCopyId(item[field])}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                    </svg>
+
+                                                </button>
+                                                {item[field].slice(0, 8) + '...'}
+
+                                            </span>
+                                        ) :
+                                            (field === "status" ? (
+
+                                                <div className='justify-center flex'>
+                                                    {item[field]}
+                                                </div>
+
+
+
+                                            ) : (
+                                                <div className='justify-center flex'>
+
+                                                    {getNestedValue(item, field) ?? 'N/A'}
+
+                                                </div>
+
+
+
+                                            ))}
+                                    </td>
+                                ))}
+
+                            </tr>
+
+                        </>
                     ))}
                 </tbody>
+
             </table>
 
             <div className="flex justify-between my-4">
-            
+
                 <div className="flex items-center">
                     {Array.from({ length: totalPages }, (_, index) => (
                         <button
