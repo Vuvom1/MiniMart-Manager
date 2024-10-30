@@ -1,55 +1,65 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RoundedButton from "../../components/Button/RoundedButton";
 import TextField from "../../components/InputField/TextField";
 import CheckBox from "../../components/InputField/CheckBox";
+import { useNavigate } from "react-router-dom";
+import { getAllImports } from "../../services/api/ImportApi";
+import useSearch from "../../utils/SearchUtil";
+
+
+interface Import {
+    _id: string;
+    supplier: { name: string };
+    date: string;
+    totalQuantity: number;
+    totalImportPrice: number;
+}
 
 function ImportList() {
+    const navigate = useNavigate();
+    const [imports, setImports] = useState<Import[]>([]);
+
     const columnHeaders = [
         "Id",
         "Supplier",
         "Date",
-        "Total Products",
-        "Total Expenditures",
-    ];
-    const dataFields = [
-        "_id",
-        "supplier",
-        "date",
-        "totalProducts",
-        "totalExpenditures",
-    ];
-    const itemData = [
-        { _id: "01", supplier: "Apples", date: "50", totalProducts: "100", totalExpenditures: "50" },
-        { _id: "02", supplier: "Bananas", date: "30", totalProducts: "80", totalExpenditures: "60" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" }, { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" }, { _id: "03", supplier: "Oranges", date: "25", totalProducts: "60", totalExpenditures: "40" },
-        // Add more data here
+        "Total Quantity",
+        "Total Import Price",
     ];
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(13);
 
-    const totalPages = Math.ceil(itemData.length / itemsPerPage);
+    const totalPages = Math.ceil(imports.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = itemData.slice(startIndex, endIndex);
+    const currentItems = imports.slice(startIndex, endIndex);
+
+    const { searchTerm, handleSearchChange, filteredData } = useSearch(imports);
+
+    const fetchImports = async () => {
+        try {
+            const data = await getAllImports();
+
+            setImports(data)
+            console.log(data)
+        } catch (error) {
+            console.error('Error fetching imports:', error);
+        } finally {
+        }
+    };
+
+    useEffect(() => {
+        fetchImports();
+    }, []);
 
     const handlePageChange = (page: any) => {
         setCurrentPage(page);
     };
+
+    function navigateAddImport() {
+        navigate('/supplies/imports/add')
+    }
 
     return (
         <div className="h-full flex flex-col">
@@ -59,6 +69,7 @@ function ImportList() {
                 </h1>
                 <div>
                     <RoundedButton
+                        onClick={navigateAddImport}
                         color="bg-cyan-500 text-white"
                         label="Add Import"
                         prefixIcon={
@@ -86,6 +97,8 @@ function ImportList() {
                 <div className="flex gap-x-4 justify-between">
                     <div className="w-64">
                         <TextField
+                            value={searchTerm}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                             placeholder="Search here..."
                             prefix={
                                 <svg
@@ -110,10 +123,10 @@ function ImportList() {
                     </div>
                 </div>
 
-                <div className="overflow-auto flex-auto max-h-[calc(100vh-350px)]" >
+                <div className="overflow-auto flex-auto max-h-[calc(100vh-350px)] rounded-lg shadow-md" >
 
-                    <table className="min-w-full bg-white text-center rounded-lg">
-                        <thead className="bg-gray-100 sticky top-0 rounded-lg border">
+                    <table className="min-w-full bg-white text-center rounded-lg shadow-md">
+                        <thead className="bg-gray-100 sticky top-0 border ">
 
                             <tr>
                                 {columnHeaders.map((header, index) => (
@@ -129,26 +142,13 @@ function ImportList() {
                         </thead>
 
                         <tbody className="bg-white divide-y divide-gray-300">
-                            {currentItems.map((item, index) => (
+                            {filteredData.map((item, index) => (
                                 <tr key={index} className="border-t border-gray-200">
-                                    
-                                    {dataFields.map((field, fieldIndex) => (
-                                       
-                                           
-                                            <td key={fieldIndex} className="px-4 py-4">
-                                                {field === "_id" ? (
-                                                    <span className="group">
-                                                        {item[field].slice(0, 8) + "..."}
-                                                        <span className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg">
-                                                            {item[field]}
-                                                        </span>
-                                                    </span>
-                                                ) : (
-                                                    item[field]
-                                                )}
-                                            </td>
-                                      
-                                    ))}
+                                    <td className="px-4 py-4">{item._id.slice(0, 8) + "..."}</td>
+                                    <td className="px-4 py-4">{item.supplier.name}</td>
+                                    <td className="px-4 py-4">{new Date(item.date).toLocaleDateString()}</td>
+                                    <td className="px-4 py-4">{item.totalQuantity}</td>
+                                    <td className="px-4 py-4">${item.totalImportPrice}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -157,7 +157,6 @@ function ImportList() {
 
                 </div>
 
-                {/* Pagination */}
                 <div className="flex justify-between my-4">
                     <div className="flex items-center">
                         {Array.from({ length: totalPages }, (_, index) => (
@@ -176,7 +175,7 @@ function ImportList() {
                 </div>
             </div>
         </div>
-       
+
     );
 }
 

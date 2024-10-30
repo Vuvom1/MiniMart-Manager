@@ -12,7 +12,7 @@ function SideMenu() {
         { label: 'Employees', icon: <EmployeesIcon />, path: '/' },
         { label: 'Customers', icon: <CustomersIcon />, path: '/customers' },
         { label: 'Products', icon: <ProductsIcon />, path: '/' },
-        { label: 'Import', icon: <ImportIcon />, path: '/supplies' },
+        { label: 'Supplies', icon: <ImportIcon />, path: '/supplies' },
         { label: 'Promotion', icon: <PromotionIcon />, path: '/promotions' },
     ];
 

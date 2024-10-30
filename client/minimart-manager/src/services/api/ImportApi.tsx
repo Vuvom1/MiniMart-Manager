@@ -1,11 +1,9 @@
 import axios from 'axios'
-import { SupplierStatus } from '../../constant/enum';
 
 const API_URL = 'http://localhost:8000';
-const BASE_URL = API_URL + '/api/suppliers'
-const DEFAULT_STAUS = SupplierStatus.ACTIVE;
+const BASE_URL = API_URL + '/api/imports'
 
-export const getAllSuppliers = async () => {
+export const getAllImports = async () => {
     try {
         const response = await axios.get(`${BASE_URL}`);
        
@@ -15,10 +13,10 @@ export const getAllSuppliers = async () => {
     }
 }
 
-export const addSupplier = async (name:string, email:string, phone:string, address:string, description:string) => {
+export const addImport = async (importData: any) => {
     try {
         const response = await axios.post(`${BASE_URL}/add`, {
-            name, email, status: DEFAULT_STAUS, phone, address, description
+            importData
         }, {
             withCredentials: true,
         });
@@ -29,7 +27,7 @@ export const addSupplier = async (name:string, email:string, phone:string, addre
     }
 }
 
-export const updateSupplier = async (id: string, supplierData: {name:string, email:string, status: String, phone:string, address:string, description:string}) => {
+export const updateImport = async (id: string, supplierData: {name:string, email:string, status: String, phone:string, address:string, description:string}) => {
     try {
         const response = await axios.put(`${BASE_URL}/${id}`, {
             supplierData
@@ -39,16 +37,16 @@ export const updateSupplier = async (id: string, supplierData: {name:string, ema
 
         return response.data;
     } catch(error: any) {
-        throw error.response?.data?.message || 'Update supplier data failed'; 
+        throw error.response?.data?.message || 'Update import data failed'; 
     }
 }
 
-export const getSuppliersStatistic = async () => {
+export const getImportStatistic = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/statistic`);
 
         return response.data;
     } catch(error: any) {
-        throw error.response?.data?.message || 'Fecth supplier statistic data failed'; 
+        throw error.response?.data?.message || 'Fecth import statistic data failed'; 
     }
 }

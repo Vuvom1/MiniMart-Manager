@@ -18,6 +18,6 @@ const staffSchema = new mongoose.Schema({
     
 });
 
-const Import = mongoose.model('Staff', staffSchema);
+const Staff = mongoose.model('Staff', staffSchema);
 
 module.exports = Staff;
