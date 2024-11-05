@@ -4,27 +4,14 @@ import TextField from "../../components/InputField/TextField";
 import { useNavigate } from "react-router-dom";
 import { getAllImports } from "../../services/api/ImportApi";
 import useSearch from "../../utils/SearchUtil";
+import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
+import { StatusBadge } from "../../components/Badge/StatusBadge";
+import NestedValueUtil from "../../utils/NestedValueUtil";
 
-
-interface Import {
-    _id: string;
-    supplier: { name: string };
-    date: string;
-    totalQuantity: number;
-    totalImportPrice: number;
-}
 
 function ImportList() {
     const navigate = useNavigate();
-    const [imports, setImports] = useState<Import[]>([]);
-
-    const columnHeaders = [
-        "Id",
-        "Supplier",
-        "Date",
-        "Total Quantity",
-        "Total Import Price",
-    ];
+    const [imports, setImports] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(13);
@@ -32,7 +19,6 @@ function ImportList() {
     const totalPages = Math.ceil(imports.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = imports.slice(startIndex, endIndex);
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(imports);
 
@@ -59,6 +45,10 @@ function ImportList() {
     function navigateAddImport() {
         navigate('/supplies/imports/add')
     }
+
+    const handleCopyId = (id: string) => {
+        navigator.clipboard.writeText(id);
+    };
 
     return (
         <div className="h-full flex flex-col">
@@ -128,12 +118,12 @@ function ImportList() {
                         <thead className="bg-gray-100 sticky top-0 border ">
 
                             <tr>
-                                {columnHeaders.map((header, index) => (
+                                {importsColumnData.map((column, index) => (
                                     <th
                                         key={index}
                                         className="sticky px-4 py-2 text-gray-500 font-semibold"
                                     >
-                                        {header}
+                                        {column.header}
                                     </th>
                                 ))}
 
@@ -142,13 +132,42 @@ function ImportList() {
 
                         <tbody className="bg-white divide-y divide-gray-300">
                             {filteredData.map((item, index) => (
-                                <tr key={index} className="border-t border-gray-200">
-                                    <td className="px-4 py-4">{item._id.slice(0, 8) + "..."}</td>
-                                    <td className="px-4 py-4">{item.supplier.name}</td>
-                                    <td className="px-4 py-4">{new Date(item.date).toLocaleDateString()}</td>
-                                    <td className="px-4 py-4">{item.totalQuantity}</td>
-                                    <td className="px-4 py-4">${item.totalImportPrice}</td>
-                                </tr>
+                                <tr
+                                key={index}
+                                className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
+
+                            >
+                                {importsColumnData.map((column, columnIndex) => (
+                                    <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
+                                        {column.field === "_id" ? (
+                                            <span className="relative group flex gap-x-2 items-center">
+                                                <button
+                                                    className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
+                                                    onClick={() => handleCopyId(item[column.field])}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                    </svg>
+
+                                                </button>
+                                                {item[column.field].slice(0, 8) + '...'}
+
+                                            </span>
+                                        ) :
+                                            (column.field === "status" ? (
+
+                                                <div className='justify-center flex'>
+                                                    <StatusBadge value={item[column.field]}/>
+                                                </div>
+                                            ) : (
+                                                <div className='justify-center flex'>
+                                                    <span className="text-gray-700"> {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}</span> 
+                                                </div>
+                                            ))}
+                                    </td>
+                                ))}
+                                
+                            </tr>
                             ))}
                         </tbody>
 

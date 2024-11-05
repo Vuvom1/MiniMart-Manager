@@ -15,6 +15,8 @@ import SuccessToast from "../../components/Toast/SuccessToast";
 import { SupplierStatus } from "../../constant/enum";
 import { getAllImports } from "../../services/api/ImportApi";
 import ValidationUtil from "../../utils/ValidationUtil";
+import { supplierColumnData } from "../../data/ColumnData/SupplierColumnData";
+import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 
 interface SuppliersStatistic {
     totalSuppliers: number;
@@ -78,14 +80,7 @@ function SupplyManagement() {
     const doughnutChartData = {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
         values: [12, 19, 3, 5, 2],
-    };
-
-    const importsHeaders = ["ID", "Invoice number", "Supplier", "Date", "Total Quantity", "Total Import Price"];
-    const importDataFields = ["_id", "invoiceNumber", "supplier.name", "date", "totalQuantity", "totalImportPrice"];
-
-
-    const supplierHeaders = ["ID", "Name", "Email", "Status", "Phone number", "Address", "Description"];
-    const supplierFields = ["_id", "name", "email", "status", "phone", "address", "description"];
+    }; 
 
     const handleOpenModal = () => {
         setModalOpen(true);
@@ -189,13 +184,13 @@ function SupplyManagement() {
 
             <div className="flex gap-x-6">
                 <div className="grow">
-                    <OverviewTable seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} columnHeaders={importsHeaders} dataFields={importDataFields} />
+                    <OverviewTable columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports}  />
                 </div>
                 <DoughnutChartCard title="Import Distribution" data={doughnutChartData} />
             </div>
 
             <div className="grow">
-                <CollapsedRowTable statusOptions={[SupplierStatus.ACTIVE, SupplierStatus.INACTIVE]} onSave={handleUpdateSupplier} addItem={handleOpenModal} title="Suppliers" itemData={suppliers} columnHeaders={supplierHeaders} dataFields={supplierFields} />
+                <CollapsedRowTable statusOptions={[SupplierStatus.ACTIVE, SupplierStatus.INACTIVE]} onSave={handleUpdateSupplier} addItem={handleOpenModal} title="Suppliers" itemData={suppliers} columnData={supplierColumnData} />
             </div>
         </div>
 
