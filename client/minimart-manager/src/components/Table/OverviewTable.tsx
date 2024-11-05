@@ -86,7 +86,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                 </div>
             </div>
 
-            <table className="flex-auto min-w-full bg-white text-center items-center grow">
+            <table className="flex-auto min-w-full bg-white text-center items-center grow rounded-lg overflow-hidden shadow-md">
                 <thead className='table-header'>
                     <tr className='rounded-md'>
                         {columnHeaders.map((header, index) => (

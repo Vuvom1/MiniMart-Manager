@@ -5,14 +5,15 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  onSubmit: () => void; 
+  onSubmit: () => void;
+  isFormValid: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSubmit }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSubmit, isFormValid = false }) => {
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    onSubmit(); 
+    onSubmit();
   };
 
   return (
@@ -31,12 +32,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSubmi
           {children}
         </div>
         <div className="px-6 w-full py-4 border-t">
-          <button
-            onClick={handleSubmit} 
+          {isFormValid ? <button
+            onClick={handleSubmit}
             className="bg-cyan-500 text-white w-full px-4 py-2 rounded hover:bg-blue-600"
           >
             Save
-          </button>
+          </button> : <button
+            onClick={handleSubmit}
+            className="bg-cyan-500 text-white w-full px-4 py-2 rounded hover:bg-blue-600"
+            disabled
+          >
+            Save
+          </button>}
         </div>
       </div>
     </div>

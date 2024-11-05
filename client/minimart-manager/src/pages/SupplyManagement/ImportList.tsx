@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import RoundedButton from "../../components/Button/RoundedButton";
 import TextField from "../../components/InputField/TextField";
-import CheckBox from "../../components/InputField/CheckBox";
 import { useNavigate } from "react-router-dom";
 import { getAllImports } from "../../services/api/ImportApi";
 import useSearch from "../../utils/SearchUtil";

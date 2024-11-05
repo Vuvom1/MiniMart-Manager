@@ -14,6 +14,7 @@ import ErrorToast from "../../components/Toast/ErrorToast";
 import SuccessToast from "../../components/Toast/SuccessToast";
 import { SupplierStatus } from "../../constant/enum";
 import { getAllImports } from "../../services/api/ImportApi";
+import ValidationUtil from "../../utils/ValidationUtil";
 
 interface SuppliersStatistic {
     totalSuppliers: number;
@@ -26,6 +27,7 @@ function SupplyManagement() {
     const [suppliers, setSuppliers] = useState([]);
     const [imports, setImports] = useState([]);
     const [suppliersStatistic, setSupplierStatistic] = useState<SuppliersStatistic | null>(null);
+    const [isAddModalValid, setIsAddModalValid] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const [supplierFormData, setSupplierFormData] = useState({
@@ -35,6 +37,10 @@ function SupplyManagement() {
         address: '',
         description: ''
     });
+
+    const handleValidationChange = (isValid: boolean) => {
+        setIsAddModalValid(isValid);
+      };
 
     const fetchSuppliers = async () => {
         try {
@@ -50,10 +56,10 @@ function SupplyManagement() {
         }
     };
 
-    const fetchImports = async() => {
+    const fetchImports = async () => {
         try {
             const data = await getAllImports();
-        
+
             setImports(data);
             console.log(data)
 
@@ -74,9 +80,9 @@ function SupplyManagement() {
         values: [12, 19, 3, 5, 2],
     };
 
-    const importsHeaders = ["ID", "Invoice number", "Supplier",  "Date", "Total Quantity", "Total Import Price"];
-    const importDataFields = ["_id", "invoiceNumber", "supplier.name" , "date", "totalQuantity", "totalImportPrice"];
-  
+    const importsHeaders = ["ID", "Invoice number", "Supplier", "Date", "Total Quantity", "Total Import Price"];
+    const importDataFields = ["_id", "invoiceNumber", "supplier.name", "date", "totalQuantity", "totalImportPrice"];
+
 
     const supplierHeaders = ["ID", "Name", "Email", "Status", "Phone number", "Address", "Description"];
     const supplierFields = ["_id", "name", "email", "status", "phone", "address", "description"];
@@ -176,7 +182,7 @@ function SupplyManagement() {
                 <MetricCard title="Total Imported products" value="0.00" icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                 </svg>} isPositive={true} />
-                <MetricCard title="Total Suppliers" percentage={suppliersStatistic?.percentageCompareLastMonnth ?? 0} value={suppliersStatistic?.totalSuppliers ?? 0}  icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <MetricCard title="Total Suppliers" percentage={suppliersStatistic?.percentageCompareLastMonnth ?? 0} value={suppliersStatistic?.totalSuppliers ?? 0} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                 </svg>} isPositive={true} />
             </div>
@@ -193,41 +199,49 @@ function SupplyManagement() {
             </div>
         </div>
 
-        <FormModal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddSupplier} title="Add Supplier">
-            <div className="flex flex-col gap-y-4">
-                <TextField
-                    onChange={handleInputChange}
-                    value={supplierFormData.name}
-                    name="name"
-                    label="Supplier Name"
-                    placeholder="Enter supplier name..." />
-                <TextField
-                    label="Email"
-                    name="email"
-                    value={supplierFormData.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter email..."
-                />
-                <TextField
-                    value={supplierFormData.phone}
-                    onChange={handleInputChange}
-                    label="Phone number"
-                    name="phone"
-                    placeholder="Phone number..." />
-                <TextField
-                    value={supplierFormData.address}
-                    onChange={handleInputChange}
-                    name="address"
-                    label="Address"
-                    placeholder="Enter address..." />
-                <TextField
-                    onChange={handleInputChange}
-                    value={supplierFormData.description}
-                    name="description"
-                    label="Description"
-                    height="100px" />
-            </div>
-        </FormModal>
+        <FormModal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddSupplier} title="Add Supplier" isFormValid={isAddModalValid}>
+        <div className="flex flex-col gap-y-4">
+            <TextField
+                onChange={handleInputChange}
+                value={supplierFormData.name}
+                name="name"
+                label="Supplier Name"
+                validations={[ValidationUtil.validateRequired("Supplier name")]}
+                validationPassed={handleValidationChange}
+                placeholder="Enter supplier name..." />
+            <TextField
+                label="Email"
+                name="email"
+                value={supplierFormData.email}
+                onChange={handleInputChange}
+                validations={[ValidationUtil.validateRequired("Email"), ValidationUtil.validateEmail]}
+                validationPassed={handleValidationChange}
+                placeholder="Enter email..."
+            />
+            <TextField
+                value={supplierFormData.phone}
+                onChange={handleInputChange}
+                label="Phone number"
+                name="phone"
+                validations={[ValidationUtil.validateRequired("Phone number"), ValidationUtil.validatePhoneNumber]}
+                validationPassed={handleValidationChange}
+                placeholder="Phone number..." />
+            <TextField
+                value={supplierFormData.address}
+                onChange={handleInputChange}
+                name="address"
+                label="Address"
+                validations={[ValidationUtil.validateRequired("Address")]}
+                validationPassed={handleValidationChange}
+                placeholder="Enter address..." />
+            <TextField
+                onChange={handleInputChange}
+                value={supplierFormData.description}
+                name="description"
+                label="Description"
+                height="100px" />
+        </div>
+    </FormModal >
     </>
 }
 

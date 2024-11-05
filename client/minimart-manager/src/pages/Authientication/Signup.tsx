@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import DateField from '../../components/InputField/DateField';
 import ValidationUtil from '../../utils/ValidationUtil';
 import { useAuth } from '../../components/providers/AuthProvider';
+import toast from 'react-hot-toast';
+import CustomErrorToast from '../../components/Toast/ErrorToast';
+import SuccessToast from '../../components/Toast/SuccessToast';
 
 
 function Signup() {
@@ -23,85 +26,37 @@ function Signup() {
     const [phone, setPhone] = useState('')
     const [address, setAddress] = useState('')
     const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<{ firstname: string | null, lastname: string | null, username: string | null; email: string | null, password: string | null, confirmPassword: string | null, dateOfBirth: string | null, phone: string | null, address: string | null, signupError: string | null }>({
-        firstname: null,
-        lastname: null,
-        username: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
-        dateOfBirth: null,
-        phone: null,
-        address: null,
-        signupError: null
-    });
+    const [isValid, setIsValid] = useState(false);
     const navigate = useNavigate();
     const auth = useAuth();
 
     const handleSingup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        setErrors({
-            firstname: null,
-            lastname: null,
-            username: null,
-            email: null,
-            password: null,
-            confirmPassword: null,
-            dateOfBirth: null,
-            phone: null,
-            address: null,
-            signupError: null
-        });
-
-        const firstnameError = ValidationUtil.validateRequired(firstname, 'Firstname');
-        const lastnameError = ValidationUtil.validateRequired(lastname, 'Lasttname',);
-        const usernameError = ValidationUtil.validateUsername(username);
-        const emailError = ValidationUtil.validateEmail(email);
-        const passwordError = ValidationUtil.validatePassword(password);
-        const confirmPasswordError = ValidationUtil.validateConfirmPassword(password, confirmPassword);
-        const dateOfBirthError = ValidationUtil.validateDateOfBirth(dateOfBirth);
-        const phoneError = ValidationUtil.validatePhoneNumber(phone);
-        const addressError = ValidationUtil.validateRequired(address, 'Address');
-
-        if (firstnameError || lastnameError || usernameError || emailError || passwordError || dateOfBirthError || phoneError || addressError) {
-            setErrors({
-                firstname: firstnameError,
-                lastname: lastnameError,
-                username: usernameError,
-                email: emailError,
-                password: passwordError,
-                confirmPassword: confirmPasswordError,
-                dateOfBirth: dateOfBirthError,
-                phone: phoneError,
-                address: addressError,
-                signupError: null,
-            });
-            setLoading(false);
-            return;
-        }
-
         try {
             await auth.signup(firstname, lastname, username, email, password, dateOfBirth, phone, address)
-
+            toast.custom((t) => (
+                <SuccessToast
+                    message="Register user success!"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
             navigate('/');
         } catch (err: any) {
-            setErrors({
-                firstname: null,
-                lastname: null,
-                username: null,
-                email: null,
-                password: null,
-                confirmPassword: null,
-                dateOfBirth: null,
-                phone: null,
-                address: null,
-                signupError: err,
-            });
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message="Error sign up"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
         } finally {
             setLoading(false);
         }
     };
+
+    const handleValidationChange = (isValid: boolean) => {
+        setIsValid(isValid);
+      };
 
     function navigateLogin() {
         navigate('/login')
@@ -124,8 +79,9 @@ function Signup() {
                         onChange={(e) => setFirstname(e.target.value)}
                         label="First name"
                         value={firstname}
-                        error={errors.firstname}
                         placeholder='Enter your firstname...'
+                        validations={[ValidationUtil.validateRequired("First name")]}
+                        validationPassed={handleValidationChange}
                         prefix={<svg xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24"
                             strokeWidth={1.5}
@@ -137,7 +93,8 @@ function Signup() {
                     <TextField
                         onChange={(e) => setLastname(e.target.value)}
                         label="Last name"
-                        error={errors.lastname}
+                        validations={[ValidationUtil.validateRequired("Last name")]}
+                        validationPassed={handleValidationChange}
                         value={lastname}
                         placeholder='Enter your lastname...'
                         prefix={<svg xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +111,8 @@ function Signup() {
                     label="Username"
                     value={username}
                     placeholder='Enter username...'
-                    error={errors.username}
+                    validations={[ValidationUtil.validateRequired("Username"), ValidationUtil.validateUsername]}
+                    validationPassed={handleValidationChange}
                     prefix={<svg xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24"
                         strokeWidth={1.5}
@@ -168,7 +126,8 @@ function Signup() {
                     label="Email"
                     value={email}
                     placeholder='Enter email...'
-                    error={errors.email}
+                    validations={[ValidationUtil.validateRequired("Email"), ValidationUtil.validateEmail]}
+                    validationPassed={handleValidationChange}
                     prefix={<svg xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24"
                         strokeWidth={1.5}
@@ -182,7 +141,8 @@ function Signup() {
                     onChange={(e) => setPassword(e.target.value)}
                     label="Password"
                     value={password}
-                    error={errors.password}
+                    validations={[ValidationUtil.validateRequired("Password"), ValidationUtil.validatePassword]}
+                    validationPassed={handleValidationChange}
                     placeholder='Confirm password...'
                     prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -192,8 +152,11 @@ function Signup() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     label="Confirmed Password"
                     value={confirmPassword}
-                    error={errors.confirmPassword}
-                    placeholder='Confirm your password...' prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    confirmValue={password}
+                    isConfirmField={true}
+                    validationPassed={handleValidationChange}
+                    placeholder='Confirm your password...' 
+                    prefix={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                     </svg>
                     } />
@@ -204,7 +167,8 @@ function Signup() {
                     <DateField
                         onChange={(e) => setDateOfBirth(e.target.value)}
                         value={dateOfBirth}
-                        error={errors.dateOfBirth}
+                        validations={[ValidationUtil.validateRequired("Date of birth"), ValidationUtil.validateDateOfBirth]}
+                        validationPassed={handleValidationChange}
                         label="Date of Birth"
                         placeholder='Enter your date of birth'
                     />
@@ -212,7 +176,8 @@ function Signup() {
                         onChange={(e) => setPhone(e.target.value)}
                         label="Phone number"
                         value={phone}
-                        error={errors.phone}
+                        validations={[ValidationUtil.validateRequired("Phone number"), ValidationUtil.validatePhoneNumber]}
+                        validationPassed={handleValidationChange}
                         placeholder='Enter your phone number...'
                         prefix={<svg xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24"
@@ -229,7 +194,8 @@ function Signup() {
                     onChange={(e) => setAddress(e.target.value)}
                     value={address}
                     label="Address"
-                    error={errors.address}
+                    validations={[ValidationUtil.validateRequired("Address")]}
+                    validationPassed={handleValidationChange}
                     placeholder='Enter your address...'
                     prefix={<svg xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24"
@@ -251,11 +217,7 @@ function Signup() {
                     <p className='text-sm'>Agree to Term of Use and Policy</p>
                 </div>
 
-                <div className='text-center'>
-                        {errors.signupError && <p style={{ color: 'red' }}>{errors.signupError}</p>} 
-                    </div>
-
-                <RoundedButton onClick={() => handleSingup} disable={loading} label={loading ? 'Signing Up...' : 'Sign Up'} color='bg-cyan-500 text-white' />
+                <RoundedButton onClick={() => handleSingup} disable={loading || !isValid} label={loading ? 'Signing Up...' : 'Sign Up'} color='bg-cyan-500 text-white' />
 
                 <div className='flex gap-x-2 justify-center'>
                     <p className=''>Already have an account?</p>

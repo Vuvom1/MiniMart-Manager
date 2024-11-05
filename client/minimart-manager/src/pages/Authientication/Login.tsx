@@ -8,6 +8,8 @@ import MinimartStaffImage from "../../assets/images/minimart_staff.png";
 import { useNavigate } from 'react-router-dom';
 import ValidationUtil from '../../utils/ValidationUtil';
 import { useAuth } from '../../components/providers/AuthProvider';
+import toast from 'react-hot-toast';
+import SuccessToast from '../../components/Toast/SuccessToast';
 
 
 function Login() {
@@ -15,46 +17,35 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<{ email: string | null, password: string | null, clientError: string | null }>({
-        email: null,
-        password: null,
-        clientError: null
-    });
+    const [isValid, setIsValid] = useState(false);
+   
     const [error, setError] = useState<string | null>(null); 
     const navigate = useNavigate();
     const auth = useAuth();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        setErrors({
-            email: null,
-            password: null,
-            clientError: null,
-          });
         e.preventDefault();
         setLoading(true);
-
-        const emailError = ValidationUtil.validateEmail(email);
-        const passwordError = ValidationUtil.validatePassword(password);
-    
-        if (emailError || passwordError) {
-          setErrors({
-            email: emailError,
-            password: passwordError,
-            clientError: null,
-          });
-          setLoading(false); 
-          return;
-        }
 
         try {
             await auth.login(email, password);
 
+            toast.custom((t) => (
+              <SuccessToast
+                  message="Welcome back!"
+                  onDismiss={() => toast.dismiss(t.id)}
+              />
+          ));
             navigate('/');
         } catch (err: any) {
             setError(`Login failed: ${err || "An unknown error occurred"}`);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleValidationChange = (isValid: boolean) => {
+      setIsValid(isValid);
     };
 
     function navigateSignup() {
@@ -75,7 +66,8 @@ function Login() {
                     <TextField 
                       onChange={(e) => setEmail(e.target.value)} 
                       value={email} 
-                      error={errors.email}
+                      validations={[ValidationUtil.validateEmail, ValidationUtil.validateRequired('Email')]}
+                      validationPassed={handleValidationChange}
                       label="Username or email" 
                       placeholder='Enter username or email...' 
                       prefix={
@@ -90,7 +82,8 @@ function Login() {
                       onChange={(e) => setPassword(e.target.value)} 
                       value={password} 
                       label="Password" 
-                      error={errors.password}
+                      validations={[ValidationUtil.validatePassword, ValidationUtil.validateRequired('Password')]}
+                      validationPassed={handleValidationChange}
                       placeholder='Enter password...' 
                       prefix={
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -106,7 +99,7 @@ function Login() {
                         <p className='text-sm'>Remember Me?</p>
                     </div>
 
-                    <RoundedButton disable={loading} label={loading ? 'Logging in...' : 'Login'} color='bg-cyan-500 text-white' />
+                    <RoundedButton disable={loading || !isValid} label={loading ? 'Logging in...' : 'Login'} color='bg-cyan-500 text-white' />
 
                     <div className='text-center'>
                         {error && <p style={{ color: 'red' }}>{error}</p>} 

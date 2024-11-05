@@ -191,12 +191,23 @@ function AddImport() {
             <div className="h-[calc(100vh-180px)] w-full flex gap-x-4">
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-4 w-1/2 rounded-lg">
                     <h2 className="text-lg font-medium">Basic Information</h2>
-                    <SelectField label="Supplier" placeholder="Choose supplier..." options={supplierOptions} onChange={value => {
+                    <SelectField 
+                    label="Supplier" 
+                    placeholder="Choose supplier..." 
+                    options={supplierOptions} 
+                    onChange={value => {
                         setSelectedSupplierId(value ? value.value : '');
                     }} />
-                    <TextField label="Invoice number" placeholder="Enter invoice number..." onChange={(e) => setInvoiceNumber(e.target.value)} />
-                    <TextField label="Delivery man" placeholder="Enter delivery man name..." onChange={(e) => setDeliveryMan(e.target.value)} />
-                    <TextField label="Description" placeholder="Enter import description" height="150px" onChange={(e) => setDescription(e.target.value)} />
+                    <TextField 
+                    label="Invoice number" placeholder="Enter invoice number..." 
+                    onChange={(e) => setInvoiceNumber(e.target.value)} />
+                    <TextField 
+                    label="Delivery man" placeholder="Enter delivery man name..." 
+                    onChange={(e) => setDeliveryMan(e.target.value)} />
+                    <TextField 
+                    label="Description" placeholder="Enter import description" 
+                    height="150px" 
+                    onChange={(e) => setDescription(e.target.value)} />
                 </div>
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-y-4 w-2/3 rounded-lg divide-y">
                     <div className="flex justify-between">

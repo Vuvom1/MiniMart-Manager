@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ValidationUtil from '../../utils/ValidationUtil';
 
 interface PasswordFieldProps {
     id?: string;
@@ -11,6 +12,10 @@ interface PasswordFieldProps {
     height?: string;
     width?: string;
     error?: string | null
+    validations?: Array<(value: string) => string | null>;
+    validationPassed?: (isValid: boolean) => void;
+    confirmValue?: string;
+    isConfirmField?: boolean; 
 }
 
 export default function PasswordField({
@@ -18,18 +23,58 @@ export default function PasswordField({
     label,
     name,
     prefix,
-    value,
+    value = '',
     onChange,
     placeholder,
     height = '40px',
     width = '100%',
-    error = null, 
+    error = null,
+    validations = [],
+    validationPassed,
+    confirmValue = '',
+    isConfirmField = false, 
 }: PasswordFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [internalError, setInternalError] = useState<string | null>(error);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+
+        if (onChange) {
+            onChange(e);
+        }
+
+        let isValid = true;
+        for (const validate of validations) {
+            const validationError = validate(inputValue);
+            if (validationError) {
+                setInternalError(validationError);
+                isValid = false;
+                break;
+            }
+        }
+
+        if (isConfirmField) {
+            const confirmError = ValidationUtil.validateConfirmPassword(inputValue, confirmValue);
+            if (confirmError) {
+                setInternalError(confirmError);
+                isValid = false;
+            }
+        }
+
+        if (validationPassed) {
+            validationPassed(isValid);
+        }
+
+        if (isValid) setInternalError(null);
+
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(prev => !prev);
     };
+
+
 
     return (
         <div style={{ width }}>
@@ -49,7 +94,7 @@ export default function PasswordField({
                     name={name}
                     type={showPassword ? 'text' : 'password'}
                     value={value}
-                    onChange={onChange}
+                    onChange={handleChange}
                     placeholder={placeholder}
                     className={`block w-full rounded-md border-0 py-1.5 ${prefix ? 'pl-10' : 'pl-3'
                         } pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
@@ -69,9 +114,13 @@ export default function PasswordField({
                         </svg>
                     }
                 </button>
-                {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
+                {(internalError || error) && (
+                    <p className="text-xs text-red-500">
+                        {internalError || error}
+                    </p>
+                )}
             </div>
-            
+
         </div>
     );
 }
