@@ -2,7 +2,7 @@ import CircleIcon from "../Icon/CircleIcon";
 
 interface MetricCard {
     title: string,
-    value: string | number,
+    value: string | number | undefined,
     percentage?: string | number,
     icon?: JSX.Element,
     isPositive: boolean,

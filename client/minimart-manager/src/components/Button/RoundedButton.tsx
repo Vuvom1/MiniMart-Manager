@@ -22,7 +22,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
   borderColor = 'transparent', 
   border = 'border',
   height = '40px', 
-  width = '100%',  
+  width = 'auto',  
   prefixIcon, 
   suffixIcon,
   disable = false

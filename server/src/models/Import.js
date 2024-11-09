@@ -14,12 +14,7 @@ const importDetailSchema = new mongoose.Schema({
     importPrice: {
         type: Number,
         required: true,
-    },
-    totalImportPrice: {
-        type: Number,
-        required: true,
-    },
-    
+    },    
 });
 
 const importSchema = new mongoose.Schema({
@@ -62,7 +57,7 @@ const importSchema = new mongoose.Schema({
         required: true,
     },
     importDetails: [importDetailSchema]
-});
+}, {timestamps: true});
 
 const Import = mongoose.model('Import', importSchema);
 

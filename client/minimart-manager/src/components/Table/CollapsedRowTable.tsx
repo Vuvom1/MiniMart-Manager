@@ -135,7 +135,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                     {filteredData.map((item, index) => (
                         <>
                             <tr
-                                key={index}
+                                 key={`${item.id}-cl-row`}
                                 className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
                             >
@@ -184,7 +184,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                             ))}
                                     </td>
                                 ))}
-                                <td className="border-b border-gray-200" onClick={() => toggleRowExpansion(index)}>
+                                <td key={`${index}-collapsedrow-button`} className="border-b border-gray-200" onClick={() => toggleRowExpansion(index)}>
                                     <div className='hover:bg-cyan-100 w-fit w-16 '>
                                         {expandedRows == index ? (
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -201,17 +201,17 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                             </tr>
 
                             {expandedRows == index && (
-                                <tr>
-                                    <td colSpan={columnData.length + 1} className="px-4 py-4 bg-gray-50 text-left border border-t border-gray-200">
+                                <tr key={`${index}-expanded`}>
+                                    <td key={`${index}-expanded-td`} colSpan={columnData.length + 1} className="px-4 py-4 bg-gray-50 text-left border border-t border-gray-200">
                                         <div className="grid grid-cols-1 gap-2">
                                             {columnData.slice(showData).map((col, collapsedIndex) => (
-                                                <div key={collapsedIndex} className="flex justify-between px-16">
+                                                <div className="flex justify-between px-16">
                                                     <span className="font-semibold">{columnData[collapsedIndex + showData].header}:</span>
                                                     <span><EditableInfo  validations={col.validations} onValueChange={(newValue) => handleValueChange(startIndex + index, col.field, newValue)} initialValue={item[col.field]} /></span>
                                                 </div>
                                             ))}
                                         </div>
-                                        <div key='sav' className='my-4 w-full flex justify-end' >
+                                        <div className='my-4 w-full flex justify-end' >
                                             <RoundedButton onClick={handleSave} label='Save' width='70px' color='hover:bg-cyan-400' />
                                         </div>
 
@@ -229,7 +229,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                 <div className="flex items-center">
                     {Array.from({ length: totalPages }, (_, index) => (
                         <button
-                            key={index + 1}
+                            key={`${index+1}-collapse-paginate`}
                             className={`px-3 mx-1 py-1 rounded ${currentPage === index + 1 ? 'bg-cyan-500 text-white' : 'bg-white border border-black'}`}
                             onClick={() => handlePageChange(index + 1)}
                         >

@@ -1,10 +1,11 @@
 import React from 'react';
 import TextField from '../InputField/TextField';
 import useSearch from '../../utils/SearchUtil';
+import { Product } from '../../data/Entities/ProductData';
 
 interface ProductSelectionModalProps {
-    products: any;
-    onSelectProduct: (product: any) => void;
+    products: Product[];
+    onSelectProduct: (product: Product) => void;
     onClose: () => void;
 }
 

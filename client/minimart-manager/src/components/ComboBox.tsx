@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Period } from '../constant/enum';
 
 interface ComboBoxProps {
-  options: string[];
+  options: string[] | Period[];
   placeholder?: string;
-  onSelect: (option: string) => void;
+  onSelect: (option: string | Period) => void;
   width?: string;
   height?: string;
   prefixIcon?: JSX.Element
@@ -45,7 +46,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     }
   };
 
-  const handleOptionClick = (option: string) => {
+  const handleOptionClick = (option: any) => {
     onSelect(option);
     setSearchValue(option);
     setIsOpen(false);

@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 interface IncrementalFieldProps {
     onQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    initialValue?: number;
     style?: string, 
 }
 
-const IncrementalField: React.FC<IncrementalFieldProps> = ({ onQuantityChange, style }) => {
-    const [quantity, setQuantity] = useState(1);
+const IncrementalField: React.FC<IncrementalFieldProps> = ({ onQuantityChange,initialValue = 1 , style }) => {
+    const [quantity, setQuantity] = useState(initialValue);
 
     const handleIncrement = () => {
         setQuantity((prev) => {
             const newQuantity = prev + 1;
-            // Call onQuantityChange with the new quantity
+           
             const event = {
                 target: { value: newQuantity.toString() },
             } as React.ChangeEvent<HTMLInputElement>;
@@ -21,10 +22,10 @@ const IncrementalField: React.FC<IncrementalFieldProps> = ({ onQuantityChange, s
     };
 
     const handleDecrement = () => {
-        if (quantity > 1) {
+        if (quantity > 0) {
             setQuantity((prev) => {
                 const newQuantity = prev - 1;
-                // Call onQuantityChange with the new quantity
+               
                 const event = {
                     target: { value: newQuantity.toString() },
                 } as React.ChangeEvent<HTMLInputElement>;
@@ -38,7 +39,7 @@ const IncrementalField: React.FC<IncrementalFieldProps> = ({ onQuantityChange, s
         const value = parseInt(e.target.value, 10);
         if (!isNaN(value)) {
             setQuantity(value);
-            onQuantityChange(e); // Call with the event
+            onQuantityChange(e);
         }
     };
 

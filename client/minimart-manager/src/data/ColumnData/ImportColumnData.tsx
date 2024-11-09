@@ -2,7 +2,7 @@ import { ColumnData } from "./ColumnData";
 
 export const importsColumnData: ColumnData[] = [
     {
-        field: "_id",
+        field: "id",
         header: "ID",
         isEditable: false
     },

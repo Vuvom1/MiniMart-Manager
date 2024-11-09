@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Import } from '../../data/Entities/ImportData';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/imports'
@@ -27,10 +28,10 @@ export const addImport = async (importData: any) => {
     }
 }
 
-export const updateImport = async (id: string, supplierData: {name:string, email:string, status: String, phone:string, address:string, description:string}) => {
+export const updateImport = async (id: string, importData: Import) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${id}`, {
-            supplierData
+        const response = await axios.put(`${BASE_URL}/${id}/edit`, {
+            importData
         }, {
             withCredentials: true,
         });

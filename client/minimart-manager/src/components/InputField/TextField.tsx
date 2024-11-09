@@ -6,6 +6,7 @@ interface TextFieldProps {
   name?: string;
   prefix?: JSX.Element;
   value?: string;
+  initialValue?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   height?: string; 
@@ -20,11 +21,13 @@ export default function TextField({
   label,
   name,
   prefix,
-  value = '',
+  initialValue = '',
+  value = initialValue,
   onChange,
   placeholder,
   height = '40px', 
   width = '100%', 
+  
   error = null,
   validations = [],
   validationPassed

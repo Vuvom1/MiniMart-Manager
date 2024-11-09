@@ -19,3 +19,9 @@ export enum ImportStatus {
     ERROR = 'Error'             
 }
 
+export enum Period {
+    DAILY = 'Daily',
+    MONTHLY = 'Monthly',
+    YEARLY = 'Yearly'
+}
+

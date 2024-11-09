@@ -1,4 +1,5 @@
 import React from 'react';
+import FormatUtil from '../../utils/FormatUttil';
 
 interface MoneyFieldProps {
   id?: string;
@@ -6,6 +7,7 @@ interface MoneyFieldProps {
   name?: string;
   prefix?: JSX.Element;
   value?: string; 
+  initialValue?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   height?: string; 
@@ -19,7 +21,8 @@ export default function MoneyField({
   label,
   name,
   prefix,
-  value,
+  initialValue = '',
+  value = initialValue,
   onChange,
   placeholder,
   height = '40px', 
@@ -30,25 +33,7 @@ export default function MoneyField({
   const handleMoneyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value;
 
-  
-    inputValue = inputValue.replace(/[^0-9.]/g, '');
-
-
-    const parts = inputValue.split('.');
-    if (parts.length > 2) {
-      inputValue = parts[0] + '.' + parts.slice(1).join('').slice(0, 2);
-    } else if (parts.length === 2 && parts[1].length > 2) {
-      inputValue = parts[0] + '.' + parts[1].slice(0, 2);
-    }
-
-    const [integerPart, decimalPart] = inputValue.split('.');
-    const formattedIntegerPart = parseInt(integerPart, 10)
-      .toLocaleString(); 
-    const formattedValue = decimalPart 
-      ? `${formattedIntegerPart}.${decimalPart}` 
-      : formattedIntegerPart;
-
-    onChange?.({ target: { value: formattedValue } } as React.ChangeEvent<HTMLInputElement>);
+    onChange?.({ target: { value: FormatUtil.moneyFormat(inputValue) } } as React.ChangeEvent<HTMLInputElement>);
   };
 
   return (
