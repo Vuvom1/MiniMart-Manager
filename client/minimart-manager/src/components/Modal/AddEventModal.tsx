@@ -3,20 +3,28 @@ import TextField from '../InputField/TextField';
 import useSearch from '../../utils/SearchUtil';
 import { ScheduleDetail } from '../../data/Entities/ScheduleDetail';
 import { getAllShift } from '../../services/api/ShiftApi';
-import { Schedule } from '../../data/Entities/Schedule';
 import { Shift } from '../../data/Entities/Shift';
 import { Employee } from '../../data/Entities/Employee';
+import toast from 'react-hot-toast';
+import ErrorToast from '../Toast/ErrorToast';
+import SuccessToast from '../Toast/SuccessToast';
+import { addEventToSchedule } from '../../services/api/ScheduleApi';
+import { ScheduleDetailFormData } from '../../data/FormData/ScheduleDetailFormData';
+import { WorkShiftBadge } from '../Badge/WorkShiftBadge';
 
 interface AddEventModalProps {
     employee?: Employee;
     scheduleId: string;
     date: string,
     onClose: () => void;
-    isOpen?: boolean;
 }
 
-const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, onClose, isOpen = false }) => {
+const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, date, onClose }) => {
     const [shifts, setShifts] = useState<Shift[]>();
+    const [eventData, setEventData] = useState<ScheduleDetailFormData>();
+    const [selectedShift, setSelectedShift] = useState<string | null>(null);
+
+    console.log(scheduleId)
 
     const fetchShifts = async () => {
         try {
@@ -28,6 +36,38 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, onC
             console.error('Error fetching imports:', error);
         }
     };
+
+    const handleAddEvent = async () => {
+        try {
+            if (eventData) {
+                const response = await addEventToSchedule(scheduleId, eventData)
+                console.log(scheduleId)
+
+                toast.custom((t) => (
+                    <SuccessToast
+                        message={response}
+                        onDismiss={() => toast.dismiss(t.id)}
+                    />
+                ));
+            }
+                
+            onClose();
+        } catch (error) {
+            toast.custom((t) => (
+                <ErrorToast
+                    message="Update supplier failed!"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />));
+        }
+    }
+
+    const onSelectShift = (shiftId: string) => {
+        setSelectedShift(shiftId); 
+        setEventData({
+            shift: selectedShift || "",
+            date: new Date(date),
+        });
+    }
 
 
     useEffect(() => {
@@ -51,27 +91,32 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, onC
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>
                     } />
-                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
+                <div className="grid-cols-3 grid gap-2 max-h-60 overflow-y-auto mt-4">
 
 
                     {filteredData.map((shift) => (
                         <div
                             key={shift._id}
-                            className="flex justify-between p-2 border-b cursor-pointer"
+                            className={`cursor-pointer ${selectedShift === shift._id ? 'transform scale-105' : ''}`}
                             onClick={() => {
-                                onClose();
+                                onSelectShift(shift._id);
+                                // onClose();
                             }}
                         >
-                            <div className={`flex ${shift.style.backgroundColor}`}>
-                                <p className='grow'>{shift.name}</p>
-                                <p>{shift.startTime} - {shift.endTime}</p>
-                            </div>
+                                <WorkShiftBadge name={shift.name} backgroundColor={shift.style.backgroundColor} textColor={shift.style.textColor} startTime={shift.startTime} endTime={shift.endTime}/>
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-end mt-4">
-                    <button onClick={onClose} className="text-blue-500">Close</button>
+                <div className='flex justify-between'>
+                    <div className="flex justify-end mt-4">
+                        <button onClick={onClose} className="text-blue-500">Close</button>
+                    </div>
+                    <div className="flex justify-end mt-4">
+                        <button onClick={handleAddEvent} className="text-blue-500">Save</button>
+                    </div>
                 </div>
+
+
             </div>
         </div>
     );

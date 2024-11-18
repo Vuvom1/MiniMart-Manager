@@ -1,5 +1,5 @@
 import { ImportStatus } from "../../constant/enum";
-import { ImportDetailFormData } from "./ImportDetailFormDate";
+import { ImportDetailFormData } from "./ImportDetailFormData";
 
 export interface ImportFormData {
     supplier: string;

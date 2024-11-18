@@ -1,5 +1,6 @@
 const errors = require('../constant/errors');
 const Schedule = require('../models/Schedule')
+const {DaysOfWeek} = require('../constant/DayOfWeek')
 
 class ScheduleController {
 
@@ -46,6 +47,54 @@ class ScheduleController {
     edit_put = async (req, res) => {
 
     }
+
+    addEvent_put = async (req, res) => {
+        try {
+            const { scheduleId, scheduleDetail} = req.body;
+
+            const schedule = await Schedule.findOne({_id: scheduleId});
+
+            if (!schedule) {
+                return res.status(404).json({ error: 'Schedule not found' });
+            }
+
+            const date = new Date(scheduleDetail.date);
+            const dayOfWeek = DaysOfWeek[date.getDay()];
+    
+            scheduleDetail.dayOfWeek = dayOfWeek;
+    
+            schedule.scheduleDetails.push(scheduleDetail);
+
+            await schedule.save();
+
+            res.status(201).json('New event has been added to schedule');
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteEvent_put = async (req, res) => {
+        try {
+            const { scheduleId, eventId } = req.body;
+    
+            const schedule = await Schedule.findById(scheduleId);
+    
+            if (!schedule) {
+                return res.status(404).json({ error: 'Schedule not found' });
+            }
+    
+            schedule.scheduleDetails = schedule.scheduleDetails.filter(
+                (event) => event._id.toString() !== eventId
+            );
+    
+            await schedule.save();
+    
+            res.status(200).json('Event deleted successfully');
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    };
 
     // edit_put = async (req, res) => {
     //     try {

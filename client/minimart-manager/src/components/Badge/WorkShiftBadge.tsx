@@ -3,16 +3,16 @@ import { TimeUtil } from "../../utils/TimeUtil";
 
 type WorkShiftBadgeProps = {
     name: string;
-    startTime: string;
-    endTime: string;
+    startTime?: string;
+    endTime?: string;
     backgroundColor?: string; 
     textColor?: string;      
 };
 
 export const WorkShiftBadge: React.FC<WorkShiftBadgeProps> = ({
     name,
-    startTime,
-    endTime,
+    startTime="",
+    endTime="",
     backgroundColor = "bg-blue-100", 
     textColor = "text-blue-600",     
 }) => {

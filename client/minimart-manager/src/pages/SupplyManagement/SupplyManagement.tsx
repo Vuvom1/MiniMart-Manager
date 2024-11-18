@@ -107,7 +107,6 @@ function SupplyManagement() {
     const handleAddSupplier = async () => {
         try {
             await addSupplier(supplierFormData.name, supplierFormData?.email, supplierFormData?.phone, supplierFormData?.address, supplierFormData?.description);
-            console.log('Supplier added successfully');
 
             setSupplierFormData(new SupplierEntity);
 

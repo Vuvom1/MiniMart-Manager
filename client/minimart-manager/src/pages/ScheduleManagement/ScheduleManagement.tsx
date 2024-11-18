@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { WorkShiftBadge } from "../../components/Badge/WorkShiftBadge";
 import RoundedButton from "../../components/Button/RoundedButton";
 import { getAllEmployees } from "../../services/api/EmployeeApi";
-import { addEmployeeToSchedule, getAllSchedules } from "../../services/api/ScheduleApi";
+import { addEmployeeToSchedule, deleteEventFromSchedule, getAllSchedules } from "../../services/api/ScheduleApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../components/Toast/SuccessToast";
 import EmployeeSelectionModal from "../../components/Modal/EmployeeSelectionModal";
@@ -10,6 +10,7 @@ import CustomErrorToast from "../../components/Toast/ErrorToast";
 import { Schedule } from "../../data/Entities/Schedule";
 import { TimeUtil } from "../../utils/TimeUtil";
 import AddEventModal from "../../components/Modal/AddEventModal";
+import ConfirmModal from "../../components/Modal/ConfirmModal";
 
 
 export function ScheduleManagement() {
@@ -20,13 +21,16 @@ export function ScheduleManagement() {
     const timeUtil = new TimeUtil();
     const [weekDays, setWeekDays] = useState(timeUtil.getCurrentWeekDays());
     const [popoverEvent, setPopoverEvent] = useState<{
+        hasEvent: boolean;
         scheduleId: string;
         shift: any;
-        day: string;
+        date: string;
+        eventId: string,
         position: { top: number, left: number };
     } | null>(null);
     const [isOpentEventPopover, setIsOpenEventPopover] = useState(false);
     const [isOpenEventModal, setIsOpenEventModal] = useState(false);
+    const [isOpenModalDeleteEvent, setIsOpenModalDeleteEvent]=useState(false)
 
     const fetchEmployees = async () => {
         try {
@@ -73,11 +77,35 @@ export function ScheduleManagement() {
         }
     }
 
+    const handleDeleteEventClick = () => {
+        setIsOpenModalDeleteEvent(true);
+    };
+
+    const handleDeleteEvent = async (scheduleId: string, eventId: string) => {
+        try {
+            const response = await deleteEventFromSchedule(scheduleId, eventId);
+
+            toast.custom((t) => (
+                <SuccessToast
+                    message={response}
+                    onDismiss={() => toast.dismiss(t.id)}
+                />))
+        } catch (message: any) {
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message={message || 'Error delete evet'}
+                    onDismiss={() => toast.dismiss(t.id)}
+                />))
+        } finally {
+            setIsOpenModalDeleteEvent(false);
+            setPopoverEvent(null);
+        }
+    }
+
     useEffect(() => {
         fetchSchedules();
         fetchEmployees();
-    }, []);
-
+    }, [popoverEvent]);
     return (
         <>
             <div className="flex flex-col gap-y-4">
@@ -134,7 +162,7 @@ export function ScheduleManagement() {
                         <tbody className="table-body font-normal pt-4">
                             {schedules.map((schedule, index) => (
                                 <tr key={index}>
-                                    <td className="border border-gray-300 px-4 py-2 w-2/12 text-start">
+                                    <td className="border border-gray-300 px-4 py-2 w-2/12 text-start min-h-30a">
                                         {schedule.employee.user.firstname} {schedule.employee.user.lastname}
                                     </td>
                                     {weekDays.map((day) => {
@@ -146,22 +174,24 @@ export function ScheduleManagement() {
                                                 key={day.date}
                                                 className="border border-gray-300 p-1 w-1/12 cursor-pointer"
                                                 onClick={(e) => {
-                                                   
-                                                        setPopoverEvent({
-                                                            scheduleId: schedule.id || "",
-                                                            shift: shiftForDay?.shift ,
-                                                            day: day.dayOfWeek,
-                                                            position: {
-                                                                top: e.clientY + 10,
-                                                                left: e.clientX + 10,
-                                                            }
-                                                        });
 
-                                                        setIsOpenEventPopover(true);
-                                                  
+                                                    setPopoverEvent({
+                                                        hasEvent: (shiftForDay) ? true : false,
+                                                        scheduleId: schedule._id || "",
+                                                        shift: shiftForDay?.shift,
+                                                        date: day.date,
+                                                        eventId: (shiftForDay && shiftForDay._id) ? shiftForDay._id : "",
+                                                        position: {
+                                                            top: e.clientY + 10,
+                                                            left: e.clientX + 10,
+                                                        }
+                                                    });
+
+                                                    setIsOpenEventPopover(true);
+
                                                 }}
                                             >
-                                                {shiftForDay && (
+                                                {shiftForDay ? (
                                                     <WorkShiftBadge
                                                         textColor={shiftForDay.shift.style.textColor}
                                                         backgroundColor={shiftForDay.shift.style.backgroundColor}
@@ -169,6 +199,10 @@ export function ScheduleManagement() {
                                                         startTime={shiftForDay.shift.startTime}
                                                         endTime={shiftForDay.shift.endTime}
                                                     />
+                                                ) : (
+                                                    <div className="py-8 text-gray-400">
+                                                        <p>Available</p>
+                                                    </div>
                                                 )}
                                             </td>
                                         );
@@ -183,7 +217,7 @@ export function ScheduleManagement() {
             </div>
             {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onSelectEmployee={(employeeId: string) => addEmpployee(employeeId)} onClose={() => setIsOpendAddEmployeeModal(false)} employees={employees} />
             }
-            {popoverEvent && isOpentEventPopover==true && (
+            {popoverEvent && isOpentEventPopover == true && (
                 <div
                     className="popover bg-white p-4 shadow-lg rounded-lg absolute z-10"
                     style={{
@@ -192,14 +226,32 @@ export function ScheduleManagement() {
                     }}
                 >
                     <div className="flex flex-col">
-                    <button
-                            onClick={() => { setIsOpenEventPopover(false), setIsOpenEventModal(true)}} 
+                        {popoverEvent.hasEvent == false && <button
+                            onClick={() => { setIsOpenEventPopover(false), setIsOpenEventModal(true) }}
                             className="hover:text-red-700"
                         >
                             Add Event
+                        </button>}
+
+                        {popoverEvent.hasEvent == true && (<><button
+                            onClick={() => { setIsOpenEventPopover(false), setIsOpenEventModal(true) }}
+                            className="hover:text-red-700"
+                        >
+                            Edit Event
                         </button>
+                            <button
+                                onClick={() => {handleDeleteEventClick(), setIsOpenEventPopover(false)}}
+                                className="hover:text-red-700"
+                            >
+                                Delete Event
+                            </button>
+                        </>
+
+                        )}
+
+
                         <button
-                            onClick={() => setPopoverEvent(null)} 
+                            onClick={() => setPopoverEvent(null)}
                             className="text-red-500 hover:text-red-700"
                         >
                             Close
@@ -207,7 +259,14 @@ export function ScheduleManagement() {
                     </div>
                 </div>
             )}
-            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} date={popoverEvent?.day || ""} onClose={() => setIsOpenEventModal(false)} />}
+
+            {isOpenModalDeleteEvent && popoverEvent && popoverEvent.hasEvent == true && <ConfirmModal
+                isOpen={isOpenModalDeleteEvent}
+                onClose={() => setIsOpenModalDeleteEvent(false)}
+                onConfirm={() => handleDeleteEvent(popoverEvent?.scheduleId, popoverEvent?.eventId)}
+                message="Are you sure you want to delete this event?"
+            />}
+            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} date={popoverEvent?.date || ""} onClose={() => { setIsOpenEventModal(false), setPopoverEvent(null) }} />}
         </>
     )
 }
