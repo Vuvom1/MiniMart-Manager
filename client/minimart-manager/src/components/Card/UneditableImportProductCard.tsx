@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import IncrementalInput from '../InputField/IncrementalInput';
 import MoneyField from '../InputField/MoneyField';
-import { Product } from '../../data/Entities/ProductData';
+import { Product } from '../../data/Entities/Product';
 import FormatUtil from '../../utils/FormatUttil';
 
 interface UneditableImportProductHorizontalCardProps {

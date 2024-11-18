@@ -3,4 +3,6 @@ export interface ColumnData {
     header: string;
     isEditable: boolean;
     validations?: Array<(value: string) => string | null>;
+    options?: any[];
+    isCollapsed?: boolean;
 }

@@ -1,16 +1,12 @@
 import React from 'react';
-
-interface Customer {
-  name: string;
-  points: number;
-}
+import { Customer } from '../../data/Entities/Customer';
 
 interface RankingCardProps {
   customers: Customer[];
 }
 
 const RankingCard: React.FC<RankingCardProps> = ({ customers }) => {
-  const sortedCustomers = [...customers].sort((a, b) => b.points - a.points);
+  const sortedCustomers = [...customers].sort((a, b) => b.point - a.point).slice(0, 10);;
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 w-full h-full max-w-md">
@@ -22,7 +18,7 @@ const RankingCard: React.FC<RankingCardProps> = ({ customers }) => {
               <span className="font-bold text-lg mr-2">{index + 1}.</span>
               <span className="text-gray-700 font-semibold">{customer.name}</span>
             </div>
-            <span className="text-blue-600 font-semibold">{customer.points} points</span>
+            <span className="text-blue-600 font-semibold">{customer.point} points</span>
           </li>
         ))}
       </ul>

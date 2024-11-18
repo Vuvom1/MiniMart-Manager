@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';
-import { Product } from '../../data/Entities/ProductData'; // Adjust the import path as necessary
+import { Product } from '../../data/Entities/Product'; // Adjust the import path as necessary
 import toast from 'react-hot-toast';
 import CustomErrorToast from '../Toast/ErrorToast';
 

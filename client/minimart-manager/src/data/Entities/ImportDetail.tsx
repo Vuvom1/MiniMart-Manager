@@ -1,4 +1,4 @@
-import { Product } from "./ProductData";
+import { Product } from "./Product";
 
 export interface ImportDetail {
     id?: string;

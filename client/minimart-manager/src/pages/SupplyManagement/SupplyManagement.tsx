@@ -19,7 +19,7 @@ import { supplierColumnData } from "../../data/ColumnData/SupplierColumnData";
 import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 import { SuppliersStatistic } from "../../data/StatisticData/SupplierStatistic";
 import { ImportsStatistic } from "../../data/StatisticData/ImportStatistic";
-import { Supplier, SupplierEntity } from "../../data/Entities/SupplierData";
+import { Supplier, SupplierEntity } from "../../data/Entities/Supplier";
 
 
 function SupplyManagement() {
@@ -162,19 +162,24 @@ function SupplyManagement() {
 
         <div className="gap-y-4 grid">
             <div className="flex gap-x-4">
-                <MetricCard title="Total Imports" 
+                <MetricCard 
+                title="Total Imports" 
+                period={period == Period.DAILY ? "day" : (period == Period.MONTHLY ? "month" : "year")}
                 value={period == Period.DAILY ? (importsStatistic?.statisticByDate.todayImports) : (period == Period.MONTHLY ? importsStatistic?.statisticByMonth.thisMonthImports : importsStatistic?.statisticByYear.thisYearImports)} 
                 percentage={period == Period.DAILY ? (importsStatistic?.statisticByDate.percentageCompareYesterday) : (period == Period.MONTHLY ? importsStatistic?.statisticByMonth.percentageCompareLastMonth : importsStatistic?.statisticByYear.percentageCompareLastYear)} 
                 icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                 </svg>} isPositive={true} />
                 <MetricCard title="Total Imported products" 
+                period={period == Period.DAILY ? "day" : (period == Period.MONTHLY ? "month" : "year")}
                  value={period == Period.DAILY ? (importsStatistic?.statisticByDate.todayImportedProducts) : (period == Period.MONTHLY ? importsStatistic?.statisticByMonth.thisMonthImportedProducts : importsStatistic?.statisticByYear.thisYearImportedProducts)} 
                  percentage={period == Period.DAILY ? (importsStatistic?.statisticByDate.percentageCompareYesterday) : (period == Period.MONTHLY ? importsStatistic?.statisticByMonth.percentageCompareLastMonth : importsStatistic?.statisticByYear.percentageCompareLastYear)} 
                  icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                 </svg>} isPositive={true} />
-                <MetricCard title="Total Suppliers" value={period == Period.DAILY ? (suppliersStatistic?.statisticByDate.todaySuppliers) : (period == Period.MONTHLY ? suppliersStatistic?.statisticByMonth.thisMonthSuppliers : suppliersStatistic?.statisticByYear.thisYearSuppliers)} 
+                <MetricCard 
+                period={period == Period.DAILY ? "day" : (period == Period.MONTHLY ? "month" : "year")}
+                title="Total Suppliers" value={period == Period.DAILY ? (suppliersStatistic?.statisticByDate.todaySuppliers) : (period == Period.MONTHLY ? suppliersStatistic?.statisticByMonth.thisMonthSuppliers : suppliersStatistic?.statisticByYear.thisYearSuppliers)} 
                 percentage={period == Period.DAILY ? (suppliersStatistic?.statisticByDate.percentageCompareYesterday) : (period == Period.MONTHLY ? suppliersStatistic?.statisticByMonth.percentageCompareLastMonth : suppliersStatistic?.statisticByYear.percentageCompareLastYear)}  
                 icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
@@ -189,7 +194,7 @@ function SupplyManagement() {
             </div>
 
             <div className="grow">
-                <CollapsedRowTable statusOptions={[SupplierStatus.ACTIVE, SupplierStatus.INACTIVE]} onSave={handleUpdateSupplier} addItem={handleOpenModal} title="Suppliers" itemData={suppliers} columnData={supplierColumnData} />
+                <CollapsedRowTable onSave={handleUpdateSupplier} addItem={handleOpenModal} title="Suppliers" itemData={suppliers} columnData={supplierColumnData} />
             </div>
         </div>
 

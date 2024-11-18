@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ImportProductHorizontalCard from "../../components/Card/ImportProductHorizontalCard";
 import TextField from "../../components/InputField/TextField";
-import { Import } from '../../data/Entities/ImportData';
+import { Import } from '../../data/Entities/Import';
 import RoundedButton from '../../components/Button/RoundedButton';
 import FormatUtil from '../../utils/FormatUttil';
 import UneditableImportProductHorizontalCard from '../../components/Card/UneditableImportProductCard';
 import EditableInfo from '../../components/Info/EditableInfo';
-import {ImportDetail} from '../../data/Entities/ImportDetailData';
+import {ImportDetail} from '../../data/Entities/ImportDetail';
 import toast from 'react-hot-toast';
 import CustomErrorToast from '../../components/Toast/ErrorToast';
 import { updateImport } from '../../services/api/ImportApi';

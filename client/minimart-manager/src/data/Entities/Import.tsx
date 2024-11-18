@@ -1,5 +1,5 @@
 import { ImportStatus } from "../../constant/enum";
-import { ImportDetail } from "./ImportDetailData";
+import { ImportDetail } from "./ImportDetail";
 
 export interface Import {
     id?: string;

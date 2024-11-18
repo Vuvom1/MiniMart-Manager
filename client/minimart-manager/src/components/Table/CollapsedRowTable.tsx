@@ -6,6 +6,7 @@ import EditableInfo from '../Info/EditableInfo';
 import useSearch from '../../utils/SearchUtil';
 import EditableStatus from '../Info/EditableStatus';
 import { ColumnData } from '../../data/ColumnData/ColumnData';
+import { StatusBadge } from '../Badge/StatusBadge';
 
 interface ItemsProps {
     title: string;
@@ -16,8 +17,6 @@ interface ItemsProps {
     itemsPerPageOptions?: number[];
     onItemDataChange?: (updatedData: any[]) => void;
     onSave?: (updatedData: any) => void;
-    showData?: number;
-    statusOptions?: string[],
 }
 
 const CollapsedRowTable: React.FC<ItemsProps> = ({
@@ -29,8 +28,6 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
     itemsPerPageOptions = [5, 10, 20],
     onItemDataChange,
     onSave,
-    showData = 4,
-    statusOptions,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
@@ -123,7 +120,8 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
             <table className="flex-auto min-w-full bg-white text-center items-center grow rounded-lg overflow-hidden shadow-md">
                 <thead className="table-header">
                     <tr className="rounded-md">
-                        {columnData.slice(0, showData).map((column, index) => (
+                        {columnData.map((column, index) => (
+                            !column.isCollapsed &&
                             <th key={index} className="px-4 py-2 text-gray-500 font-semibold bg-gray-100">
                                 {column.header}
                             </th>
@@ -135,11 +133,12 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                     {filteredData.map((item, index) => (
                         <>
                             <tr
-                                 key={`${item.id}-cl-row`}
+                                key={`${item.id}-cl-row`}
                                 className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
                             >
-                                {columnData.slice(0, showData).map((column, columnIndex) => (
+                                {columnData.map((column, columnIndex) => (
+                                    !column.isCollapsed &&
                                     <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
                                         {column.field === "_id" ? (
                                             <span className="relative group flex gap-x-2 items-center">
@@ -157,26 +156,31 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                             </span>
                                         ) :
                                             (column.field === "status" ? (
-
                                                 <div className='justify-center flex'>
-                                                    <EditableStatus
-                                                        options={statusOptions}
+                                                    {column.isEditable ? (<EditableStatus
+                                                        options={column.options}
                                                         editable={expandedRows == index}
                                                         initialValue={item[column.field]}
                                                         onValueChange={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}
-                                                    />
+                                                    />) : (<StatusBadge value={item[column.field]} />)}
+
                                                 </div>
 
-
-
                                             ) : (
+
                                                 <div className='justify-center flex'>
-                                                    <EditableInfo
-                                                        validations={column.validations}
-                                                        editable={expandedRows == index}
-                                                        initialValue={item[column.field]}
-                                                        onValueChange={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}
-                                                    />
+                                                    { column.isEditable ? 
+                                                        (
+                                                            <EditableInfo
+                                                                validations={column.validations}
+                                                                editable={column.isEditable && expandedRows == index}
+                                                                initialValue={item[column.field]}
+                                                                onValueChange={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}
+                                                            />
+                                                        ) : (<p>{item[column.field]}</p>)
+                                                    }
+
+
                                                 </div>
 
 
@@ -204,10 +208,11 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                 <tr key={`${index}-expanded`}>
                                     <td key={`${index}-expanded-td`} colSpan={columnData.length + 1} className="px-4 py-4 bg-gray-50 text-left border border-t border-gray-200">
                                         <div className="grid grid-cols-1 gap-2">
-                                            {columnData.slice(showData).map((col, collapsedIndex) => (
+                                            {columnData.map((col) => (
+                                                col.isCollapsed &&
                                                 <div className="flex justify-between px-16">
-                                                    <span className="font-semibold">{columnData[collapsedIndex + showData].header}:</span>
-                                                    <span><EditableInfo  validations={col.validations} onValueChange={(newValue) => handleValueChange(startIndex + index, col.field, newValue)} initialValue={item[col.field]} /></span>
+                                                    <span className="font-semibold">{col.header}:</span>
+                                                    <span><EditableInfo editable={col.isEditable} validations={col.validations} onValueChange={(newValue) => handleValueChange(startIndex + index, col.field, newValue)} initialValue={item[col.field]} /></span>
                                                 </div>
                                             ))}
                                         </div>
@@ -229,7 +234,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                 <div className="flex items-center">
                     {Array.from({ length: totalPages }, (_, index) => (
                         <button
-                            key={`${index+1}-collapse-paginate`}
+                            key={`${index + 1}-collapse-paginate`}
                             className={`px-3 mx-1 py-1 rounded ${currentPage === index + 1 ? 'bg-cyan-500 text-white' : 'bg-white border border-black'}`}
                             onClick={() => handlePageChange(index + 1)}
                         >

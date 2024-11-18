@@ -7,7 +7,7 @@ import useSearch from "../../utils/SearchUtil";
 import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 import { StatusBadge } from "../../components/Badge/StatusBadge";
 import NestedValueUtil from "../../utils/NestedValueUtil";
-import { Import } from "../../data/Entities/ImportData";
+import { Import } from "../../data/Entities/Import";
 import ImportDetail from "./ImportDetail";
 
 

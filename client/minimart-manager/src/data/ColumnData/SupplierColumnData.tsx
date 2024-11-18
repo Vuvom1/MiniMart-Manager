@@ -1,3 +1,4 @@
+import { SupplierStatus } from "../../constant/enum";
 import ValidationUtil from "../../utils/ValidationUtil";
 import { ColumnData } from "./ColumnData";
 
@@ -6,17 +7,20 @@ export const supplierColumnData: ColumnData[] = [
         field: "_id",
         header: "ID",
         isEditable: false,
+        isCollapsed: false,
     },
     {
         field: "name",
         header: "Name",
-        isEditable: false,
+        isEditable: true,
+        isCollapsed: false,
         validations: [ValidationUtil.validateRequired("Supplier name")]
     },
     {
         field: "email",
         header: "Email",
-        isEditable: false,
+        isEditable: true,
+        isCollapsed: false,
         validations: [
             ValidationUtil.validateRequired("Email"),
             ValidationUtil.validateEmail
@@ -25,12 +29,15 @@ export const supplierColumnData: ColumnData[] = [
     {
         field: "status",
         header: "Status",
-        isEditable: false,
+        isEditable: true,
+        isCollapsed: false,
+        options: [SupplierStatus.ACTIVE, SupplierStatus.INACTIVE]
     },
     {
         field: "phone",
         header: "Phone number",
-        isEditable: false,
+        isEditable: true,
+        isCollapsed: true,
         validations: [
             ValidationUtil.validateRequired("Phone number"),
             ValidationUtil.validatePhoneNumber
@@ -40,7 +47,8 @@ export const supplierColumnData: ColumnData[] = [
     {
         field: "address",
         header: "Address",
-        isEditable: false,
+        isEditable: true,
+        isCollapsed: true,
         validations: [
             ValidationUtil.validateRequired("Address")
         ]
@@ -48,6 +56,7 @@ export const supplierColumnData: ColumnData[] = [
     {
         field: "description",
         header: "Description",
-        isEditable: false,
+        isCollapsed: true,
+        isEditable: true,
     }
 ];

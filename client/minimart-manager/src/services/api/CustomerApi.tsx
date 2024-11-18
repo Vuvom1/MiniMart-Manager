@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { Import } from '../../data/Entities/Import';
+import { Import } from '../../data/Entities/ImportData';
 
 const API_URL = 'http://localhost:8000';
-const BASE_URL = API_URL + '/api/imports'
+const BASE_URL = API_URL + '/api/customers'
 
-export const getAllImports = async () => {
+export const getAllCustomers = async () => {
     try {
         const response = await axios.get(`${BASE_URL}`);
        
@@ -42,7 +42,7 @@ export const updateImport = async (id: string, importData: Import) => {
     }
 }
 
-export const getImportStatistic = async () => {
+export const getCustomerStatistic = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/statistic`);
 

@@ -2,16 +2,19 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import Dashboard from '../pages/Dashboard/Dashboard';
 import SideMenu from '../components/SideMenu/SideMenu';
 import AppHeader from '../components/AppHeader';
-import CustomerManage from '../pages/CustomerManagement/CustomerManange';
+import CustomerManagement from '../pages/CustomerManagement/CustomerManangement';
 import PromotionManage from '../pages/PromotionManagement/PromotionManage';
 import Login from '../pages/Authientication/Login';
 import Signup from '../pages/Authientication/Signup';
 import PrivateRoute from './PrivateRoute';
 import { Role } from '../constant/enum';
-import SuppliesPackageRoot from './SupplyRoutes';
 import Unauthorized from '../pages/Unauthorized/Unauthorized';
 import { useAuth } from '../components/providers/AuthProvider';
 import { useEffect, useState } from 'react';
+import { ScheduleManagement } from '../pages/ScheduleManagement/ScheduleManagement';
+import SupplyManagement from '../pages/SupplyManagement/SupplyManagement';
+import ImportList from '../pages/SupplyManagement/ImportList';
+import AddImport from '../pages/SupplyManagement/AddImport';
 
 const AppRouter = () => {
     const location = useLocation();
@@ -42,13 +45,20 @@ const AppRouter = () => {
 
                         <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER]} />}>
 
-                            <Route path="supplies/*" element={<SuppliesPackageRoot />} />
+                            <Route path="supplies" >
+                                <Route path="" element={<SupplyManagement />} />
+                                <Route path='imports' element={<ImportList />} />
+                                <Route path='imports/add' element={<AddImport />} />
+                            </Route>
                             <Route path='/promotions' element={<PromotionManage />} />
                         </Route>
 
                         <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER, Role.STAFF]} />}>
                             <Route path="/" element={<Dashboard />} />
-                            <Route path='/customers' element={<CustomerManage />} />
+                            <Route path='/customers' element={<CustomerManagement />} />
+                            <Route path='/schedule'>
+                                <Route path='' element={<ScheduleManagement />} />
+                            </Route>
                         </Route>
 
                         <Route path='/unauthorized' element={<Unauthorized />} />

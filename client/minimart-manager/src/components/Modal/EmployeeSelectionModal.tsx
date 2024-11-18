@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '../InputField/TextField';
 import useSearch from '../../utils/SearchUtil';
-import { Product } from '../../data/Entities/Product';
+import { Employee } from '../../data/Entities/Employee';
 
-interface ProductSelectionModalProps {
-    products: Product[];
-    onSelectProduct: (product: Product) => void;
+interface EmployeeSelectionModalProps {
+    employees: Employee[];
+    onSelectEmployee: (employeeId: any) => void;
     onClose: () => void;
 }
 
-const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({ products, onSelectProduct, onClose }) => {
+const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({ employees, onSelectEmployee, onClose }) => {
 
+    const { searchTerm, handleSearchChange, filteredData } = useSearch(employees)
 
-    const { searchTerm, handleSearchChange, filteredData } = useSearch(products)
+    console.log(employees)
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg p-4 max-w-md w-full">
-                <h2 className="text-lg font-medium mb-4">Select Products</h2>
+                <h2 className="text-lg font-medium mb-4">Select Employee To Add Schedule</h2>
                 <TextField 
                     value={searchTerm}
                     onChange={(e) => handleSearchChange(e.target.value)}
@@ -30,20 +31,18 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({ products,
                 <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
                
 
-                    {filteredData.map((product) => (
+                    {filteredData.map((employee) => (
                         <div
-                            key={product.id}
+                            key={employee.id}
                             className="flex justify-between p-2 border-b cursor-pointer"
                             onClick={() => {
-                                onSelectProduct(product);
+                                onSelectEmployee(employee._id);
                                 onClose();
                             }}
                         >
                             <div>
-                                <h3 className="font-semibold">{product.name}</h3>
-                                <p>Barcode: {product.barcode}</p>
+                                <h3 className="font-normal">{employee.firstname} {employee.lastname}</h3>
                             </div>
-                            <img src={product.imageUrl} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
                         </div>
                     ))}
                 </div>
@@ -55,4 +54,4 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({ products,
     );
 };
 
-export default ProductSelectionModal;
+export default EmployeeSelectionModal;

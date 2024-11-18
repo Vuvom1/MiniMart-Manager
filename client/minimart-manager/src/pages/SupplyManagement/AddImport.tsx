@@ -12,12 +12,12 @@ import SuccessToast from "../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../components/Toast/ErrorToast";
 import { ImportStatus } from "../../constant/enum";
 import { useNavigate } from "react-router-dom";
-import { Product } from "../../data/Entities/ProductData";
-import { Import } from "../../data/Entities/ImportData";
+import { Product } from "../../data/Entities/Product";
+import { Import } from "../../data/Entities/Import";
 import DraggableFloatComponent from "../../components/Dragable/DragableComponent";
 import ProductScannerComponent from "../../components/Scanner/ProductScanner";
 import ValidationUtil from "../../utils/ValidationUtil";
-import { ImportDetail } from "../../data/Entities/ImportDetailData";
+import { ImportDetail } from "../../data/Entities/ImportDetail";
 import { ImportFormData } from "../../data/FormData/ImportFormData";
 
 
