@@ -39,6 +39,11 @@ const errors = {
         message: "Schedule does not exist",
         code: "doesNotExistSchedule",
     },
+    alreadyExistSchedule: {
+        statusCode: 400,
+        message: "Schedule already exist",
+        code: "alreadyExistSchedule",
+    },
 }
 
 module.exports = errors;

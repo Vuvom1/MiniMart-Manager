@@ -104,6 +104,16 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
         return `${day}-${month}-${year}`;
     };
 
+    formatDateToDayMonthYear = (dateString: string): string => {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const month = date.toLocaleString('en-US', { month: 'short' }); 
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+};
+
 
     getCurrentWeek(): { day: string, month: string, year: number }[] {
         const currentDate = this.getCurrentDate();

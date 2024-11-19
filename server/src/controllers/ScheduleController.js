@@ -2,6 +2,8 @@ const errors = require('../constant/errors');
 const Schedule = require('../models/Schedule')
 const {DaysOfWeek} = require('../constant/DayOfWeek')
 const Shift = require('../models/Shift')
+const Employee = require('../models/Employee');
+const User = require('../models/User');
 
 class ScheduleController {
 
@@ -98,17 +100,17 @@ class ScheduleController {
         try {
             const { employeeId } = req.body;
 
-            const existingSchedule = await Schedule.findOne({ employee: employeeId });
+            const existingSchedule = await Schedule.findOne({ employee: employeeId});
 
             if (existingSchedule) {
-                const error = new Error(errors.alreadyExistSchedule.message);
-                error.code = errors.alreadyExistSchedule.code;
+                const error = new Error(errors.alreadyExistSchedule.message)
+                error.code = errors.alreadyExistSchedule;
                 throw error;
             }
 
             const schedule = new Schedule({ employee: employeeId });
             schedule.save();
-            res.status(201).json('New employee has been added to schedule');
+            res.status(201).json("New employee has been added to schedule");
         } catch (error) {
             throw error;
         }

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { WorkShiftBadge } from "../../components/Badge/WorkShiftBadge";
 import RoundedButton from "../../components/Button/RoundedButton";
 import { getAllEmployees } from "../../services/api/EmployeeApi";
-import { addEmployeeToSchedule, addEventToSchedule, deleteEventFromSchedule, getAllSchedules } from "../../services/api/ScheduleApi";
+import { addEmployeeToSchedule, getAllSchedules } from "../../services/api/ScheduleApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../components/Toast/SuccessToast";
 import EmployeeSelectionModal from "../../components/Modal/EmployeeSelectionModal";
@@ -15,11 +15,12 @@ import Avatar from "../../components/Avatar";
 import EditEventModal from "../../components/Modal/EditEventModal";
 import { Shift } from "../../data/Entities/Shift";
 import { deleteShift } from "../../services/api/ShiftApi";
+import { Employee } from "../../data/Entities/Employee";
 
 
 export function ScheduleManagement() {
     const [loading, setLoading] = useState(true);
-    const [employees, setEmployees] = useState([]);
+    const [employees, setEmployees] = useState<Employee[]>([]);
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [isOpenAddEmployeeModal, setIsOpendAddEmployeeModal] = useState(false);
     const timeUtil = new TimeUtil();
@@ -135,7 +136,7 @@ export function ScheduleManagement() {
 
     useEffect(() => {
         fetchEmployees();
-    }, [isOpenAddEmployeeModal]);
+    }, [isOpenAddEmployeeModal, isOpenAddEmployeeModal]);
     
     return (
         <>
@@ -156,7 +157,7 @@ export function ScheduleManagement() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                         } />
-                        <p className="text-2xl self-center text-gray-500">Jul 11 - Jul 18 </p>
+                        <p className="text-2xl self-center text-gray-500">{timeUtil.formatDateToDayMonthYear(weekDays[0]?.date) } - {timeUtil.formatDateToDayMonthYear(weekDays[weekDays.length-1]?.date) } </p>
                         <RoundedButton onClick={() => setWeekDays(timeUtil.getNextWeekDays(weekDays))} label="" prefixIcon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>

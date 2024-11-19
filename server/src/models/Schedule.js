@@ -1,15 +1,11 @@
 const mongoose = require('mongoose');
 
 const scheduleSchema = new mongoose.Schema({
-    name: {
-        type: String,
+    employee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee', 
         required: true,
     },
-    color: {
-        type: String,
-        required: true,
-    }
-    
 }, { timestamps: true });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);

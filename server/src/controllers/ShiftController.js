@@ -56,8 +56,6 @@ class ShiftController {
             });
     
             await shift.save();
-            console.log(shift);
-    
             res.status(201).json('Shift created successfully');
         } catch (error) {
             throw error
