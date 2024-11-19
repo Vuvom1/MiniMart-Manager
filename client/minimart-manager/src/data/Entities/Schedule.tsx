@@ -1,10 +1,10 @@
 import { Employee } from "./Employee";
-import { ScheduleDetail } from "./ScheduleDetail";
+import { Shift } from "./Shift";
 
 export interface Schedule {
         _id?: string;
         employee: Employee;
-        scheduleDetails: ScheduleDetail[];
+        shifts: Shift[];
         createAt: string;
         updateAt: string;
 }

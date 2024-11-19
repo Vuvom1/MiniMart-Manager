@@ -13,8 +13,6 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({ employe
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(employees)
 
-    console.log(employees)
-
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg p-4 max-w-md w-full">

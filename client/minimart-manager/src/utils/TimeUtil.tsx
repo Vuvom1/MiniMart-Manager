@@ -48,7 +48,7 @@ export class TimeUtil {
     getCurrentWeekDays = () => {
         const today = new Date();
         const currentDayOfWeek = today.getDay();
-        const diff = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek; // Start week on Monday
+        const diff = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek; 
         const startOfWeek = new Date(today);
         startOfWeek.setDate(today.getDate() + diff);
 
@@ -57,19 +57,53 @@ export class TimeUtil {
             date.setDate(startOfWeek.getDate() + i);
 
             return {
-                dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }), // e.g., "Monday"
-                date: date.toISOString().split("T")[0], // YYYY-MM-DD
+                dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }),
+                date: date.toISOString().split("T")[0], 
             };
         });
     };
 
+    getPrevWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
+    const startOfCurrentWeek = new Date(currentWeek[0].date);
+    
+    startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() - 7);
+
+    return Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(startOfCurrentWeek);
+        date.setDate(startOfCurrentWeek.getDate() + i);
+
+        return {
+            dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }), 
+            date: date.toISOString().split("T")[0], 
+        };
+    });
+};
+
+getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
+    const startOfCurrentWeek = new Date(currentWeek[0].date);
+    
+    startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + 7);
+
+    return Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(startOfCurrentWeek);
+        date.setDate(startOfCurrentWeek.getDate() + i);
+
+        return {
+            dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }), 
+            date: date.toISOString().split("T")[0], 
+        };
+    });
+};
+
+
     formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const day = date.getDate();
-        const month = date.toLocaleString("en-US", { month: "short" }); // "Jul"
+        const month = date.getMonth() // "Jul"
         const year = date.getFullYear();
-        return `${day} ${month} ${year}`;
+        return `${day}-${month}-${year}`;
     };
+
 
     getCurrentWeek(): { day: string, month: string, year: number }[] {
         const currentDate = this.getCurrentDate();

@@ -66,7 +66,7 @@ export default function TextField({
           {label}
         </label>
       )}
-      <div className="relative rounded-md shadow-sm" style={{ height }}>
+      <div className="relative rounded-md shadow-sm">
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}
@@ -79,9 +79,9 @@ export default function TextField({
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
-          className={`block w-full rounded-md border-0 py-1.5 ${
+          className={`block w-full rounded-md border-0 py-1.5  ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-left`}
+          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
           style={{ height }}
         />
         {(internalError || error) && (

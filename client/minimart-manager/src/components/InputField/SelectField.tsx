@@ -9,7 +9,8 @@ interface SelectFieldProps {
   placeholder?: string;
   width?: string;
   error?: string | null;
-  options: { value: string; label: string }[]; 
+  options: { value: any; label: string}[]; 
+  prefixIcon?: JSX.Element;
 }
 
 export default function SelectField({
@@ -22,6 +23,7 @@ export default function SelectField({
   width = '100%',
   error = null,
   options,
+  prefixIcon,
 }: SelectFieldProps) {
   return (
     <div style={{ width }}>
@@ -31,6 +33,7 @@ export default function SelectField({
         </label>
       )}
       <div className="relative rounded-md shadow-sm">
+        {prefixIcon && prefixIcon}
         <Select
           id={id}
           name={name}

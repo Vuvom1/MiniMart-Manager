@@ -34,6 +34,11 @@ const errors = {
         message: "Incorrect email or password.",
         code: "incorrectEmailOrPassword",
     },
+    doesNotExistSchedule: {
+        statusCode: 400,
+        message: "Schedule does not exist",
+        code: "doesNotExistSchedule",
+    },
 }
 
 module.exports = errors;
