@@ -13,8 +13,6 @@ class CustomerController {
 
                 const customer = await Customer.findOne({ user: user._id });
 
-                console.log(customer)
-
                 return new CustomerDTO(user, customer);
             }));
 

@@ -21,6 +21,7 @@ import { Employee } from "../../data/Entities/Employee";
 export function ScheduleManagement() {
     const [loading, setLoading] = useState(true);
     const [employees, setEmployees] = useState<Employee[]>([]);
+    const [unaddedEmployees, setUnaddedEmployees] = useState<Employee[]>([])
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [isOpenAddEmployeeModal, setIsOpendAddEmployeeModal] = useState(false);
     const timeUtil = new TimeUtil();
@@ -119,6 +120,13 @@ export function ScheduleManagement() {
         }
     };
 
+    const handleUnaddedEmployees = () => {
+        const unadded = employees.filter(
+            (employee) => !schedules.some((schedule) => schedule.employee._id === employee._id)
+        );
+        setUnaddedEmployees(unadded);
+    }
+
 
     useEffect(() => {
         if (isOpentEventPopover) {
@@ -132,11 +140,13 @@ export function ScheduleManagement() {
 
     useEffect(() => {
         fetchSchedules();
-    }, [isOpenEventModal, isOpenModalDeleteEvent, isOpenEditEventModal]);
+    }, [isOpenEventModal, isOpenModalDeleteEvent, isOpenAddEmployeeModal, isOpenEditEventModal]);
 
     useEffect(() => {
         fetchEmployees();
-    }, [isOpenAddEmployeeModal, isOpenAddEmployeeModal]);
+        handleUnaddedEmployees();
+        console.log(unaddedEmployees);
+    }, [isOpenAddEmployeeModal]);
     
     return (
         <>
@@ -255,7 +265,7 @@ export function ScheduleManagement() {
                 </div>
 
             </div>
-            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onSelectEmployee={(employeeId: string) => addEmpployee(employeeId)} onClose={() => setIsOpendAddEmployeeModal(false)} employees={employees} />
+            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onSelectEmployee={(employeeId: string) => addEmpployee(employeeId)} onClose={() => setIsOpendAddEmployeeModal(false)} employees={unaddedEmployees} />
             }
             {popoverEvent && isOpentEventPopover == true && (
                 <div

@@ -17,6 +17,11 @@ export enum ImportStatus {
     CANCELLED = 'Cancelled',               
 }
 
+export enum CustomerStatus {
+    ACTIVE = 'Active',   
+    INACTIVE = 'Inactive',            
+}
+
 export enum Period {
     DAILY = 'Daily',
     MONTHLY = 'Monthly',

@@ -1,4 +1,4 @@
-import { ImportStatus, SupplierStatus } from "./enum";
+import { CustomerStatus, ImportStatus, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
@@ -18,6 +18,12 @@ export const importStatusColorMapping: { [key in ImportStatus]: string } = {
     [ImportStatus.IN_PROGRESS]: 'blue-200',
     [ImportStatus.CANCELLED]: 'gray-200',
   };
+
+export const customerStatusColorMapping: {[key in SupplierStatus]: string} = {
+    [CustomerStatus.ACTIVE]: 'green-200',
+    [CustomerStatus.INACTIVE]: 'gray-200',
+  };
+  
 
 export const tailwindColorMap: { [key: string]: string } = {
     "gray-50": "#F9FAFB",

@@ -7,9 +7,10 @@ import { getAllCustomers, getCustomerStatistic } from "../../services/api/Custom
 import { useState, useEffect } from "react";
 import { Customer } from "../../data/Entities/Customer";
 import { CustomerStatistic } from "../../data/StatisticData/CustomerStatistic";
-import { Period } from "../../constant/enum";
+import { CustomerStatus, Period } from "../../constant/enum";
 import LineChartCard from "../../components/Card/LineChartCard";
 import CollapsedRowTable from "../../components/Table/CollapsedRowTable";
+import { customerStatusColorMapping } from "../../constant/mapping";
 
 
 function CustomerManagement() {
@@ -116,7 +117,7 @@ function CustomerManagement() {
 
 
       <div className="grow mb-2">
-        <CollapsedRowTable title="Customer List" itemData={customers} columnData={CustomerColumnData} />
+        <CollapsedRowTable statuses={CustomerStatus} statusMapping={customerStatusColorMapping} title="Customer List" itemData={customers} columnData={CustomerColumnData} />
       </div>
 
 
