@@ -4,6 +4,7 @@ import TextField from "./InputField/TextField";
 import { Popover } from '@headlessui/react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./providers/AuthProvider";
+import { DEFAULT_AVATAR } from "../constant/strings";
 
 
 function AppHeader() {
@@ -15,6 +16,7 @@ function AppHeader() {
         
         navigate('/login')
     }
+    
 
     return <div className="shadow-md py-4 px-4 w-full flex align-middle bg-white">
         <div className="w-2/5">
@@ -40,16 +42,16 @@ function AppHeader() {
 
             <div className="h-full w-px bg-gray-300"></div>
 
-            <Avatar src="https://via.placeholder.com/150" alt="User Avatar" />
+            <Avatar size="50px" src={auth?.user.image} alt="User Avatar" />
 
             <Popover className="relative align-middle">
-                <Popover.Button className="bg-blue-500 flex gap-x-2 bg-white rounded-md text-black">
+                <Popover.Button className="bg-blue-500 flex items-center gap-x-2 bg-white rounded-md text-black">
                     <div className="text-start">
                         <p className="font-semibold">{auth?.user?.username}</p>
                         <p className="text-slate-500">{auth?.user?.email}</p>
                     </div>
                     <div className="h-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                     </div>

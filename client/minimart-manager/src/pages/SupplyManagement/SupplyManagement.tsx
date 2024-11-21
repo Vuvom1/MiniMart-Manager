@@ -20,7 +20,7 @@ import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 import { SuppliersStatistic } from "../../data/StatisticData/SupplierStatistic";
 import { ImportsStatistic } from "../../data/StatisticData/ImportStatistic";
 import { Supplier, SupplierEntity } from "../../data/Entities/Supplier";
-import { supplierStatusColorMapping } from "../../constant/mapping";
+import { importStatusColorMapping, supplierStatusColorMapping } from "../../constant/mapping";
 
 
 function SupplyManagement() {
@@ -188,7 +188,7 @@ function SupplyManagement() {
 
             <div className="flex gap-x-6">
                 <div className="grow">
-                    <OverviewTable columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} />
+                    <OverviewTable statusColorMapping={importStatusColorMapping} columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} />
                 </div>
                 <DoughnutChartCard title="Import Distribution" data={doughnutChartData} />
             </div>

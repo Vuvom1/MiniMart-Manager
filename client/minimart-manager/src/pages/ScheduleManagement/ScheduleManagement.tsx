@@ -206,7 +206,7 @@ export function ScheduleManagement() {
                                 <tr key={index}>
                                     <td className="border border-gray-200 px-4 py-2 w-2/12 text-start min-h-30a">
                                         <div className="flex gap-x-4">
-                                            <Avatar />
+                                            <Avatar src={schedule.employee.user.image} />
                                             <div className="flex flex-col">
                                                 <p className="font-semibold">{schedule.employee.user.firstname} {schedule.employee.user.lastname}</p>
                                                 <p className="text-gray-500">00:00</p>

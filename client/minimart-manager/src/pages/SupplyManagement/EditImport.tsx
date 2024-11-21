@@ -86,8 +86,6 @@ function EditImport() {
             console.error('No ID provided');
             return;
         }
-
-        console.log(supplier)
     
         try {
             const response = await updateImport(id, supplier?.value || "", invoiceNumber, deliveryMan, status, description, importDetails);

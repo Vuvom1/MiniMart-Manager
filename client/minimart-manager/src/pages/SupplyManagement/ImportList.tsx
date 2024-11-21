@@ -8,11 +8,9 @@ import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 import { StatusBadge } from "../../components/Badge/StatusBadge";
 import NestedValueUtil from "../../utils/NestedValueUtil";
 import { Import } from "../../data/Entities/Import";
-import ImportDetail from "./EditImport";
 import { TimeUtil } from "../../utils/TimeUtil";
 import { ColumnType } from "../../constant/enum";
 import { importStatusColorMapping } from "../../constant/mapping";
-import EditImport from "./EditImport";
 
 
 function ImportList() {
@@ -134,13 +132,13 @@ function ImportList() {
                                         column.isCollapsed == true &&
                                         <th
                                             key={index}
-                                            className="sticky px-4 py-2 text-gray-500 font-semibold"
+                                            className={`sticky ${column.type == ColumnType.ID ? 'pl-8' : ''} px-4  py-2 text-gray-400 font-semibold ${column.type == ColumnType.STATUS ? 'text-center' : 'text-left'} `}
                                         >
                                             {column.header}
                                         </th>
 
                                     ))}
-                                    <th className="sticky px-4 py-2 text-gray-500 font-semibold">Detail</th>
+                                    <th className="sticky px-4 py-2 text-gray-400 font-semibold">Detail</th>
 
                                 </tr>
                             </thead>
@@ -156,7 +154,7 @@ function ImportList() {
                                             column.isCollapsed &&
                                             <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
                                                 {column.type === ColumnType.ID ? (
-                                                    <div className='justify-center flex'>
+                                                    <div className='justify-start gap-x-2 flex'>
                                                         <button
                                                             className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
                                                             onClick={() => handleCopyId(item[column.field])}
@@ -176,13 +174,13 @@ function ImportList() {
                                                             <StatusBadge value={item[column.field]} mapping={importStatusColorMapping} />
                                                         </div>
                                                     ) : (column.type === ColumnType.DATE ? (
-                                                        <div className='justify-center flex'>
-                                                            <span className="text-gray-700">{timeUtil.formatDateToDayMonthYear(item[column.field])}</span>
-                                                        </div>
+                                                        
+                                                            <p className="text-gray-700 text-left">{timeUtil.formatDateToDayMonthYear(item[column.field])}</p>
+                                                       
                                                     ) : (
-                                                        <div className='justify-center flex'>
-                                                            <span className="text-gray-700"> {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}</span>
-                                                        </div>
+                                                        
+                                                            <p className="text-gray-700 text-start"> {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}</p>
+                                                        
                                                     )))}
                                             </td>
                                         ))}

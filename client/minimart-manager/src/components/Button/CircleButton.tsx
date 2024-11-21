@@ -17,7 +17,7 @@ export default function CircleButton({
   bgColor = 'white', 
   textColor = 'black',
   borderColor = 'black',  
-  borderWidth = 'border-2',  
+  borderWidth = 'border',  
 }: CircleButtonProps) {
   return (
     <button

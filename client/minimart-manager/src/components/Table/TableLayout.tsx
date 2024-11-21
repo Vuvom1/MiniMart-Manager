@@ -8,39 +8,40 @@ import NestedValueUtil from '../../utils/NestedValueUtil';
 import { ColumnType } from '../../constant/enum';
 import { StatusBadge } from '../Badge/StatusBadge';
 
-interface ItemsOverviewProps {
+interface TableLayoutProps {
     title: string;
-    itemData: any[];
-    columnData: ColumnData[];
+    data: any[];
+    columns: ColumnData[];
     seeAll?: () => void;
     addItem?: () => void;
     itemsPerPageOptions?: number[];
     statusColorMapping: Record<string, string>; 
+    height: string;
 }
 
-const OverviewTable: React.FC<ItemsOverviewProps> = ({
+const TableLayout: React.FC<TableLayoutProps> = ({
     title,
-    itemData,
-    columnData = [],
+    data,
+    columns = [],
     seeAll,
     addItem,
     itemsPerPageOptions = [5, 10, 20],
     statusColorMapping,
+    height,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
 
-    const totalPages = Math.ceil(itemData.length / itemsPerPage);
+    const totalPages = Math.ceil(data.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = itemData.slice(startIndex, endIndex);
+    const currentItems = data.slice(startIndex, endIndex);
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(currentItems);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
-
 
     const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setItemsPerPage(Number(e.target.value));
@@ -52,7 +53,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     };
 
     return (
-        <div className="flex flex-col bg-white shadow-md rounded-lg p-4 min-h-[500px] h-full">
+        <div className={`flex flex-col bg-white shadow-md rounded-lg p-4 h-[${height}]`}>
             <div className='flex mb-4 items-center justify-between'>
                 <div className='flex gap-x-4 items-center justify-between'>
                     <RoundedIcon icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -89,7 +90,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
             <table className="min-w-full bg-white text-center items-center rounded-lg shadow-md">
                 <thead className='bg-gray-100 sticky top-0 '>
                     <tr className='rounded-md'>
-                        {columnData.map((column, index) => (
+                        {columns.map((column, index) => (
                             <th key={index} className="sticky px-4 py-2 text-gray-500 font-semibold">
                                 {column.header}
                             </th>
@@ -104,7 +105,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                             className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
                         >
-                            {columnData.map((column, index) => (
+                            {columns.map((column, index) => (
                                 <td key={index} className="px-4 py-4 border-b border-gray-200 ">
                                     {column.type === ColumnType.ID ? (
                                         <span className="flex gap-x-2 items-center">
@@ -131,8 +132,6 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                                             <div className='justify-center flex'>
                                                 {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}
                                             </div>
-
-
                                         ))}
                                 </td>
                             ))}
@@ -167,4 +166,5 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     );
 };
 
-export default OverviewTable;
+export default TableLayout;
+``
