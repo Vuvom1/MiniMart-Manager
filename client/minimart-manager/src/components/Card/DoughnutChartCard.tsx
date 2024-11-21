@@ -5,8 +5,8 @@ import ComboBox from '../ComboBox';
 interface DoughnutChartCardProps {
   title: string;
   data: {
-    labels: string[];
-    values: number[];
+    labels: string[] | undefined;
+    values: number[] | undefined;
   };
 }
 
@@ -29,8 +29,13 @@ const DoughnutChartCard: React.FC<DoughnutChartCardProps> = ({ title, data }) =>
           />
         </div>
       </div>
+      {data.labels && data.values ? (
+        <PieChart data={{ labels: data.labels ?? [], values: data.values ?? [] }} />
+      ) : (
+        <p>Statistic data not found</p>
+      )}
 
-      <PieChart data={data} />
+
     </div>
   );
 };

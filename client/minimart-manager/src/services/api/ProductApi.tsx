@@ -12,3 +12,13 @@ export const getAllProducts = async () => {
         throw error.response?.data?.message || 'Fetch data failed'; 
     }
 }
+
+export const getAllProductByCategories = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/getByCategories`);
+       
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch data failed'; 
+    }
+}

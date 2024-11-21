@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const SubCategory = require('./SubCategory')
+const Category = require('./Category')
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -14,7 +16,7 @@ const productSchema = new mongoose.Schema({
         unique: true, 
         required: true,
     },
-    subCategoryId: {
+    subCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SubCategory', 
         required: true,

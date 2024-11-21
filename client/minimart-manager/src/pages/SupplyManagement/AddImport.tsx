@@ -4,7 +4,7 @@ import ImportProductHorizontalCard from "../../components/Card/ImportProductHori
 import SelectField from "../../components/InputField/SelectField";
 import TextField from "../../components/InputField/TextField";
 import ProductSelectionModal from "../../components/Modal/ProductSelectionModal";
-import { getAllProducts } from "../../services/api/ProductApi";
+import { getAllProductByCategories, getAllProducts } from "../../services/api/ProductApi";
 import { getAllSuppliers } from "../../services/api/SupplierApi";
 import { addImport } from "../../services/api/ImportApi";
 import toast from "react-hot-toast";
@@ -12,60 +12,51 @@ import SuccessToast from "../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../components/Toast/ErrorToast";
 import { ImportStatus } from "../../constant/enum";
 import { useNavigate } from "react-router-dom";
+import { Product } from "../../data/Entities/Product";
+import DraggableFloatComponent from "../../components/Dragable/DragableComponent";
+import ProductScannerComponent from "../../components/Scanner/ProductScanner";
+import ValidationUtil from "../../utils/ValidationUtil";
+import { ImportDetail } from "../../data/Entities/ImportDetail";
+import { ImportFormData } from "../../data/FormData/ImportFormData";
+import StatusPickerPopover from "../../components/Picker/StatusPicker";
+import { importStatusColorMapping, statusStyleMapping } from "../../constant/mapping";
+import { ProductByCategory } from "../../data/Entities/ProductByCategories";
 
-interface Product {
-    _id: string;
-    name: string;
-    price: number;
-    barcode: string;
-    stock: number;
-    detail: string;
-    imageUrl: string;
-}
-
-interface ImportData {
-    supplier: string;
-    invoiceNumber: string;
-    deliveryMan: string;
-    description?: string; 
-    staff: string; 
-    totalQuantity: number;
-    totalImportPrice: number;
-    status: ImportStatus;
-    importDetails: { 
-        product: string;
-        quantity: number;
-        importPrice: number;
-        totalImportPrice: number;
-    }[];
-}
 
 function AddImport() {
     const navigate = useNavigate();
-    const [importProducts, setImportProducts] = useState<
-        (Product & { quantity: number; importPrice: number, totalImportPrice: number })[]
-    >([]);
+    const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [showModal, setShowModal] = useState(false);
-    const [products, setProducts] = useState();
-    const [suppliers, setSuppliers] = useState();
+    const [products, setProducts] = useState<Product[]>([]);
+    const [productByCategories, setProductByCategory] = useState<ProductByCategory[]>([]);
     const [loading, setLoading] = useState(true)
     const [supplierOptions, setSupplierOptions] = useState([])
+    const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
 
     const [selectedSupplierId, setSelectedSupplierId] = useState<string>("");
     const [invoiceNumber, setInvoiceNumber] = useState<string>("");
     const [deliveryMan, setDeliveryMan] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [isScannerOpened, setIsScannerOpened] = useState(false);
+    const [isValidForm, setIsValidForm] = useState(false);
 
     const fetchProducts = async () => {
         try {
             const data = await getAllProducts();
-            setProducts(data);
+            const categoryWithProducts = await getAllProductByCategories();
 
+            setProducts(data);
+            setProductByCategory(categoryWithProducts);
         } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message="Error fetching products"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />))
+        }
+        finally {
             setLoading(false);
         }
     };
@@ -73,8 +64,6 @@ function AddImport() {
     const fetchSuppliers = async () => {
         try {
             const data = await getAllSuppliers();
-
-            setSuppliers(data);
 
             const newSupplierOptions = data.map((supplier: any) => ({
                 value: supplier._id,
@@ -96,40 +85,88 @@ function AddImport() {
     }, []);
 
     useEffect(() => {
-        const newTotalQuantity = importProducts.reduce((acc, product) => acc + product.quantity, 0);
-        const newTotalPrice = importProducts.reduce((acc, product) => acc + product.totalImportPrice, 0);
+        const newTotalQuantity = importDetails.reduce((acc, product) => acc + product.quantity, 0);
+        const newTotalPrice = importDetails.reduce((acc, product) => acc + product.importPrice * product.quantity, 0);
         setTotalQuantity(newTotalQuantity);
         setTotalPrice(newTotalPrice);
-    }, [importProducts]);
+    }, [importDetails]);
 
-    const handleTotalQuantityChange = (id: string, quantity: number) => {
-        setImportProducts(prev =>
-            prev.map(product =>
-                product._id === id ? { ...product, quantity } : product
-            )
+    const handleTotalQuantityChange = (id?: string, quantity?: number) => {
+        if (id !== undefined && quantity !== undefined)
+            setImportDetails(prev => {
+                const updatedDetails = prev.map(detail =>
+                    detail.product._id === id ? { ...detail, quantity } : detail
+                );
+
+                return updatedDetails.filter(product => product.quantity > 0);
+            });
+    };
+
+    const handleRemoveDetail = (product: Product) => {
+        setImportDetails((prevDetails) =>
+            prevDetails.filter((selected) => selected.product._id !== product._id)
         );
     };
 
-    const handleSelectProduct = (product: any) => {
-        setImportProducts(prev => [...prev, { ...product, quantity: 1, totalImportPrice: product.price }]);
-        console.log(importProducts)
+
+    const handleAddDetail = (product: Product) => {
+        setImportDetails((prev) => {
+            const exists = prev.some((p) => p.product._id === product._id);
+
+            if (exists) return prev;
+
+            return [...prev, { product, quantity: 1, importPrice: 0 }];
+        });
     }
 
-    const handleTotalPriceChange = (id: string, totalPrice: number) => {
-        setImportProducts(prev =>
-            prev.map(product =>
-                product._id === id ? { ...product, totalImportPrice: totalPrice } : product
-            )
-        );
+    const handleUpdateDetail = (products: Product[]) => {
+        products.forEach((product) => {
+            if (!importDetails.some((selected) => selected.product._id === product._id)) {
+                handleAddDetail(product);
+            }
+        });
+
+        importDetails.forEach((detail) => {
+            if (!products.some((product) => product._id === detail.product._id)) {
+                handleRemoveDetail(detail.product);
+            }
+        });
     };
 
-    const handlePriceChange = (id: string, price: number) => {
-        setImportProducts(prev =>
-            prev.map(product =>
-                product._id === id ? { ...product, importPrice: price } : product
-            )
-        );
-    }
+    const handleProductScanned = (product: Product) => {
+        handleAddDetail(product);
+        toast.custom((t) => (
+            <SuccessToast
+                message="Product added by barcode!"
+                onDismiss={() => toast.dismiss(t.id)}
+            />
+        ));
+    };
+
+    const handleTotalPriceChange = (id?: string, totalPrice?: number) => {
+        if (id && totalPrice)
+            setImportDetails(prev =>
+                prev.map(detail =>
+                    detail.product._id === id ? { ...detail, totalImportPrice: totalPrice } : detail
+                )
+            );
+    };
+
+    const handlePriceChange = (addedProduct?: Product, importPrice?: number) => {
+
+        if (addedProduct && importPrice !== undefined) {
+
+            setImportDetails(prevDetails =>
+                prevDetails.map(detail =>
+                    detail.product._id === addedProduct._id
+                        ? { ...detail, importPrice, totalImportPrice: importPrice * detail.quantity }
+                        : detail
+                )
+            );
+        }
+
+    };
+
 
     const handleSaveImport = async () => {
         const userData = localStorage.getItem('user');
@@ -140,25 +177,30 @@ function AddImport() {
             staffId = user._id;
         }
 
+        if (importDetails.length == 0) {
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message="Please add products to current import!"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
+            return;
+        }
 
-        const importData: ImportData = {
+
+        const importData: ImportFormData = {
             supplier: selectedSupplierId,
             invoiceNumber,
             deliveryMan,
             description,
             staff: staffId,
-            totalQuantity: totalQuantity,
-            totalImportPrice: totalPrice,
-            status: ImportStatus.PENDING,
-            importDetails: importProducts.map(product => ({
-                product: product._id,
-                quantity: product.quantity,
-                importPrice: product.importPrice,
-                totalImportPrice: product.totalImportPrice,
-            })),
-        };
+            status: status,
+            importDetails: importDetails.map(detail => ({
+                ...detail,
+                product: detail.product?._id || '',
+            }))
 
-        navigate('/supplies/imports');
+        };
 
         try {
             await addImport(importData);
@@ -170,7 +212,7 @@ function AddImport() {
                 />
             ));
 
-            
+
         } catch (error) {
             toast.custom((t) => (
                 <CustomErrorToast
@@ -180,28 +222,89 @@ function AddImport() {
             ));
         } finally {
             setLoading(false);
+            navigate('/supplies/imports');
         }
+    };
+
+    const handleValidationChange = (isValid: boolean) => {
+        setIsValidForm(isValid);
     };
 
     return (
         <>
             <h1 className="text-2xl font-bold flex-auto text-gray-800 mb-8">
-                New Import
+                Add new import
             </h1>
             <div className="h-[calc(100vh-180px)] w-full flex gap-x-4">
-                <div className="shadow-lg bg-white p-4 flex flex-col gap-4 w-1/2 rounded-lg">
+                <div className="shadow-lg bg-white p-4 flex flex-col gap-6 w-1/2 rounded-lg">
                     <h2 className="text-lg font-medium">Basic Information</h2>
-                    <SelectField label="Supplier" placeholder="Choose supplier..." options={supplierOptions} onChange={value => {
-                        setSelectedSupplierId(value ? value.value : '');
-                    }} />
-                    <TextField label="Invoice number" placeholder="Enter invoice number..." onChange={(e) => setInvoiceNumber(e.target.value)} />
-                    <TextField label="Delivery man" placeholder="Enter delivery man name..." onChange={(e) => setDeliveryMan(e.target.value)} />
-                    <TextField label="Description" placeholder="Enter import description" height="150px" onChange={(e) => setDescription(e.target.value)} />
+                    <div className="flex gap-x-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                        </svg>
+
+                        <SelectField
+                            placeholder="Choose supplier..."
+                            options={supplierOptions}
+                            onChange={value => {
+                                setSelectedSupplierId(value ? value.value : '');
+                            }} />
+                    </div>
+                    <div className="flex gap-x-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                        </svg>  <TextField
+                            validationPassed={handleValidationChange}
+                            validations={[ValidationUtil.validateRequired("Invoice number")]}
+                            value={invoiceNumber}
+                            placeholder="Enter invoice number..."
+                            onChange={(e) => setInvoiceNumber(e.target.value)} />
+
+                    </div>
+                    <div className="flex gap-x-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+
+                        <TextField
+                            value={deliveryMan}
+                            validations={[ValidationUtil.validateRequired("Delivery man")]}
+                            placeholder="Enter delivery man name..."
+                            onChange={(e) => setDeliveryMan(e.target.value)} />
+                    </div>
+                    <div className="flex items-center gap-x-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                        </svg>
+                        <StatusPickerPopover statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={(status) => setStatus(status)} />
+
+                    </div>
+                    <div className="flex gap-x-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                        </svg>
+                        <TextField
+                            value={description}
+                            placeholder="Enter import description"
+                            height="150px"
+                            onChange={(e) => setDescription(e.target.value)} />
+                    </div>
+
+
+
+
                 </div>
+
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-y-4 w-2/3 rounded-lg divide-y">
                     <div className="flex justify-between">
                         <h2 className="text-lg font-medium">Products Information</h2>
-                        <div>
+                        <div className="flex gap-4">
+                            <RoundedButton
+                                label={isScannerOpened ? "Close Scanner" : "Open Scanner"}
+                                color="hover:bg-cyan-400"
+                                onClick={() => setIsScannerOpened(!isScannerOpened)}
+
+                            />
                             <RoundedButton
                                 label="Add products"
                                 color="hover:bg-cyan-400"
@@ -216,42 +319,65 @@ function AddImport() {
                     </div>
 
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
-                        {importProducts.map(product => (
+                        {importDetails.map(detail => (
                             <ImportProductHorizontalCard
-                                key={product._id}
-                                product={product}
-                                onPriceChange={(price) => handlePriceChange(product._id, price)}
-                                onTotalQuantityChange={(quantity) => handleTotalQuantityChange(product._id, quantity)}
-                                onTotalPriceChange={(totalPrice) => handleTotalPriceChange(product._id, totalPrice)}
+                                key={detail.product._id}
+                                product={detail.product}
+                                onPriceChange={(price) => handlePriceChange(detail.product, price)}
+                                onTotalQuantityChange={(quantity) => handleTotalQuantityChange(detail.product._id, quantity)}
+                                onTotalPriceChange={(totalPrice) => handleTotalPriceChange(detail.product._id, totalPrice)}
                             />
                         ))}
+                        {importDetails.length == 0 && <p className="text-center text-gray-400">There is no product, please add products for adding new import!</p>}
                     </div>
 
                     <div className="flex flex-col px-8 mt-4">
                         <div className="flex justify-between mt-4">
-                            <p>Total products:</p>
+                            <p className="text-gray-600">Total product quantity:</p>
                             <p className="font-medium">{totalQuantity}</p>
                         </div>
                         <div className="flex justify-between">
-                            <p>Total import price:</p>
-                            <p className="font-medium">${totalPrice.toLocaleString()}</p>
+                            <p className="text-gray-600">Total import price:</p>
+                            <p className="font-medium">
+                                ${isNaN(totalPrice) || !Number.isFinite(totalPrice) ? 0 : totalPrice.toLocaleString()}
+                            </p>
                         </div>
                     </div>
 
                     <div className="flex gap-y-2 justify-end py-4">
                         <div className="w-20">
-                            <RoundedButton label="Save" onClick={handleSaveImport} />
+                            <RoundedButton disable={!isValidForm} label="Save" onClick={handleSaveImport} />
                         </div>
                     </div>
                 </div>
             </div>
+            {
+                isScannerOpened && <DraggableFloatComponent
+                    width="400px"
+                    height="350px"
+                    defaultPosition={{ x: 100, y: -500 }}
+                >
+
+                    <ProductScannerComponent
+
+                        onProductScanned={handleProductScanned}
+                        width={400}
+                        height={300}
+                    />
+
+
+                </DraggableFloatComponent>
+            }
+
             {showModal && (
                 <ProductSelectionModal
-                    products={products}
-                    onSelectProduct={handleSelectProduct}
+                    selectedProducts={importDetails.map((detail) => detail.product)}
+                    categoryWithProducts={productByCategories}
+                    onSelectProducts={handleUpdateDetail}
                     onClose={() => setShowModal(false)}
                 />
             )}
+
         </>
     );
 }

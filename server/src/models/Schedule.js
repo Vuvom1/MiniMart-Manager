@@ -1,8 +1,12 @@
-const scheduleSchema = new Schema({
-    staffId: { type: Schema.Types.ObjectId, ref: 'Staff', required: true },
-    shiftId: { type: Schema.Types.ObjectId, ref: 'Shift', required: true },
-    dayOfWeek: { type: String, required: true }
-});
+const mongoose = require('mongoose');
+
+const scheduleSchema = new mongoose.Schema({
+    employee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee', 
+        required: true,
+    },
+}, { timestamps: true });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 module.exports = Schedule;

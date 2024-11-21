@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface DateFieldProps {
   id?: string;
@@ -11,6 +11,9 @@ interface DateFieldProps {
   height?: string;
   width?: string;
   error?: string | null;
+  validations?: Array<(value: string) => string | null>; 
+  validationPassed?: (isValid: boolean) => void; 
+  
 }
 
 export default function DateField({
@@ -24,7 +27,38 @@ export default function DateField({
   height = '40px',
   width = '100%',
   error = null,
+  validations = [],
+  validationPassed,
 }: DateFieldProps) {
+  const [internalError, setInternalError] = useState<string | null>(error);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (onChange) {
+      onChange(e);
+    }
+
+    let isValid = true;
+
+    for (const validate of validations) {
+      const validationError = validate(inputValue);
+      if (validationError) {
+        setInternalError(validationError);
+        isValid = false;
+        break;
+      }
+    }
+
+    if (validationPassed) {
+      validationPassed(isValid);
+    }
+
+    if (isValid) {
+      setInternalError(null); 
+    }
+  };
+
   return (
     <div style={{ width }}>
       {label && (
@@ -43,14 +77,14 @@ export default function DateField({
           name={name}
           type="date"
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
           } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
           style={{ height }}
         />
-        {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>}
+         {(internalError || error) && <p className='text-xs' style={{ color: 'red' }}>{internalError || error}</p>}
       </div>
     </div>
   );

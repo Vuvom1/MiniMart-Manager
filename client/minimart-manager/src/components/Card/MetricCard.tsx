@@ -2,10 +2,11 @@ import CircleIcon from "../Icon/CircleIcon";
 
 interface MetricCard {
     title: string,
-    value: string | number,
+    value: string | number | undefined,
     percentage?: string | number,
     icon?: JSX.Element,
     isPositive: boolean,
+    period?: string,
 }
 
 const MetricCard = ({
@@ -13,12 +14,13 @@ const MetricCard = ({
     value = "0.00",
     percentage = "0.00",
     icon,
-    isPositive }: MetricCard) => {
+    isPositive,
+    period = "", }: MetricCard) => {
     return (
-        <div className="flex bg-white rounded-lg p-6 shadow-lg w-full">
-            <div className="flex-auto">
+        <div className="flex justify-between bg-white rounded-lg p-6 shadow-lg h-full w-full">
+            <div className="flex flex-col justify-between ">
                 <h3 className="text-gray-600 text-lg font-medium">{title}</h3>
-                <div className="items-center justify-between mt-2">
+               
                     <span className="text-3xl font-bold text-gray-800">{value}</span>
                     <div className="flex items-center mt-2 gap-x-2">
                         <div className={`flex ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
@@ -36,10 +38,10 @@ const MetricCard = ({
                             <span className="text-sm  font-medium">{isPositive ? '+' : '-'}{percentage}%</span>
 
                         </div>
-                        <p className="text-gray-500 text-sm">vs last month</p>
+                        <p className="text-gray-500 text-sm">vs last {period}</p>
                     </div>
 
-                </div>
+          
 
             </div>
             <div className="">

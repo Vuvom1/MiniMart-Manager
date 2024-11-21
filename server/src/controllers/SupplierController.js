@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const errors = require('../constant/errors');
 const Supplier = require('../models/Supplier');
-
+const DateUtil = require('../util/DateUtil');
 
 class SupplierController {
 
@@ -94,28 +94,18 @@ class SupplierController {
         try {
             
             const totalSuppliers = await Supplier.countDocuments();
-
-            const startOfLastMonth = new Date();
-            startOfLastMonth.setDate(1);
-            startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
-
-            const endOfLastMonth = new Date();
-            endOfLastMonth.setDate(0);
-
             
-            const lastMonthSuppliers = await Supplier.countDocuments({
-                createdAt: { $gte: startOfLastMonth, $lt: endOfLastMonth }
-            });
+            const statisticByDate = await this.statisticByDate();
 
-        
-            let comparison = lastMonthSuppliers == 0 ? totalSuppliers : (totalSuppliers / lastMonthSuppliers);
-            let percentageCompareLastMonnth = comparison * 100;
+            const statisticByMonth = await this.statisticByMonth();
+
+            const statisticByYear = await this.statisticByYear();
 
             res.status(200).json({
                 totalSuppliers,
-                lastMonthSuppliers,
-                comparison,
-                percentageCompareLastMonnth
+                statisticByDate,
+                statisticByMonth,
+                statisticByYear,
             });
         } catch (error) {
             console.error(error);
@@ -123,7 +113,78 @@ class SupplierController {
         }
     };
 
+    statisticByDate = async () => {
+        try {
+            const todaySuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfToday(), $lt: DateUtil.getEndOfToday()}
+            });
+    
+            const yesterdaySuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfYesterday(), $lt: DateUtil.getEndOfYesterday() }
+            });
+    
+            const comparison = yesterdaySuppliers === 0 ? todaySuppliers : (todaySuppliers / yesterdaySuppliers);
+            const percentageCompareYesterday = comparison * 100;
+    
+            return {
+                todaySuppliers,
+                yesterdaySuppliers,
+                comparison,
+                percentageCompareYesterday,
+            };
+        } catch (error) {
+            console.error('Error fetching daily statistics:', error);
+        }
+    };
 
+    statisticByMonth = async () => {
+        try {
+            const thisMonthSuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfCurrentMonth(), $lt: DateUtil.getCurrentDate() }
+            });
+    
+            const lastMonthSuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfLastMonth(), $lt: DateUtil.getEndOfLastMonth() }
+            });
+    
+            const comparison = lastMonthSuppliers === 0 ? thisMonthSuppliers : (thisMonthSuppliers / lastMonthSuppliers);
+            const percentageCompareLastMonth = comparison * 100;
+    
+            return {
+                thisMonthSuppliers,
+                lastMonthSuppliers,
+                comparison,
+                percentageCompareLastMonth,
+            };
+        } catch (error) {
+            console.error('Error fetching monthly statistics:', error);
+        }
+    };
+
+    statisticByYear = async () => {
+        try {
+            const thisYearSuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfCurrentYear(), $lt: DateUtil.getCurrentDate() }
+            });
+    
+            const lastYearSuppliers = await Supplier.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfLastYear(), $lt: DateUtil.getEndOfLastYear() }
+            });
+    
+            const comparison = lastYearSuppliers === 0 ? thisYearSuppliers : (thisYearSuppliers / lastYearSuppliers);
+            const percentageCompareLastYear = comparison * 100;
+    
+            return {
+                thisYearSuppliers,
+                lastYearSuppliers,
+                comparison,
+                percentageCompareLastYear,
+            };
+        } catch (error) {
+            console.error('Error fetching yearly statistics:', error);
+        }
+    };
+    
 
 }
 

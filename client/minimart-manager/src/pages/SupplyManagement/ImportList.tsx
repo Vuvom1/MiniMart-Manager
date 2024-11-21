@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 import RoundedButton from "../../components/Button/RoundedButton";
 import TextField from "../../components/InputField/TextField";
-import CheckBox from "../../components/InputField/CheckBox";
 import { useNavigate } from "react-router-dom";
 import { getAllImports } from "../../services/api/ImportApi";
 import useSearch from "../../utils/SearchUtil";
+import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
+import { StatusBadge } from "../../components/Badge/StatusBadge";
+import NestedValueUtil from "../../utils/NestedValueUtil";
+import { Import } from "../../data/Entities/Import";
+import ImportDetail from "./EditImport";
+import { TimeUtil } from "../../utils/TimeUtil";
+import { ColumnType } from "../../constant/enum";
+import { importStatusColorMapping } from "../../constant/mapping";
+import EditImport from "./EditImport";
 
-
-interface Import {
-    _id: string;
-    supplier: { name: string };
-    date: string;
-    totalQuantity: number;
-    totalImportPrice: number;
-}
 
 function ImportList() {
     const navigate = useNavigate();
-    const [imports, setImports] = useState<Import[]>([]);
-
-    const columnHeaders = [
-        "Id",
-        "Supplier",
-        "Date",
-        "Total Quantity",
-        "Total Import Price",
-    ];
+    const [imports, setImports] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(13);
@@ -33,7 +25,7 @@ function ImportList() {
     const totalPages = Math.ceil(imports.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = imports.slice(startIndex, endIndex);
+    const timeUtil = new TimeUtil();
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(imports);
 
@@ -42,10 +34,10 @@ function ImportList() {
             const data = await getAllImports();
 
             setImports(data)
-            console.log(data)
         } catch (error) {
             console.error('Error fetching imports:', error);
         } finally {
+            console.log(imports)
         }
     };
 
@@ -60,6 +52,14 @@ function ImportList() {
     function navigateAddImport() {
         navigate('/supplies/imports/add')
     }
+
+    const handleItemDetailClick = (item: Import) => {
+        navigate(`${item.id}`)
+    };
+
+    const handleCopyId = (id: string) => {
+        navigator.clipboard.writeText(id);
+    };
 
     return (
         <div className="h-full flex flex-col">
@@ -92,88 +92,140 @@ function ImportList() {
                 </div>
             </div>
 
-            <div className="flex flex-col bg-white shadow-md rounded-lg p-4 grow gap-y-4">
+            <div className="flex gap-4 max-h-full">
+                <div className="flex flex-col bg-white shadow-md rounded-lg p-4 grow gap-y-4">
 
-                <div className="flex gap-x-4 justify-between">
-                    <div className="w-64">
-                        <TextField
-                            value={searchTerm}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            placeholder="Search here..."
-                            prefix={
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="size-6"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                                    />
-                                </svg>
-                            }
-                        />
-                    </div>
-                    <div>
-                        <RoundedButton label="Filter" />
-                    </div>
-                </div>
-
-                <div className="overflow-auto flex-auto max-h-[calc(100vh-350px)] rounded-lg shadow-md" >
-
-                    <table className="min-w-full bg-white text-center rounded-lg shadow-md">
-                        <thead className="bg-gray-100 sticky top-0 border ">
-
-                            <tr>
-                                {columnHeaders.map((header, index) => (
-                                    <th
-                                        key={index}
-                                        className="sticky px-4 py-2 text-gray-500 font-semibold"
+                    <div className="flex gap-x-4 justify-between">
+                        <div className="w-64">
+                            <TextField
+                                value={searchTerm}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                placeholder="Search here..."
+                                prefix={
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="size-6"
                                     >
-                                        {header}
-                                    </th>
-                                ))}
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                        />
+                                    </svg>
+                                }
+                            />
+                        </div>
+                        <div>
+                            <RoundedButton label="Filter" />
+                        </div>
+                    </div>
 
-                            </tr>
-                        </thead>
+                    <div className="overflow-auto flex-auto h-[calc(100vh-350px)] rounded-lg " >
 
-                        <tbody className="bg-white divide-y divide-gray-300">
-                            {filteredData.map((item, index) => (
-                                <tr key={index} className="border-t border-gray-200">
-                                    <td className="px-4 py-4">{item._id.slice(0, 8) + "..."}</td>
-                                    <td className="px-4 py-4">{item.supplier.name}</td>
-                                    <td className="px-4 py-4">{new Date(item.date).toLocaleDateString()}</td>
-                                    <td className="px-4 py-4">{item.totalQuantity}</td>
-                                    <td className="px-4 py-4">${item.totalImportPrice}</td>
+                        <table className="min-w-full bg-white text-center rounded-lg shadow-md">
+                            <thead className="bg-gray-100 sticky top-0 border ">
+
+                                <tr>
+                                    {importsColumnData.map((column, index) => (
+                                        column.isCollapsed == true &&
+                                        <th
+                                            key={index}
+                                            className="sticky px-4 py-2 text-gray-500 font-semibold"
+                                        >
+                                            {column.header}
+                                        </th>
+
+                                    ))}
+                                    <th className="sticky px-4 py-2 text-gray-500 font-semibold">Detail</th>
+
                                 </tr>
+                            </thead>
+
+                            <tbody className="bg-white divide-y divide-gray-300">
+                                {filteredData.map((item, index) => (
+                                    <tr
+                                        key={index}
+                                        className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
+
+                                    >
+                                        {importsColumnData.map((column, columnIndex) => (
+                                            column.isCollapsed &&
+                                            <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
+                                                {column.type === ColumnType.ID ? (
+                                                    <div className='justify-center flex'>
+                                                        <button
+                                                            className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
+                                                            onClick={() => handleCopyId(item[column.field])}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                            </svg>
+
+                                                        </button>
+                                                        {item[column.field].slice(0, 8) + '...'}
+
+                                                    </div>
+                                                ) :
+                                                    (column.type === ColumnType.STATUS ? (
+
+                                                        <div className='justify-center flex'>
+                                                            <StatusBadge value={item[column.field]} mapping={importStatusColorMapping} />
+                                                        </div>
+                                                    ) : (column.type === ColumnType.DATE ? (
+                                                        <div className='justify-center flex'>
+                                                            <span className="text-gray-700">{timeUtil.formatDateToDayMonthYear(item[column.field])}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className='justify-center flex'>
+                                                            <span className="text-gray-700"> {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}</span>
+                                                        </div>
+                                                    )))}
+                                            </td>
+                                        ))}
+                                        <td>
+                                            <button
+                                                className="hover:bg-cyan-200 rounded-lg"
+                                                onClick={() => handleItemDetailClick(item)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                </svg>
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+                                ))}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div className="flex justify-between my-4">
+                        <div className="flex items-center">
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    className={`px-3 mx-1 py-1 rounded ${currentPage === index + 1
+                                        ? "bg-cyan-500 text-white"
+                                        : "bg-white border border-black"
+                                        }`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
                             ))}
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                <div className="flex justify-between my-4">
-                    <div className="flex items-center">
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index + 1}
-                                className={`px-3 mx-1 py-1 rounded ${currentPage === index + 1
-                                    ? "bg-cyan-500 text-white"
-                                    : "bg-white border border-black"
-                                    }`}
-                                onClick={() => handlePageChange(index + 1)}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
 
     );

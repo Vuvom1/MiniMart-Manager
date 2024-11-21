@@ -5,11 +5,13 @@ interface SelectFieldProps {
   label?: string;
   name?: string;
   value?: { label: string; value: string } | null;
+  initialValue?: { label: string; value: string } | null;
   onChange?: (selectedOption: { label: string; value: string } | null) => void;
   placeholder?: string;
   width?: string;
   error?: string | null;
-  options: { value: string; label: string }[]; 
+  options: { value: any; label: string}[]; 
+  prefixIcon?: JSX.Element;
 }
 
 export default function SelectField({
@@ -17,12 +19,16 @@ export default function SelectField({
   label,
   name,
   value,
+  initialValue,
   onChange,
   placeholder = "Select an option",
   width = '100%',
   error = null,
   options,
+  prefixIcon,
 }: SelectFieldProps) {
+  const selectedValue = value ?? initialValue ?? null;
+
   return (
     <div style={{ width }}>
       {label && (
@@ -31,10 +37,11 @@ export default function SelectField({
         </label>
       )}
       <div className="relative rounded-md shadow-sm">
+        {prefixIcon && prefixIcon}
         <Select
           id={id}
           name={name}
-          value={value}
+          value={selectedValue}
           onChange={onChange}
           options={options}
           placeholder={placeholder}
