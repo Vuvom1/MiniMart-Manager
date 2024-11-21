@@ -4,27 +4,32 @@ import RoundedButton from '../Button/RoundedButton';
 import RoundedIcon from '../Icon/RoundedIcon';
 import EditableInfo from '../Info/EditableInfo';
 import useSearch from '../../utils/SearchUtil';
-import EditableStatus from '../Info/EditableStatus';
 import { ColumnData } from '../../data/ColumnData/ColumnData';
 import { StatusBadge } from '../Badge/StatusBadge';
+import { ColumnType } from '../../constant/enum';
+import StatusPickerModal from '../Picker/StatusPicker';
 
 interface ItemsProps {
+    statuses: Record<string, string>;
     title: string;
     itemData: any[];
     columnData: ColumnData[];
     seeAll?: () => void;
     addItem?: () => void;
+    statusMapping: Record<string, string>; 
     itemsPerPageOptions?: number[];
     onItemDataChange?: (updatedData: any[]) => void;
     onSave?: (updatedData: any) => void;
 }
 
 const CollapsedRowTable: React.FC<ItemsProps> = ({
+    statuses,
     title,
     itemData,
     columnData = [],
     seeAll,
     addItem,
+    statusMapping,
     itemsPerPageOptions = [5, 10, 20],
     onItemDataChange,
     onSave,
@@ -40,8 +45,6 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
     const [modifiedItem, setModifiedItem] = useState<any>(null);
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(currentItems);
-
-
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -140,7 +143,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                 {columnData.map((column, columnIndex) => (
                                     !column.isCollapsed &&
                                     <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
-                                        {column.field === "_id" ? (
+                                        {column.type === ColumnType.ID ? (
                                             <span className="relative group flex gap-x-2 items-center">
                                                 <button
                                                     className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
@@ -155,14 +158,11 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
 
                                             </span>
                                         ) :
-                                            (column.field === "status" ? (
+                                            (column.type === ColumnType.STATUS ? (
                                                 <div className='justify-center flex'>
-                                                    {column.isEditable ? (<EditableStatus
-                                                        options={column.options}
-                                                        editable={expandedRows == index}
-                                                        initialValue={item[column.field]}
-                                                        onValueChange={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}
-                                                    />) : (<StatusBadge value={item[column.field]} />)}
+                                                    {column.isEditable && expandedRows == index ? (
+                                                        <StatusPickerModal initialValue={item[column.field]} statusEnum={statuses} colorMapping={statusMapping} onSelect={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}/>
+                                                       ) : (<StatusBadge value={item[column.field]} mapping={statusMapping} />)}
 
                                                 </div>
 
@@ -211,7 +211,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                             {columnData.map((col) => (
                                                 col.isCollapsed &&
                                                 <div className="flex justify-between px-16">
-                                                    <span className="font-semibold">{col.header}:</span>
+                                                    <span className="font-semibold tex">{col.header}:</span>
                                                     <span><EditableInfo editable={col.isEditable} validations={col.validations} onValueChange={(newValue) => handleValueChange(startIndex + index, col.field, newValue)} initialValue={item[col.field]} /></span>
                                                 </div>
                                             ))}

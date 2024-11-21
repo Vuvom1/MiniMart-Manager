@@ -15,6 +15,7 @@ import { ScheduleManagement } from '../pages/ScheduleManagement/ScheduleManageme
 import SupplyManagement from '../pages/SupplyManagement/SupplyManagement';
 import ImportList from '../pages/SupplyManagement/ImportList';
 import AddImport from '../pages/SupplyManagement/AddImport';
+import EditImport from '../pages/SupplyManagement/EditImport';
 
 const AppRouter = () => {
     const location = useLocation();
@@ -49,6 +50,8 @@ const AppRouter = () => {
                                 <Route path="" element={<SupplyManagement />} />
                                 <Route path='imports' element={<ImportList />} />
                                 <Route path='imports/add' element={<AddImport />} />
+                                <Route path='imports/:id' element={<EditImport />} />
+                                supplies/imports/supplies/imports/6719cec720087c848fcf544c
                             </Route>
                             <Route path='/promotions' element={<PromotionManage />} />
                         </Route>

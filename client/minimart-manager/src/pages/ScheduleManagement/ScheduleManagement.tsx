@@ -175,13 +175,13 @@ export function ScheduleManagement() {
                     <table className="table-auto w-full table-layout-fixed bg-white text-center items-center grow rounded-lg shadow-md">
                         <thead className="table-header sticky rounded-l-lg top-0 border-2">
                             <tr className="rounded-md">
-                                <th className="sticky bg-white border rounded-l-lg border-gray-100 px-4 py-8">
+                                <th className="sticky bg-white border rounded-l-lg border-gray-300 px-4 py-8">
                                     Employee
                                 </th>
                                 {weekDays.map((day, index) => (
                                     <th
                                         key={day.date}
-                                        className={`sticky bg-white border border-gray-100 px-4 py-2 top-0 ${index === weekDays.length - 1 && "rounded-r-lg"
+                                        className={`sticky bg-white border border-gray-300 px-4 py-2 top-0 ${index === weekDays.length - 1 && "rounded-r-lg"
                                             }`}
                                     >
                                         <p className="font-semibold">{day.dayOfWeek}</p>
@@ -194,7 +194,7 @@ export function ScheduleManagement() {
                         <tbody className="table-body font-normal pt-4">
                             {schedules.map((schedule, index) => (
                                 <tr key={index}>
-                                    <td className="border  border-gray-200 px-4 py-2 w-2/12 text-start min-h-30a">
+                                    <td className="border border-gray-200 px-4 py-2 w-2/12 text-start min-h-30a">
                                         <div className="flex gap-x-4">
                                             <Avatar />
                                             <div className="flex flex-col">

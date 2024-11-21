@@ -7,6 +7,7 @@ const EditImportDTO = require('../dto/Import/EditImportDTO')
 const SubCategory = require('../models/SubCategory')
 const Category = require('../models/Category')
 const DateUtil = require('../util/DateUtil');
+const Supplier = require('../models/Supplier')
 
 class ImportController {
 
@@ -37,6 +38,42 @@ class ImportController {
         }
     }
 
+    getById_get = async (req, res) => {
+        const { id } = req.params; 
+        
+        try {
+            const importData = await Import.findById(id)
+                .populate('staff')
+                .populate('supplier')
+                .populate('importDetails.product')
+                .populate({
+                    path: 'importDetails.product',
+                    populate: { path: 'subCategory' }
+                })
+                .populate({
+                    path: 'importDetails.product',
+                    populate: [
+                        { path: 'subCategory', populate: { path: 'category' } }
+                    ]
+                })
+                .exec();
+    
+            if (!importData) {
+                return res.status(404).json({ message: 'Import not found' });
+            }
+    
+            const importDTO = new ImportDTO(importData);
+    
+            res.status(200).json(importDTO);
+        } catch (error) {
+            console.error('Error fetching import by ID:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    };
+    
+
+
+
     add_post = async (req, res) => {
         try {
             const { importData } = req.body;
@@ -57,22 +94,55 @@ class ImportController {
     edit_put = async (req, res) => {
         try {
             const { id } = req.params;
-            const { importData } = req.body;
-            const editImportDTO = EditImportDTO.fromRequestBody(importData);
-
-            let updatedImport = await Import.findByIdAndUpdate(id, editImportDTO);
-
+            const { supplierId, invoiceNumber, deliveryMan, status, description, importDetails } = req.body;
+    
+            const currentImport = await Import.findById(id);
+            if (!currentImport) {
+                return res.status(404).json({ error: 'Import not found' });
+            }
+    
+            const supplier = supplierId ? await Supplier.findById(supplierId) : currentImport.supplier;
+    
+            if (supplierId && !supplier) {
+                return res.status(404).json({ error: 'Supplier not found' });
+            }
+    
+            const totalImportPrice = importDetails.reduce((total, detail) => {
+                const price = detail.price ? parseFloat(detail.price.replace(/[^0-9.]/g, '')) : 0;
+                return total + price;
+            }, 0);
+    
+            const totalQuantity = importDetails.reduce((total, detail) => {
+                const quantity = parseInt(detail.quantity, 10) || 0;
+                return total + quantity;
+            }, 0);
+    
+            const updatedImport = await Import.findByIdAndUpdate(
+                id, 
+                {
+                    supplier: supplier,
+                    invoiceNumber: invoiceNumber,
+                    deliveryMan: deliveryMan,
+                    status: status,
+                    description: description,
+                    importDetails: importDetails,
+                    totalQuantity: totalQuantity,
+                    totalImportPrice: totalImportPrice,
+                },
+                { new: true } 
+            );
+    
             if (!updatedImport) {
                 return res.status(404).json({ error: 'Import not found' });
             }
-
+    
             res.status(200).json('Import updated successfully');
         } catch (error) {
             console.error('Error updating import:', error);
             res.status(400).json({ message: error.message, code: error.code });
         }
     };
-
+    
 
     statistic_get = async (req, res) => {
         try {

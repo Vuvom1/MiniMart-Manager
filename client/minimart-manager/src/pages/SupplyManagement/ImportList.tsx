@@ -8,13 +8,16 @@ import { importsColumnData } from "../../data/ColumnData/ImportColumnData";
 import { StatusBadge } from "../../components/Badge/StatusBadge";
 import NestedValueUtil from "../../utils/NestedValueUtil";
 import { Import } from "../../data/Entities/Import";
-import ImportDetail from "./ImportDetail";
+import ImportDetail from "./EditImport";
+import { TimeUtil } from "../../utils/TimeUtil";
+import { ColumnType } from "../../constant/enum";
+import { importStatusColorMapping } from "../../constant/mapping";
+import EditImport from "./EditImport";
 
 
 function ImportList() {
     const navigate = useNavigate();
     const [imports, setImports] = useState([]);
-    const [selectedImport, setSelectedImport] = useState<Import | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(13);
@@ -22,6 +25,7 @@ function ImportList() {
     const totalPages = Math.ceil(imports.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    const timeUtil = new TimeUtil();
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(imports);
 
@@ -50,10 +54,7 @@ function ImportList() {
     }
 
     const handleItemDetailClick = (item: Import) => {
-        if (selectedImport == null || item != selectedImport)
-            setSelectedImport(item);
-        else
-            setSelectedImport(null);
+        navigate(`${item.id}`)
     };
 
     const handleCopyId = (id: string) => {
@@ -123,13 +124,14 @@ function ImportList() {
                         </div>
                     </div>
 
-                    <div className="overflow-auto flex-auto max-h-[calc(100vh-350px)] rounded-lg shadow-md" >
+                    <div className="overflow-auto flex-auto h-[calc(100vh-350px)] rounded-lg " >
 
                         <table className="min-w-full bg-white text-center rounded-lg shadow-md">
                             <thead className="bg-gray-100 sticky top-0 border ">
 
                                 <tr>
-                                    {importsColumnData.slice(0, importsColumnData.length - 2).map((column, index) => (
+                                    {importsColumnData.map((column, index) => (
+                                        column.isCollapsed == true &&
                                         <th
                                             key={index}
                                             className="sticky px-4 py-2 text-gray-500 font-semibold"
@@ -150,9 +152,10 @@ function ImportList() {
                                         className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
                                     >
-                                        {importsColumnData.slice(0, importsColumnData.length - 2).map((column, columnIndex) => (
+                                        {importsColumnData.map((column, columnIndex) => (
+                                            column.isCollapsed &&
                                             <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
-                                                {column.field === "id" ? (
+                                                {column.type === ColumnType.ID ? (
                                                     <div className='justify-center flex'>
                                                         <button
                                                             className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
@@ -167,30 +170,30 @@ function ImportList() {
 
                                                     </div>
                                                 ) :
-                                                    (column.field === "status" ? (
+                                                    (column.type === ColumnType.STATUS ? (
 
                                                         <div className='justify-center flex'>
-                                                            <StatusBadge value={item[column.field]} />
+                                                            <StatusBadge value={item[column.field]} mapping={importStatusColorMapping} />
+                                                        </div>
+                                                    ) : (column.type === ColumnType.DATE ? (
+                                                        <div className='justify-center flex'>
+                                                            <span className="text-gray-700">{timeUtil.formatDateToDayMonthYear(item[column.field])}</span>
                                                         </div>
                                                     ) : (
                                                         <div className='justify-center flex'>
                                                             <span className="text-gray-700"> {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}</span>
                                                         </div>
-                                                    ))}
+                                                    )))}
                                             </td>
                                         ))}
                                         <td>
                                             <button
                                                 className="hover:bg-cyan-200 rounded-lg"
                                                 onClick={() => handleItemDetailClick(item)}>
-                                                {item == selectedImport ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                                 </svg>
-                                                    :
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                                    </svg>
-                                                }
+
                                             </button>
 
                                         </td>
@@ -220,11 +223,6 @@ function ImportList() {
                         </div>
                     </div>
                 </div>
-
-                {selectedImport && <ImportDetail importData={selectedImport} />}
-
-
-
             </div>
 
 

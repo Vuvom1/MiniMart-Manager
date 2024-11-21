@@ -1,4 +1,5 @@
 import React from 'react';
+import RoundedButton from '../Button/RoundedButton';
 
 interface ModalProps {
   isOpen: boolean;
@@ -31,19 +32,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSubmi
         <div className="px-6 py-4">
           {children}
         </div>
-        <div className="px-6 w-full py-4 border-t">
-          {isFormValid ? <button
-            onClick={handleSubmit}
-            className="bg-cyan-500 text-white w-full px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Save
-          </button> : <button
-            onClick={handleSubmit}
-            className="bg-cyan-500 text-white w-full px-4 py-2 rounded hover:bg-blue-600"
-            disabled
-          >
-            Save
-          </button>}
+        <div className="px-6 flex py-4 gap-x-4">
+          <RoundedButton disable={!isFormValid} label="Save" color={isFormValid ? "bg-cyan-500":"bg-transparent"} onClick={handleSubmit} /> 
+          <RoundedButton label='Cancel' onClick={onClose} />
         </div>
       </div>
     </div>

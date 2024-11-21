@@ -1,12 +1,15 @@
+import { Category } from "./Category";
+
 export interface Product {
-    id?: string;
+    _id?: string;
     name?: string;
     price?: number;
     barcode?: string;
     stock?: number;
     detail?: string;
-    imageUrl?: string;
+    image?: string;
     dateOfManufacture?: string;
     expiryDate?: string;
     status?: string;
+    subCategory: Category;
 }

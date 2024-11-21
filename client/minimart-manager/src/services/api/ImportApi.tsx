@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { Import } from '../../data/Entities/Import';
+import { ImportStatus } from '../../constant/enum';
+import { ImportDetail } from '../../data/Entities/ImportDetail';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/imports'
@@ -13,6 +15,18 @@ export const getAllImports = async () => {
         throw error.response?.data?.message || 'Fetch data failed'; 
     }
 }
+
+export const getImportById = async (id: string) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/${id}/detail`); 
+        
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.message || 'Fetch data failed';
+    }
+};
+
+
 
 export const addImport = async (importData: any) => {
     try {
@@ -28,10 +42,10 @@ export const addImport = async (importData: any) => {
     }
 }
 
-export const updateImport = async (id: string, importData: Import) => {
+export const updateImport = async (id: string, supplierId: string, invoiceNumber: string, deliveryMan: string, status: ImportStatus, description: string, importDetails: ImportDetail[]) => {
     try {
         const response = await axios.put(`${BASE_URL}/${id}/edit`, {
-            importData
+            supplierId, invoiceNumber, deliveryMan, status, description, importDetails
         }, {
             withCredentials: true,
         });

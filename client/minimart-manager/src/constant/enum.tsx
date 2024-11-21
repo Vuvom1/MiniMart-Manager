@@ -10,13 +10,11 @@ export enum SupplierStatus {
 }
 
 export enum ImportStatus {
-    PENDING = 'Pending',      
+    COMPLETED = 'Completed',   
+    PENDING = 'Pending',     
+    DELAYED = "Delayed", 
     IN_PROGRESS = 'In Progress', 
-    COMPLETED = 'Completed',    
-    CANCELLED = 'Cancelled',    
-    IN_TRANSIT = 'In Transit',  
-    RECEIVED = 'Received',       
-    ERROR = 'Error'             
+    CANCELLED = 'Cancelled',               
 }
 
 export enum Period {
@@ -100,6 +98,15 @@ export enum Time {
     PINK_300 = 'pink-300',
     PINK_400 = 'pink-400',
     PINK_500 = 'pink-500',
+}
+
+export enum ColumnType {
+    ID,
+    STATUS,
+    TEXT, 
+    IMAGE,
+    CHECK,  
+    DATE,
 }
 
 

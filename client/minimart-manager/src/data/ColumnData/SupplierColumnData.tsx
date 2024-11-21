@@ -1,6 +1,7 @@
 import { SupplierStatus } from "../../constant/enum";
 import ValidationUtil from "../../utils/ValidationUtil";
 import { ColumnData } from "./ColumnData";
+import { ColumnType } from "../../constant/enum";
 
 export const supplierColumnData: ColumnData[] = [
     {
@@ -8,13 +9,15 @@ export const supplierColumnData: ColumnData[] = [
         header: "ID",
         isEditable: false,
         isCollapsed: false,
+        type: ColumnType.ID,
     },
     {
         field: "name",
         header: "Name",
         isEditable: true,
         isCollapsed: false,
-        validations: [ValidationUtil.validateRequired("Supplier name")]
+        validations: [ValidationUtil.validateRequired("Supplier name")],
+        type: ColumnType.TEXT,
     },
     {
         field: "email",
@@ -24,14 +27,16 @@ export const supplierColumnData: ColumnData[] = [
         validations: [
             ValidationUtil.validateRequired("Email"),
             ValidationUtil.validateEmail
-        ]
+        ],
+        type: ColumnType.TEXT,
     },
     {
         field: "status",
         header: "Status",
         isEditable: true,
         isCollapsed: false,
-        options: [SupplierStatus.ACTIVE, SupplierStatus.INACTIVE]
+        options: [SupplierStatus.ACTIVE, SupplierStatus.INACTIVE],
+        type: ColumnType.STATUS,
     },
     {
         field: "phone",
@@ -41,7 +46,8 @@ export const supplierColumnData: ColumnData[] = [
         validations: [
             ValidationUtil.validateRequired("Phone number"),
             ValidationUtil.validatePhoneNumber
-        ]
+        ],
+        type: ColumnType.TEXT,
         
     },
     {
@@ -51,12 +57,14 @@ export const supplierColumnData: ColumnData[] = [
         isCollapsed: true,
         validations: [
             ValidationUtil.validateRequired("Address")
-        ]
+        ],
+        type: ColumnType.TEXT,
     },
     {
         field: "description",
         header: "Description",
         isCollapsed: true,
         isEditable: true,
+        type: ColumnType.TEXT,
     }
 ];

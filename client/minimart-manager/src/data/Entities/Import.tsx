@@ -1,9 +1,10 @@
 import { ImportStatus } from "../../constant/enum";
 import { ImportDetail } from "./ImportDetail";
+import { Supplier } from "./Supplier";
 
 export interface Import {
     id?: string;
-    supplier: string;
+    supplier: Supplier;
     invoiceNumber: string;
     deliveryMan: string;
     description?: string; 

@@ -6,60 +6,43 @@ import TextField from "../../components/InputField/TextField";
 import ProductSelectionModal from "../../components/Modal/ProductSelectionModal";
 import { getAllProductByCategories, getAllProducts } from "../../services/api/ProductApi";
 import { getAllSuppliers } from "../../services/api/SupplierApi";
-import { addImport } from "../../services/api/ImportApi";
+import { addImport, getImportById, updateImport } from "../../services/api/ImportApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../components/Toast/ErrorToast";
 import { ImportStatus } from "../../constant/enum";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Product } from "../../data/Entities/Product";
 import DraggableFloatComponent from "../../components/Dragable/DragableComponent";
 import ProductScannerComponent from "../../components/Scanner/ProductScanner";
 import ValidationUtil from "../../utils/ValidationUtil";
-import { ImportDetail } from "../../data/Entities/ImportDetail";
-import { ImportFormData } from "../../data/FormData/ImportFormData";
 import StatusPickerPopover from "../../components/Picker/StatusPicker";
-import { importStatusColorMapping, statusStyleMapping } from "../../constant/mapping";
+import { importStatusColorMapping } from "../../constant/mapping";
 import { ProductByCategory } from "../../data/Entities/ProductByCategories";
+import { ImportDetail } from "../../data/Entities/ImportDetail";
+import { Import } from "../../data/Entities/Import";
 
-
-function AddImport() {
+function EditImport() {
     const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>(); 
+
+    const [importData, setImportData] = useState<Import>();
+   
+    const [productByCategories, setProductByCategory] = useState<ProductByCategory[]>([]);
+    const [supplierOptions, setSupplierOptions] = useState([])
+    const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
     const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [showModal, setShowModal] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
-    const [productByCategories, setProductByCategory] = useState<ProductByCategory[]>([]);
-    const [loading, setLoading] = useState(true)
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
-
-    const [selectedSupplierId, setSelectedSupplierId] = useState<string>("");
     const [invoiceNumber, setInvoiceNumber] = useState<string>("");
     const [deliveryMan, setDeliveryMan] = useState<string>("");
+    const [supplier, setSupplier] = useState<{value: string, label: string}>()
     const [description, setDescription] = useState<string>("");
+   
+    const [loading, setLoading] = useState(true)
+    const [showModal, setShowModal] = useState(false);
     const [isScannerOpened, setIsScannerOpened] = useState(false);
-    const [isValidForm, setIsValidForm] = useState(false);
-
-    const fetchProducts = async () => {
-        try {
-            const data = await getAllProducts();
-            const categoryWithProducts = await getAllProductByCategories();
-
-            setProducts(data);
-            setProductByCategory(categoryWithProducts);
-        } catch (error) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message="Error fetching products"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
-        }
-        finally {
-            setLoading(false);
-        }
-    };
+    const [isValidForm, setIsValidForm] = useState(true);
 
     const fetchSuppliers = async () => {
         try {
@@ -79,10 +62,68 @@ function AddImport() {
         }
     };
 
+    const fetchImportById = async (id: string) => {
+    
+        if (!id) {
+            console.error('No ID provided');
+            return;
+        }
+    
+        try {
+            const data = await getImportById(id); 
+
+            setImportData(data);
+        } catch (error) {
+            console.error('Error fetching import', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditImport = async (id: string) => {
+    
+        if (!id) {
+            console.error('No ID provided');
+            return;
+        }
+
+        console.log(supplier)
+    
+        try {
+            const response = await updateImport(id, supplier?.value || "", invoiceNumber, deliveryMan, status, description, importDetails);
+
+            toast.custom((t) => (
+                <SuccessToast
+                    message={response}
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
+        } catch (error: any) {
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message={error}
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
+        } finally {
+            setLoading(false);
+            navigate('/supplies/imports')
+        }
+    };
+
     useEffect(() => {
-        fetchProducts();
+        fetchImportById(id || "");
         fetchSuppliers();
     }, []);
+
+    useEffect(() => {
+            setSupplier({label: importData?.supplier.name || "", value: importData?.supplier.id || ""})
+            setInvoiceNumber(importData?.invoiceNumber||"")
+            setDeliveryMan(importData?.deliveryMan||"")
+            setStatus(importData?.status||ImportStatus.PENDING)
+            setDescription( importData?.description||"")
+            setImportDetails(importData?.importDetails||[])
+    }, [importData]);
 
     useEffect(() => {
         const newTotalQuantity = importDetails.reduce((acc, product) => acc + product.quantity, 0);
@@ -168,72 +209,15 @@ function AddImport() {
     };
 
 
-    const handleSaveImport = async () => {
-        const userData = localStorage.getItem('user');
-        let staffId = null;
-
-        if (userData) {
-            const user = JSON.parse(userData);
-            staffId = user._id;
-        }
-
-        if (importDetails.length == 0) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message="Please add products to current import!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
-            return;
-        }
-
-
-        const importData: ImportFormData = {
-            supplier: selectedSupplierId,
-            invoiceNumber,
-            deliveryMan,
-            description,
-            staff: staffId,
-            status: status,
-            importDetails: importDetails.map(detail => ({
-                ...detail,
-                product: detail.product?._id || '',
-            }))
-
-        };
-
-        try {
-            await addImport(importData);
-
-            toast.custom((t) => (
-                <SuccessToast
-                    message="Add import success!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
-
-
-        } catch (error) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message="Error adding new import!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
-        } finally {
-            setLoading(false);
-            navigate('/supplies/imports');
-        }
-    };
-
     const handleValidationChange = (isValid: boolean) => {
         setIsValidForm(isValid);
+        console.log(isValidForm);
     };
 
     return (
         <>
             <h1 className="text-2xl font-bold flex-auto text-gray-800 mb-8">
-                Add new import
+                Edit detail
             </h1>
             <div className="h-[calc(100vh-180px)] w-full flex gap-x-4">
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-6 w-1/2 rounded-lg">
@@ -244,10 +228,11 @@ function AddImport() {
                         </svg>
 
                         <SelectField
+                            initialValue={supplier}
                             placeholder="Choose supplier..."
                             options={supplierOptions}
-                            onChange={value => {
-                                setSelectedSupplierId(value ? value.value : '');
+                            onChange={(selectedOption) => {
+                                setSupplier(selectedOption|| {label: importData?.supplier.name || "", value: importData?.supplier.id || ""});
                             }} />
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -268,6 +253,7 @@ function AddImport() {
 
                         <TextField
                             value={deliveryMan}
+                            validationPassed={handleValidationChange}
                             validations={[ValidationUtil.validateRequired("Delivery man")]}
                             placeholder="Enter delivery man name..."
                             onChange={(e) => setDeliveryMan(e.target.value)} />
@@ -276,7 +262,7 @@ function AddImport() {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                         </svg>
-                        <StatusPickerPopover statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={(status) => setStatus(status)} />
+                        <StatusPickerPopover initialValue={status} statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={(status) => setStatus(status)} />
 
                     </div>
                     <div className="flex gap-x-4">
@@ -321,6 +307,8 @@ function AddImport() {
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
                         {importDetails.map(detail => (
                             <ImportProductHorizontalCard
+                                initialPrice={detail.importPrice.toString()}
+                                initialQuantity={detail.quantity}
                                 key={detail.product._id}
                                 product={detail.product}
                                 onPriceChange={(price) => handlePriceChange(detail.product, price)}
@@ -346,7 +334,7 @@ function AddImport() {
 
                     <div className="flex gap-y-2 justify-end py-4">
                         <div className="w-20">
-                            <RoundedButton disable={!isValidForm} label="Save" onClick={handleSaveImport} />
+                            <RoundedButton disable={!isValidForm} label="Save" onClick={() => handleEditImport(id||"")} />
                         </div>
                     </div>
                 </div>
@@ -357,15 +345,15 @@ function AddImport() {
                     height="350px"
                     defaultPosition={{ x: 100, y: -500 }}
                 >
-
-                    <ProductScannerComponent
-
-                        onProductScanned={handleProductScanned}
-                        width={400}
-                        height={300}
-                    />
-
-
+                   
+                    
+                            <ProductScannerComponent
+                                onProductScanned={handleProductScanned}
+                                width={400}
+                                height={300}
+                            />
+                       
+         
                 </DraggableFloatComponent>
             }
 
@@ -382,4 +370,4 @@ function AddImport() {
     );
 }
 
-export default AddImport;
+export default EditImport;

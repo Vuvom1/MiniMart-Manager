@@ -5,6 +5,7 @@ interface SelectFieldProps {
   label?: string;
   name?: string;
   value?: { label: string; value: string } | null;
+  initialValue?: { label: string; value: string } | null;
   onChange?: (selectedOption: { label: string; value: string } | null) => void;
   placeholder?: string;
   width?: string;
@@ -18,6 +19,7 @@ export default function SelectField({
   label,
   name,
   value,
+  initialValue,
   onChange,
   placeholder = "Select an option",
   width = '100%',
@@ -25,6 +27,8 @@ export default function SelectField({
   options,
   prefixIcon,
 }: SelectFieldProps) {
+  const selectedValue = value ?? initialValue ?? null;
+
   return (
     <div style={{ width }}>
       {label && (
@@ -37,7 +41,7 @@ export default function SelectField({
         <Select
           id={id}
           name={name}
-          value={value}
+          value={selectedValue}
           onChange={onChange}
           options={options}
           placeholder={placeholder}

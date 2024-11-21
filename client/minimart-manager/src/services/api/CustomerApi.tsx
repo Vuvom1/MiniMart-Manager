@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Import } from '../../data/Entities/ImportData';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/customers'
@@ -14,33 +13,33 @@ export const getAllCustomers = async () => {
     }
 }
 
-export const addImport = async (importData: any) => {
-    try {
-        const response = await axios.post(`${BASE_URL}/add`, {
-            importData
-        }, {
-            withCredentials: true,
-        });
+// export const addImport = async (importData: any) => {
+//     try {
+//         const response = await axios.post(`${BASE_URL}/add`, {
+//             importData
+//         }, {
+//             withCredentials: true,
+//         });
 
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Add data failed'; 
-    }
-}
+//         return response.data;
+//     } catch(error: any) {
+//         throw error.response?.data?.message || 'Add data failed'; 
+//     }
+// }
 
-export const updateImport = async (id: string, importData: Import) => {
-    try {
-        const response = await axios.put(`${BASE_URL}/${id}/edit`, {
-            importData
-        }, {
-            withCredentials: true,
-        });
+// export const updateImport = async (id: string, importData: Import) => {
+//     try {
+//         const response = await axios.put(`${BASE_URL}/${id}/edit`, {
+//             importData
+//         }, {
+//             withCredentials: true,
+//         });
 
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Update import data failed'; 
-    }
-}
+//         return response.data;
+//     } catch(error: any) {
+//         throw error.response?.data?.message || 'Update import data failed'; 
+//     }
+// }
 
 export const getCustomerStatistic = async () => {
     try {

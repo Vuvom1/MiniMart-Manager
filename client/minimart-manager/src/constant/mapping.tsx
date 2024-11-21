@@ -1,9 +1,23 @@
+import { ImportStatus, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
     Inactive: "bg-red-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300",
     Pending: "bg-gray-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300", 
 };
+
+export const supplierStatusColorMapping: {[key in SupplierStatus]: string} = {
+  [SupplierStatus.ACTIVE]: 'green-200',
+  [SupplierStatus.INACTIVE]: 'gray-200',
+};
+
+export const importStatusColorMapping: { [key in ImportStatus]: string } = {
+    [ImportStatus.COMPLETED]: 'green-200',
+    [ImportStatus.PENDING]: 'yellow-200',
+    [ImportStatus.DELAYED]: 'red-200',
+    [ImportStatus.IN_PROGRESS]: 'blue-200',
+    [ImportStatus.CANCELLED]: 'gray-200',
+  };
 
 export const tailwindColorMap: { [key: string]: string } = {
     "gray-50": "#F9FAFB",

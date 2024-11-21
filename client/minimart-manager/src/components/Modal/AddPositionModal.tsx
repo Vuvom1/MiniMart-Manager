@@ -9,11 +9,11 @@ import SuccessToast from '../Toast/SuccessToast';
 import toast from 'react-hot-toast';
 import ErrorToast from '../Toast/ErrorToast';
 
-interface AddEventModalProps {
+interface AddPositionModalProps {
     onClose: () => void;
 }
 
-const AddPositionModal: React.FC<AddEventModalProps> = ({ onClose }) => {
+const AddPositionModal: React.FC<AddPositionModalProps> = ({ onClose }) => {
     const [color, setColor] = useState("white");
     const [name, setName] = useState("");
     const [isValid, setIsValid] = useState(false);

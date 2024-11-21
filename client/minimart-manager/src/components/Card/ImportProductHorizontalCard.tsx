@@ -57,7 +57,7 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
     return (
         <div className="border rounded-lg gap-x-4 p-4 flex">
             {showImage && <div className='h-full flex justify-center'>
-                <img src={product.imageUrl} alt={product.name} className="w-24 h-24 object-cover rounded-md" />
+                <img src={product.image} alt={product.name} className="w-24 h-24 object-cover rounded-md" />
             </div>}
 
             <div className='flex flex-col flex-1'>

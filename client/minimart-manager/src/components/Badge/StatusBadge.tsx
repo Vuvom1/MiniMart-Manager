@@ -1,13 +1,18 @@
 import React from 'react';
-import { statusStyleMapping } from '../../constant/mapping';
+import { ColorUtil } from '../../utils/ColorUtil';
 
 interface StatusBadgeProps {
     value: string;
+    mapping: Record<string, string>; 
+    defaultStyle?: string; 
 }
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ value }) => {
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ value, mapping, defaultStyle }) => {
+    const colorUtil = new ColorUtil();
+    const textColor = colorUtil.getStrongerColor(mapping[value] || defaultStyle || "gray-200")
+
     return (
-        <span className={`${statusStyleMapping[value] || "bg-gray-200 text-gray-800"} border rounded`}>
+        <span className={`bg-${mapping[value] || defaultStyle || "gray-200"} text-${textColor} border border-${textColor} rounded-full px-4 py-1`}>
             {value}
         </span>
     );
