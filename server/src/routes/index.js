@@ -8,6 +8,7 @@ const employeeRoutes = require('./EmployeeRoutes')
 const scheduleRoutes = require('./ScheduleRoutes')
 const shiftRoutes = require('./ShiftRoutes')
 const positionRoutes = require('./PositionRoutes')
+const promotionRoutes = require('./PromotionRoutes')
 
 function route(app)  {
     app.use('/api/auth', authRoutes);
@@ -19,6 +20,7 @@ function route(app)  {
     app.use('/api/schedules', scheduleRoutes);
     app.use('/api/shifts', shiftRoutes);
     app.use('/api/positions', positionRoutes);
+    app.use('/api/promotions', promotionRoutes);
 }
 
 module.exports = route;

@@ -188,7 +188,7 @@ function SupplyManagement() {
 
             <div className="flex gap-x-6">
                 <div className="grow">
-                    <OverviewTable statusColorMapping={importStatusColorMapping} columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} />
+                    <OverviewTable columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} />
                 </div>
                 <DoughnutChartCard title="Import Distribution" data={doughnutChartData} />
             </div>

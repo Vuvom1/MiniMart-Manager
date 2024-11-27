@@ -5,6 +5,7 @@ interface TextFieldProps {
   label?: string;
   name?: string;
   prefix?: JSX.Element;
+  suffix?: JSX.Element;
   value?: string;
   initialValue?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,13 +22,13 @@ export default function TextField({
   label,
   name,
   prefix,
+  suffix,
   initialValue = '',
   value = initialValue,
   onChange,
   placeholder,
   height = '40px', 
   width = '100%', 
-  
   error = null,
   validations = [],
   validationPassed
@@ -56,7 +57,6 @@ export default function TextField({
     }
 
     if (isValid) setInternalError(null);
-
   };
 
   return (
@@ -81,9 +81,14 @@ export default function TextField({
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5  ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
+          } ${suffix ? 'pr-10' : 'pr-4'} text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
           style={{ height }}
         />
+        {suffix && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            {suffix}
+          </div>
+        )}
         {(internalError || error) && (
           <p className="text-xs text-red-500">
             {internalError || error}

@@ -1,4 +1,5 @@
 import { ColumnType } from "../../constant/enum";
+import { importStatusColorMapping } from "../../constant/mapping";
 import { ColumnData } from "./ColumnData";
 
 export const importsColumnData: ColumnData[] = [
@@ -36,6 +37,7 @@ export const importsColumnData: ColumnData[] = [
         isEditable: true,
         type: ColumnType.STATUS,
         isCollapsed: true,
+        colorMapping: importStatusColorMapping,
     },
     {
         field: "totalQuantity",

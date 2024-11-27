@@ -23,6 +23,24 @@ class CustomerController {
 
     }
 
+    updateStatus_put = async (req, res) => {
+        try {
+            const { id } = req.params; 
+            const {status}  =req.body;
+
+            const user = await User.findByIdAndUpdate(id, {status: status})
+
+            if (!user) {
+                return res.status(404).json({ message: 'Customer not found' });
+            }
+
+            res.status(200).json("Update customer status success");
+        } catch (error) {
+            throw error;
+        }
+
+    }
+
     statistic_get = async (req, res) => {
         try {
             const statisticByDate = await this.statisticByDate();

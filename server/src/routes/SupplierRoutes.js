@@ -4,7 +4,7 @@ const supplierController = require('../controllers/SupplierController')
 
 router.get('/', supplierController.all_get)
 router.post('/add', supplierController.add_post)
-router.put('/:id', supplierController.edit_put)
+router.put('/:id/edit', supplierController.edit_put)
 router.get('/statistic', supplierController.statistic_get)
 
 module.exports = router;

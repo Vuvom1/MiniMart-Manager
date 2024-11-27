@@ -4,13 +4,12 @@ import ImportProductHorizontalCard from "../../components/Card/ImportProductHori
 import SelectField from "../../components/InputField/SelectField";
 import TextField from "../../components/InputField/TextField";
 import ProductSelectionModal from "../../components/Modal/ProductSelectionModal";
-import { getAllProductByCategories, getAllProducts } from "../../services/api/ProductApi";
 import { getAllSuppliers } from "../../services/api/SupplierApi";
 import { addImport } from "../../services/api/ImportApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../components/Toast/ErrorToast";
-import { ImportStatus } from "../../constant/enum";
+import { ImportStatus, SupplierStatus } from "../../constant/enum";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../data/Entities/Product";
 import DraggableFloatComponent from "../../components/Dragable/DragableComponent";
@@ -19,8 +18,7 @@ import ValidationUtil from "../../utils/ValidationUtil";
 import { ImportDetail } from "../../data/Entities/ImportDetail";
 import { ImportFormData } from "../../data/FormData/ImportFormData";
 import StatusPickerPopover from "../../components/Picker/StatusPicker";
-import { importStatusColorMapping, statusStyleMapping } from "../../constant/mapping";
-import { ProductByCategory } from "../../data/Entities/ProductByCategories";
+import { importStatusColorMapping } from "../../constant/mapping";
 
 
 function AddImport() {
@@ -30,7 +28,6 @@ function AddImport() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
-    const [productByCategories, setProductByCategory] = useState<ProductByCategory[]>([]);
     const [loading, setLoading] = useState(true)
     const [supplierOptions, setSupplierOptions] = useState([])
     const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
@@ -42,30 +39,14 @@ function AddImport() {
     const [isScannerOpened, setIsScannerOpened] = useState(false);
     const [isValidForm, setIsValidForm] = useState(false);
 
-    const fetchProducts = async () => {
-        try {
-            const data = await getAllProducts();
-            const categoryWithProducts = await getAllProductByCategories();
-
-            setProducts(data);
-            setProductByCategory(categoryWithProducts);
-        } catch (error) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message="Error fetching products"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
-        }
-        finally {
-            setLoading(false);
-        }
-    };
 
     const fetchSuppliers = async () => {
         try {
             const data = await getAllSuppliers();
 
-            const newSupplierOptions = data.map((supplier: any) => ({
+            const activeSuppliers = data.filter((supplier: any) => supplier.status === SupplierStatus.ACTIVE);
+
+            const newSupplierOptions = activeSuppliers.map((supplier: any) => ({
                 value: supplier._id,
                 label: supplier.name,
             }));
@@ -80,7 +61,6 @@ function AddImport() {
     };
 
     useEffect(() => {
-        fetchProducts();
         fetchSuppliers();
     }, []);
 
@@ -372,7 +352,6 @@ function AddImport() {
             {showModal && (
                 <ProductSelectionModal
                     selectedProducts={importDetails.map((detail) => detail.product)}
-                    categoryWithProducts={productByCategories}
                     onSelectProducts={handleUpdateDetail}
                     onClose={() => setShowModal(false)}
                 />

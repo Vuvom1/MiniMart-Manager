@@ -41,7 +41,7 @@ const LineChart: React.FC<LineChartProps> = ({height = '100%', width = '100%', d
   };
 
   return (
-    <div  style={{ width: width, height: height }} className='pb-16 pt-2 px-8'>
+    <div  style={{ width: width, height: height }} className='p-4'>
       <Line
         data={{
           labels: labels,

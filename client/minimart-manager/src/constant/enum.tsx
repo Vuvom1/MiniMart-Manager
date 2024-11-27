@@ -22,6 +22,30 @@ export enum CustomerStatus {
     INACTIVE = 'Inactive',            
 }
 
+export enum PromotionStatus {
+    DRAFT = 'Draft',
+    SCHEDULED = 'Scheduled',
+    ACTIVE = 'Active',
+    PAUSED = 'Paused',
+    EXPIRED = 'Expired',
+    CANCELLED = 'Cancelled',
+  }
+
+export enum DiscountType {
+    PERCENTAGE= 'Percentage',
+    FIXED_AMOUNT= 'Fixed Amount',
+    GET_MORE= 'Get More',
+    FREE_GIFT= 'Free Gift',
+}
+
+export enum PromotionType {
+    PRODUCT_BASED= 'Product-Based',
+    ORDER_BASED= 'Order-Based',
+    CUSTOMER_BASED= 'Customer-Based',
+    // BRAND_SUPPLIER_BASED= 'Brand/Supplier-Based',
+    ONLINE= 'Online',
+}
+
 export enum Period {
     DAILY = 'Daily',
     MONTHLY = 'Monthly',
@@ -112,6 +136,7 @@ export enum ColumnType {
     IMAGE,
     CHECK,  
     DATE,
+    DATETIME,
 }
 
 

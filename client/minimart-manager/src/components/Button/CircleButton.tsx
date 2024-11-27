@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CircleButtonProps {
   icon: JSX.Element;  
   onClick: () => void;

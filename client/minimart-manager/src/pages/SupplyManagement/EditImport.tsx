@@ -4,7 +4,6 @@ import ImportProductHorizontalCard from "../../components/Card/ImportProductHori
 import SelectField from "../../components/InputField/SelectField";
 import TextField from "../../components/InputField/TextField";
 import ProductSelectionModal from "../../components/Modal/ProductSelectionModal";
-import { getAllProductByCategories, getAllProducts } from "../../services/api/ProductApi";
 import { getAllSuppliers } from "../../services/api/SupplierApi";
 import { addImport, getImportById, updateImport } from "../../services/api/ImportApi";
 import toast from "react-hot-toast";
@@ -28,7 +27,6 @@ function EditImport() {
 
     const [importData, setImportData] = useState<Import>();
    
-    const [productByCategories, setProductByCategory] = useState<ProductByCategory[]>([]);
     const [supplierOptions, setSupplierOptions] = useState([])
     const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
     const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
@@ -73,6 +71,8 @@ function EditImport() {
             const data = await getImportById(id); 
 
             setImportData(data);
+
+            console.log(importData)
         } catch (error) {
             console.error('Error fetching import', error);
         } finally {
@@ -115,7 +115,7 @@ function EditImport() {
     }, []);
 
     useEffect(() => {
-            setSupplier({label: importData?.supplier.name || "", value: importData?.supplier.id || ""})
+            setSupplier({label: importData?.supplier.name || "", value: importData?.supplier._id || ""})
             setInvoiceNumber(importData?.invoiceNumber||"")
             setDeliveryMan(importData?.deliveryMan||"")
             setStatus(importData?.status||ImportStatus.PENDING)
@@ -209,7 +209,6 @@ function EditImport() {
 
     const handleValidationChange = (isValid: boolean) => {
         setIsValidForm(isValid);
-        console.log(isValidForm);
     };
 
     return (
@@ -230,7 +229,7 @@ function EditImport() {
                             placeholder="Choose supplier..."
                             options={supplierOptions}
                             onChange={(selectedOption) => {
-                                setSupplier(selectedOption|| {label: importData?.supplier.name || "", value: importData?.supplier.id || ""});
+                                setSupplier(selectedOption|| {label: importData?.supplier.name || "", value: importData?.supplier._id || ""});
                             }} />
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -305,7 +304,7 @@ function EditImport() {
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
                         {importDetails.map(detail => (
                             <ImportProductHorizontalCard
-                                initialPrice={detail.importPrice.toString()}
+                                initialPrice={detail.importPrice}
                                 initialQuantity={detail.quantity}
                                 key={detail.product._id}
                                 product={detail.product}
@@ -358,7 +357,6 @@ function EditImport() {
             {showModal && (
                 <ProductSelectionModal
                     selectedProducts={importDetails.map((detail) => detail.product)}
-                    categoryWithProducts={productByCategories}
                     onSelectProducts={handleUpdateDetail}
                     onClose={() => setShowModal(false)}
                 />

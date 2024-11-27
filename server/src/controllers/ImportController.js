@@ -66,7 +66,6 @@ class ImportController {
     
             res.status(200).json(importDTO);
         } catch (error) {
-            console.error('Error fetching import by ID:', error);
             res.status(500).json({ message: 'Server error' });
         }
     };
@@ -131,15 +130,14 @@ class ImportController {
                 },
                 { new: true } 
             );
-    
+
             if (!updatedImport) {
                 return res.status(404).json({ error: 'Import not found' });
             }
     
             res.status(200).json('Import updated successfully');
         } catch (error) {
-            console.error('Error updating import:', error);
-            res.status(400).json({ message: error.message, code: error.code });
+            throw error;
         }
     };
     

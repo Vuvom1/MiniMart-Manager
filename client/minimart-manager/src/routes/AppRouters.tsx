@@ -3,7 +3,6 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 import SideMenu from '../components/SideMenu/SideMenu';
 import AppHeader from '../components/AppHeader';
 import CustomerManagement from '../pages/CustomerManagement/CustomerManangement';
-import PromotionManage from '../pages/PromotionManagement/PromotionManage';
 import Login from '../pages/Authientication/Login';
 import Signup from '../pages/Authientication/Signup';
 import PrivateRoute from './PrivateRoute';
@@ -16,6 +15,10 @@ import SupplyManagement from '../pages/SupplyManagement/SupplyManagement';
 import ImportList from '../pages/SupplyManagement/ImportList';
 import AddImport from '../pages/SupplyManagement/AddImport';
 import EditImport from '../pages/SupplyManagement/EditImport';
+import PromotionManagement from '../pages/PromotionManagement/PromotionManagement';
+import AddPromotion from '../pages/PromotionManagement/AddPromotion';
+import EditPromotion from '../pages/PromotionManagement/EditPromotion';
+
 
 const AppRouter = () => {
     const location = useLocation();
@@ -51,9 +54,13 @@ const AppRouter = () => {
                                 <Route path='imports' element={<ImportList />} />
                                 <Route path='imports/add' element={<AddImport />} />
                                 <Route path='imports/:id' element={<EditImport />} />
-                                supplies/imports/supplies/imports/6719cec720087c848fcf544c
                             </Route>
-                            <Route path='/promotions' element={<PromotionManage />} />
+
+                            <Route path="promotions" >
+                                <Route path="" element={<PromotionManagement/>} />
+                                <Route path='add' element={<AddPromotion />} />
+                                <Route path=':id' element={<EditPromotion />} />
+                            </Route>
                         </Route>
 
                         <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER, Role.STAFF]} />}>

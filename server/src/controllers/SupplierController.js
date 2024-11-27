@@ -13,7 +13,7 @@ class SupplierController {
         } catch (error) {
             throw error
         }
-    }
+    };
 
     add_post = async (req, res) => {
         try {
@@ -39,7 +39,7 @@ class SupplierController {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
     edit_put = async (req, res) => {
         try {
@@ -77,16 +77,6 @@ class SupplierController {
             res.status(200).json('Supplier updated successfully');
         } catch (error) {
             res.status(400).json({ message: error.message, code: error.code });
-        }
-
-        all_get = async (req, res) => {
-            try {
-                const suppliers = await Supplier.find();
-
-                res.status(200).json(suppliers);
-            } catch (error) {
-                throw error
-            }
         }
     };
 

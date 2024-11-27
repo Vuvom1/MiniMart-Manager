@@ -3,14 +3,16 @@ import MetricCard from "../../components/Card/MetricCard";
 import ComboBox from "../../components/ComboBox";
 import RankingCard from "../../components/Card/RankingCard";
 import { CustomerColumnData } from "../../data/ColumnData/CustomerColumnData";
-import { getAllCustomers, getCustomerStatistic } from "../../services/api/CustomerApi";
+import { getAllCustomers, getCustomerStatistic, updateCustomerStatus } from "../../services/api/CustomerApi";
 import { useState, useEffect } from "react";
 import { Customer } from "../../data/Entities/Customer";
 import { CustomerStatistic } from "../../data/StatisticData/CustomerStatistic";
 import { CustomerStatus, Period } from "../../constant/enum";
 import LineChartCard from "../../components/Card/LineChartCard";
 import CollapsedRowTable from "../../components/Table/CollapsedRowTable";
-import { customerStatusColorMapping } from "../../constant/mapping";
+import toast from "react-hot-toast";
+import SuccessToast from "../../components/Toast/SuccessToast";
+import CustomErrorToast from "../../components/Toast/ErrorToast";
 
 
 function CustomerManagement() {
@@ -57,6 +59,24 @@ function CustomerManagement() {
       console.error('Error fetching imports:', error);
     }
   };
+
+  const handleChangeStatus = async (id: string, status: string) => {
+    try {
+      const response = await updateCustomerStatus(id, status);
+
+      toast.custom((t) => (
+        <SuccessToast
+            message={response}
+            onDismiss={() => toast.dismiss(t.id)}
+        />))
+    } catch (error: any) {
+      toast.custom((t) => (
+        <CustomErrorToast
+            message={error}
+            onDismiss={() => toast.dismiss(t.id)}
+        />))
+    }
+  }
 
 
   useEffect(() => {
@@ -117,7 +137,7 @@ function CustomerManagement() {
 
 
       <div className="grow mb-2">
-        <CollapsedRowTable statuses={CustomerStatus} statusMapping={customerStatusColorMapping} title="Customer List" itemData={customers} columnData={CustomerColumnData} />
+        <CollapsedRowTable onStatusChange={(id, newStatus) => handleChangeStatus(id, newStatus == true ? CustomerStatus.ACTIVE : CustomerStatus.INACTIVE )} statuses={CustomerStatus} title="Customer List" itemData={customers} columnData={CustomerColumnData} />
       </div>
 
 

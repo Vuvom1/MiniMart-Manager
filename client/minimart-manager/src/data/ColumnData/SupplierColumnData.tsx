@@ -2,6 +2,7 @@ import { SupplierStatus } from "../../constant/enum";
 import ValidationUtil from "../../utils/ValidationUtil";
 import { ColumnData } from "./ColumnData";
 import { ColumnType } from "../../constant/enum";
+import { supplierStatusColorMapping } from "../../constant/mapping";
 
 export const supplierColumnData: ColumnData[] = [
     {
@@ -37,6 +38,7 @@ export const supplierColumnData: ColumnData[] = [
         isCollapsed: false,
         options: [SupplierStatus.ACTIVE, SupplierStatus.INACTIVE],
         type: ColumnType.STATUS,
+        colorMapping: supplierStatusColorMapping,
     },
     {
         field: "phone",

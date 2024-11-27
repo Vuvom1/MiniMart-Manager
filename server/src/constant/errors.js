@@ -44,6 +44,16 @@ const errors = {
         message: "Schedule already exist",
         code: "alreadyExistSchedule",
     },
+    requiredFieldMissing: {
+        statusCode: 400,
+        message: "Required fields missing",
+        code: "requiredFieldMissing",
+    },
+    promotionNotFound: {
+        statusCode: 400,
+        message: "Promotion not found",
+        code: "promotionNotFound",
+    }
 }
 
 module.exports = errors;

@@ -15,7 +15,6 @@ interface ItemsOverviewProps {
     seeAll?: () => void;
     addItem?: () => void;
     itemsPerPageOptions?: number[];
-    statusColorMapping: Record<string, string>; 
 }
 
 const OverviewTable: React.FC<ItemsOverviewProps> = ({
@@ -25,7 +24,6 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     seeAll,
     addItem,
     itemsPerPageOptions = [5, 10, 20],
-    statusColorMapping,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
@@ -124,7 +122,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                                         (column.type === ColumnType.STATUS ? (
 
                                             <div className='justify-center flex'>
-                                                <StatusBadge value={item[column.field]} mapping={statusColorMapping} />
+                                                <StatusBadge value={item[column.field]} mapping={column.colorMapping} />
                                             </div>
 
                                         ) : (

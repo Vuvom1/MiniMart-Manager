@@ -8,4 +8,5 @@ export interface ColumnData {
     options?: any[];
     isCollapsed?: boolean;
     type: ColumnType,
+    colorMapping?: any;
 }
