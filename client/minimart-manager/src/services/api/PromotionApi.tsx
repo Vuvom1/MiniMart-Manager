@@ -15,7 +15,7 @@ export const getAllPromotions = async () => {
 
 export const getPromotionById = async (id: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}/${id}`);
+        const response = await axios.get(`${BASE_URL}/${id}/detail`);
         
         return response.data;
     } catch(error: any) {
@@ -82,5 +82,17 @@ export const editPromotion = async (promotion: any) => {
         return response.data;
     } catch(error: any) {
         throw error.response?.data?.message || 'Edit promotion failed'; 
+    }
+}
+
+export const getPromotionStatistics = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/statistics`, {
+            withCredentials: true,
+        });
+        
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch statistics failed'; 
     }
 }

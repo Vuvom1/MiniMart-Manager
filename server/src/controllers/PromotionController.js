@@ -1,5 +1,7 @@
 const errors = require('../constant/errors');
 const Promotion = require('../models/Promotion')
+const DateUtil = require('../util/DateUtil');
+const Product = require('../models/Product');
 
 class PromotionController {
 
@@ -81,7 +83,6 @@ class PromotionController {
                 rewardQuantity,
                 requireCustomerPoint,
             });
-
             
             const savedPromotion = await promotion.save();
             res.status(201).json("A new promotion has been created");   
@@ -142,6 +143,98 @@ class PromotionController {
             throw error;
         }
     }
+
+    statistics_get = async (req, res) => {
+        try {
+            const totalPromotions = await Promotion.countDocuments();
+
+            const statisticByDate = await this.statisticByDate();
+            const statisticByMonth = await this.statisticByMonth();
+            const statisticByYear = await this.statisticByYear();
+
+            res.status(200).json({
+                totalPromotions,
+                statisticByDate,
+                statisticByMonth,
+                statisticByYear,
+            });
+        } catch (error) {
+            res.status(400).json({ message: error.message, code: error.code });
+        }
+    };
+
+    statisticByDate = async () => {
+        try {
+            const todayPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfToday(), $lt: DateUtil.getCurrentDate() }
+            });
+    
+            const yesterdayPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfYesterday(), $lt: DateUtil.getEndOfYesterday() }
+            });
+
+            const comparison = yesterdayPromotions === 0 ? todayPromotions : (todayPromotions / yesterdayPromotions);
+            const percentageCompareYesterday = comparison * 100;
+    
+            return {
+                todayPromotions,
+                yesterdayPromotions,
+                comparison,
+                percentageCompareYesterday,
+            };
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+
+    statisticByMonth = async () => {
+        try {
+            const thisMonthPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfCurrentMonth(), $lt: DateUtil.getCurrentDate() }
+            });
+    
+            const lastMonthPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfLastMonth(), $lt: DateUtil.getEndOfLastMonth() }
+            });
+
+            const comparison = lastMonthPromotions === 0 ? thisMonthPromotions : (thisMonthPromotions / lastMonthPromotions);
+            const percentageCompareLastMonth = comparison * 100;
+    
+           return {
+                thisMonthPromotions,
+                lastMonthPromotions,
+                comparison,
+                percentageCompareLastMonth,
+           };
+        } catch (error) {
+            console.error('Error fetching monthly statistics:', error);
+        }
+    };
+
+    statisticByYear = async () => {
+        try {
+            const thisYearPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfCurrentYear(), $lt: DateUtil.getCurrentDate() }
+            });
+    
+            const lastYearPromotions = await Promotion.countDocuments({
+                createdAt: { $gte: DateUtil.getStartOfLastYear(), $lt: DateUtil.getEndOfLastYear() }
+            });
+
+            const comparison = lastYearPromotions === 0 ? thisYearPromotions : (thisYearPromotions / lastYearPromotions);
+            const percentageCompareLastYear = comparison * 100;
+    
+            return{
+                thisYearPromotions,
+                lastYearPromotions,
+                comparison,
+                percentageCompareLastYear,
+            };
+        } catch (error) {
+            console.error('Error fetching yearly statistics:', error);
+        }
+    };    
 
 
 }

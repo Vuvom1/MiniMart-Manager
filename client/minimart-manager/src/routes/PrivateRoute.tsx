@@ -6,7 +6,7 @@ const PrivateRoute = ({userRole, allowedRoles = [] }: {userRole: Role, allowedRo
 
   const hasAccess = allowedRoles.includes(userRole);
 
-  return hasAccess ? <Outlet /> : <Navigate to="/unauthorized" />;
+  return hasAccess ? <Outlet /> : <Navigate to="/admin/unauthorized" />;
 };
 
 export default PrivateRoute;

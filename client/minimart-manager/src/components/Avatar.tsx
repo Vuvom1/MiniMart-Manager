@@ -1,4 +1,3 @@
-import React from 'react';
 import { DEFAULT_AVATAR } from '../constant/strings';
 
 interface AvatarProps {

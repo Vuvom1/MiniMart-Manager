@@ -2,6 +2,7 @@ export enum Role {
     ADMIN = 'ADMIN',
     MANAGER = 'MANAGER',
     STAFF = 'STAFF',
+    CUSTOMER = 'CUSTOMER',
 }
 
 export enum SupplierStatus {
@@ -33,7 +34,6 @@ export enum PromotionStatus {
 
 export enum DiscountType {
     PERCENTAGE= 'Percentage',
-    FIXED_AMOUNT= 'Fixed Amount',
     GET_MORE= 'Get More',
     FREE_GIFT= 'Free Gift',
 }
@@ -139,5 +139,14 @@ export enum ColumnType {
     DATETIME,
 }
 
+export enum ScheduleType {
+    TEAM='Team',
+    INDIVIDUAL='Individual',
+}
+
+export enum PaymentMethod {
+    CASH = 'Cash',
+    ONLINE = 'Online',  
+}
 
   

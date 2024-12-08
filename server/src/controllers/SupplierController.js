@@ -98,7 +98,6 @@ class SupplierController {
                 statisticByYear,
             });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ message: "An error occurred while counting suppliers.", error: error.message });
         }
     };

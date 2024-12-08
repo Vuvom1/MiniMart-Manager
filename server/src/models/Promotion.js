@@ -36,12 +36,6 @@ const promotionSchema = new mongoose.Schema({
         },
     },
 
-    fixedAmount: {
-        type: Number,
-        required: function () {
-            return this.discountType === DiscountType.FIX_AMOUNT;
-        },
-    },
     startTime: {
         type: Date,
         required: true,

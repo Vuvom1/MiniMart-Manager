@@ -31,3 +31,15 @@ div#root {
   background-color: #F3F5F6;
 } 
 
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: none;
+}

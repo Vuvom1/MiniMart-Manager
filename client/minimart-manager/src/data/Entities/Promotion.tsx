@@ -4,7 +4,7 @@ export interface Promotion {
     code: string;
     type: 'Order-Based' | 'Product-Based';
     discountType: 'Percentage' | 'Fixed';
-    discountValue: number;
+    discountPercentage: number;
     startTime: string;
     endTime: string;
     description?: string;
