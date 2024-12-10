@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CircleButtonProps {
   icon: JSX.Element;  
   onClick: () => void;
@@ -17,12 +15,12 @@ export default function CircleButton({
   bgColor = 'white', 
   textColor = 'black',
   borderColor = 'black',  
-  borderWidth = 'border-2',  
+  borderWidth = 'border',  
 }: CircleButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`${bgColor} ${textColor} ${borderWidth} ${borderColor} rounded-full flex items-center justify-center`}
+      className={`${bgColor} ${textColor} ${borderWidth} ${borderColor} rounded-full flex items-center justify-center hover:bg-gray-300`}
       style={{ width: size, height: size }}
     >
       {icon}

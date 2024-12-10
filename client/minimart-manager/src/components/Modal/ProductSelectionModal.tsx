@@ -9,9 +9,8 @@ import toast from 'react-hot-toast';
 import ErrorToast from '../Toast/ErrorToast';
 
 interface ProductSelectionModalProps {
-    categoryWithProducts: ProductByCategory[];
     selectedProducts: Product[];
-    onSelectProducts: (products: Product[]) => void; // Accept multiple products
+    onSelectProducts: (products: Product[]) => void; 
     onClose: () => void;
 }
 

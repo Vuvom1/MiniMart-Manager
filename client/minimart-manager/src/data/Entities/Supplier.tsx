@@ -1,5 +1,5 @@
 export interface Supplier {
-    id?: string;
+    _id?: string;
     name: string;
     email: string;
     phone: string;
@@ -9,7 +9,7 @@ export interface Supplier {
 }
 
 export class SupplierEntity implements Supplier {
-    id?: string;
+    _id?: string;
     name: string;
     email: string;
     phone: string;
@@ -18,7 +18,7 @@ export class SupplierEntity implements Supplier {
     status?: string;
 
     constructor(data: Partial<Supplier> = {}) {
-        this.id = data.id ?? '';
+        this._id = data._id ?? '';
         this.name = data.name ?? '';
         this.email = data.email ?? '';
         this.phone = data.phone ?? '';

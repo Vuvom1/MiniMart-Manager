@@ -13,7 +13,7 @@ class SupplierController {
         } catch (error) {
             throw error
         }
-    }
+    };
 
     add_post = async (req, res) => {
         try {
@@ -39,7 +39,7 @@ class SupplierController {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
     edit_put = async (req, res) => {
         try {
@@ -78,16 +78,6 @@ class SupplierController {
         } catch (error) {
             res.status(400).json({ message: error.message, code: error.code });
         }
-
-        all_get = async (req, res) => {
-            try {
-                const suppliers = await Supplier.find();
-
-                res.status(200).json(suppliers);
-            } catch (error) {
-                throw error
-            }
-        }
     };
 
     statistic_get = async (req, res) => {
@@ -108,7 +98,6 @@ class SupplierController {
                 statisticByYear,
             });
         } catch (error) {
-            console.error(error);
             res.status(500).json({ message: "An error occurred while counting suppliers.", error: error.message });
         }
     };

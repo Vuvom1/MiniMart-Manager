@@ -5,6 +5,8 @@ import RoundedIcon from '../Icon/RoundedIcon';
 import useSearch from '../../utils/SearchUtil';
 import { ColumnData } from '../../data/ColumnData/ColumnData';
 import NestedValueUtil from '../../utils/NestedValueUtil';
+import { ColumnType } from '../../constant/enum';
+import { StatusBadge } from '../Badge/StatusBadge';
 
 interface ItemsOverviewProps {
     title: string;
@@ -48,7 +50,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     };
 
     return (
-        <div className="flex flex-col bg-white shadow-md rounded-lg p-4 h-full">
+        <div className="flex flex-col bg-white shadow-md rounded-lg p-4 min-h-[500px] h-full">
             <div className='flex mb-4 items-center justify-between'>
                 <div className='flex gap-x-4 items-center justify-between'>
                     <RoundedIcon icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -80,18 +82,20 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                 </div>
             </div>
 
-            <table className="flex-auto min-w-full bg-white text-center items-center grow rounded-lg overflow-hidden shadow-md">
-                <thead className='table-header'>
+            <div className='flex-auto h-[400px] overflow-auto rounded-lg'>
+
+            <table className="min-w-full bg-white text-center items-center rounded-lg shadow-md">
+                <thead className='bg-gray-100 sticky top-0 '>
                     <tr className='rounded-md'>
                         {columnData.map((column, index) => (
-                            <th key={index} className="px-4 py-2 text-gray-500 font-semibold">
+                            <th key={index} className="sticky px-4 py-2 text-gray-500 font-semibold">
                                 {column.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody className="table-body font-normal">
-                    {filteredData.map((item, index) => (
+                    {filteredData.map((item) => (
 
                         <tr
                             key={`${item.id}-row`}
@@ -99,9 +103,9 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
 
                         >
                             {columnData.map((column, index) => (
-                                <td key={index} className="px-4 py-4 border-b border-gray-200">
-                                    {column.field === "id" ? (
-                                        <span className="relative group flex gap-x-2 items-center">
+                                <td key={index} className="px-4 py-4 border-b border-gray-200 ">
+                                    {column.type === ColumnType.ID ? (
+                                        <span className="flex gap-x-2 items-center">
                                             <button
                                                 className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
                                                 onClick={() => handleCopyId(item[column.field])}
@@ -115,10 +119,10 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
 
                                         </span>
                                     ) :
-                                        (column.field === "status" ? (
+                                        (column.type === ColumnType.STATUS ? (
 
                                             <div className='justify-center flex'>
-                                                {item[column.field]}
+                                                <StatusBadge value={item[column.field]} mapping={column.colorMapping} />
                                             </div>
 
                                         ) : (
@@ -138,6 +142,10 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                 </tbody>
 
             </table>
+
+            </div>
+
+        
 
             <div className="flex justify-between my-4">
 

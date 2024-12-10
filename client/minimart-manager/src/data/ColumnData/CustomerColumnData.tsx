@@ -1,5 +1,6 @@
 import { ColumnData } from "./ColumnData";
 import { ColumnType } from "../../constant/enum";
+import { customerStatusColorMapping } from "../../constant/mapping";
 
 export const CustomerColumnData: ColumnData[] = [
     {
@@ -42,7 +43,8 @@ export const CustomerColumnData: ColumnData[] = [
         header: "Status",
         isCollapsed: false,
         isEditable: false,
-        type: ColumnType.STATUS,
+        type: ColumnType.CHECK,
+        colorMapping: customerStatusColorMapping,
     },
     {
         field: "point",

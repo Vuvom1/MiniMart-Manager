@@ -38,6 +38,13 @@ const productSchema = new mongoose.Schema({
     expiryDate: {
         type: Date,
     },
+    sold: {
+        type: Number,
+        default: 0,
+    },
+    description: {
+        type: String,
+    },
 });
 
 const Product = mongoose.model('Product', productSchema);

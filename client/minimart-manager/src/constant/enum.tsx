@@ -2,6 +2,7 @@ export enum Role {
     ADMIN = 'ADMIN',
     MANAGER = 'MANAGER',
     STAFF = 'STAFF',
+    CUSTOMER = 'CUSTOMER',
 }
 
 export enum SupplierStatus {
@@ -20,6 +21,29 @@ export enum ImportStatus {
 export enum CustomerStatus {
     ACTIVE = 'Active',   
     INACTIVE = 'Inactive',            
+}
+
+export enum PromotionStatus {
+    DRAFT = 'Draft',
+    SCHEDULED = 'Scheduled',
+    ACTIVE = 'Active',
+    PAUSED = 'Paused',
+    EXPIRED = 'Expired',
+    CANCELLED = 'Cancelled',
+  }
+
+export enum DiscountType {
+    PERCENTAGE= 'Percentage',
+    GET_MORE= 'Get More',
+    FREE_GIFT= 'Free Gift',
+}
+
+export enum PromotionType {
+    PRODUCT_BASED= 'Product-Based',
+    ORDER_BASED= 'Order-Based',
+    CUSTOMER_BASED= 'Customer-Based',
+    // BRAND_SUPPLIER_BASED= 'Brand/Supplier-Based',
+    ONLINE= 'Online',
 }
 
 export enum Period {
@@ -112,7 +136,17 @@ export enum ColumnType {
     IMAGE,
     CHECK,  
     DATE,
+    DATETIME,
 }
 
+export enum ScheduleType {
+    TEAM='Team',
+    INDIVIDUAL='Individual',
+}
+
+export enum PaymentMethod {
+    CASH = 'Cash',
+    ONLINE = 'Online',  
+}
 
   

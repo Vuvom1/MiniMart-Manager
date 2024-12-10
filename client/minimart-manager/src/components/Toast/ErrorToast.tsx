@@ -6,7 +6,7 @@ interface CustomErrorToastProps {
     onDismiss: () => void;
 }
 
-const CustomErrorToast: React.FC<CustomErrorToastProps> = ({ message, onDismiss }) => {
+const ErrorToast: React.FC<CustomErrorToastProps> = ({ message, onDismiss }) => {
     return (
         <div className='flex justify-around bg-red-200 py-2 border border-red-500 rounded-lg'>
             <span className='px-4'>❌</span>
@@ -21,4 +21,4 @@ const CustomErrorToast: React.FC<CustomErrorToastProps> = ({ message, onDismiss 
     );
 };
 
-export default CustomErrorToast;
+export default ErrorToast;

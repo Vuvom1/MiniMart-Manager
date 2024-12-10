@@ -6,7 +6,7 @@ import { Product } from '../../data/Entities/Product';
 interface ImportProductHorizontalCardProps {
     product: Product;
     showImage?: Boolean;
-    initialPrice?: string,
+    initialPrice?: number,
     initialQuantity?: number,
     onDeleteClick?: () => void;
     onTotalQuantityChange: (quantity: number) => void;
@@ -17,14 +17,14 @@ interface ImportProductHorizontalCardProps {
 const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = ({
     product,
     showImage = false,
-    initialPrice = '',
+    initialPrice = 0,
     initialQuantity = 1,
     onTotalQuantityChange,
     onTotalPriceChange,
     onPriceChange,
 }) => {
     const [importPrice, setImportPrice] = useState(initialPrice);
-    const [totalPrice, setTotalPrice] = useState(initialQuantity *  parseFloat(initialPrice.replace(/[^0-9.]/g, '')));
+    const [totalPrice, setTotalPrice] = useState(initialQuantity *  initialPrice);
     const [totalQuantity, setTotalQuantity] = useState(initialQuantity);
 
     useEffect(() => {
@@ -41,13 +41,13 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setImportPrice(value);
+        setImportPrice(parseFloat(value));
     };
 
     
 
-    const calculateTotalPrice = (quantity: number, price: string) => {
-        const numericPrice = parseFloat(price.replace(/[^0-9.]/g, ''));
+    const calculateTotalPrice = (quantity: number, price: number) => {
+        const numericPrice = parseFloat(price.toString().replace(/[^0-9.]/g, ''));
         const newTotalPrice = numericPrice ? quantity * numericPrice : 0;
         onPriceChange(numericPrice)
         onTotalPriceChange(newTotalPrice);
@@ -73,7 +73,6 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
                     <div className='flex gap-x-1'>
                         <MoneyField
                             height='25px'
-                            initialValue={initialPrice}
                             value={importPrice}
                             onChange={handlePriceChange}
                             placeholder="$0.00"

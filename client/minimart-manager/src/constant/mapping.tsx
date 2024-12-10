@@ -1,4 +1,4 @@
-import { CustomerStatus, ImportStatus, SupplierStatus } from "./enum";
+import { CustomerStatus, DiscountType, ImportStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
@@ -8,7 +8,7 @@ export const statusStyleMapping: { [key: string]: string } = {
 
 export const supplierStatusColorMapping: {[key in SupplierStatus]: string} = {
   [SupplierStatus.ACTIVE]: 'green-200',
-  [SupplierStatus.INACTIVE]: 'gray-200',
+  [SupplierStatus.INACTIVE]: 'red-200',
 };
 
 export const importStatusColorMapping: { [key in ImportStatus]: string } = {
@@ -23,6 +23,57 @@ export const customerStatusColorMapping: {[key in SupplierStatus]: string} = {
     [CustomerStatus.ACTIVE]: 'green-200',
     [CustomerStatus.INACTIVE]: 'gray-200',
   };
+
+export const promotionStatusColorMapping: { [key in PromotionStatus]: string } = {
+    [PromotionStatus.DRAFT]: 'gray-300',
+    [PromotionStatus.SCHEDULED]: 'blue-300',
+    [PromotionStatus.ACTIVE]: 'green-300',
+    [PromotionStatus.PAUSED]: 'yellow-300',
+    [PromotionStatus.EXPIRED]: 'red-300',
+    [PromotionStatus.CANCELLED]: 'gray-400',
+  };
+
+  export const promotionTypeColorMapping: { [key in PromotionType]: string } = {
+    [PromotionType.PRODUCT_BASED]: 'purple-500',       
+    [PromotionType.ORDER_BASED]: 'blue-500',              
+    [PromotionType.CUSTOMER_BASED]: 'orange-500',        
+    // [PromotionType.BRAND_SUPPLIER_BASED]: 'yellow-500',   
+    [PromotionType.ONLINE]: 'indigo-500',                
+};
+
+
+  export const discountTypeColorMapping: { [key in DiscountType]: string } = {
+    [DiscountType.PERCENTAGE]: 'green-500',    
+    [DiscountType.FIXED_AMOUNT]: 'blue-500',     
+    [DiscountType.GET_MORE]: 'yellow-500',      
+    [DiscountType.FREE_GIFT]: 'purple-500',     
+};
+
+export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: DiscountType[] } = {
+  [PromotionType.PRODUCT_BASED]: [
+      DiscountType.PERCENTAGE,
+      DiscountType.FIXED_AMOUNT,
+      DiscountType.GET_MORE,
+      DiscountType.FREE_GIFT,
+  ],
+  [PromotionType.ORDER_BASED]: [
+      DiscountType.PERCENTAGE,
+      DiscountType.FIXED_AMOUNT,
+  ],
+  [PromotionType.CUSTOMER_BASED]: [
+      DiscountType.PERCENTAGE,
+      DiscountType.FIXED_AMOUNT,
+  ],
+  // [PromotionType.BRAND_SUPPLIER_BASED]: [
+  //     DiscountType.PERCENTAGE,
+  //     DiscountType.FIXED_AMOUNT,
+  // ],
+  [PromotionType.ONLINE]: [
+      DiscountType.PERCENTAGE,
+      DiscountType.FIXED_AMOUNT,
+      DiscountType.FREE_GIFT,
+  ],
+};
   
 
 export const tailwindColorMap: { [key: string]: string } = {

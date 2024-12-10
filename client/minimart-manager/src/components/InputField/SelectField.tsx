@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 interface SelectFieldProps {
@@ -18,8 +19,8 @@ export default function SelectField({
   id,
   label,
   name,
-  value,
   initialValue,
+  value,
   onChange,
   placeholder = "Select an option",
   width = '100%',
@@ -27,7 +28,24 @@ export default function SelectField({
   options,
   prefixIcon,
 }: SelectFieldProps) {
-  const selectedValue = value ?? initialValue ?? null;
+  const [selectedValue, setSelectedValue] = useState<{ label: string; value: string } | null>(
+    initialValue || null
+  );
+
+  console.log(selectedValue)
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelectedValue(value);
+    }
+  }, [value]);
+
+  const handleChange = (selectedOption: { label: string; value: string } | null) => {
+    setSelectedValue(selectedOption);
+    if (onChange) {
+      onChange(selectedOption);
+    }
+  };
 
   return (
     <div style={{ width }}>
@@ -42,7 +60,7 @@ export default function SelectField({
           id={id}
           name={name}
           value={selectedValue}
-          onChange={onChange}
+          onChange={handleChange}
           options={options}
           placeholder={placeholder}
           classNamePrefix="react-select" 

@@ -13,6 +13,20 @@ export const getAllCustomers = async () => {
     }
 }
 
+export const updateCustomerStatus = async (id: string, status: string) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/${id}/updateStatus`, {
+            status
+        }, {
+            withCredentials: true,
+        });
+
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Update customer status failed'; 
+    }
+}
+
 // export const addImport = async (importData: any) => {
 //     try {
 //         const response = await axios.post(`${BASE_URL}/add`, {

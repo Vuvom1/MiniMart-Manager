@@ -135,6 +135,22 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
         return week;
     }
 
+    convertIsoDateToTimeAndDate(isoDate: string): string {
+    const date = new Date(isoDate);
+
+   
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}, ${time}`;
+}
+
+
     timeDifference(startTime: string, endTime: string): string {
         const [startHours, startMinutes] = startTime.split(":").map(Number);
         const [endHours, endMinutes] = endTime.split(":").map(Number);
@@ -159,5 +175,12 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
                 ? `${hours}h`
                 : `${hours}h ${minutes}m`;
 
+    }
+
+    updateTime(date: Date, timeString: string): Date {
+        const [hours, minutes] = timeString.split(':').map(Number);
+        const newDate = new Date(date);
+        newDate.setHours(hours, minutes);
+        return newDate;
     }
 }

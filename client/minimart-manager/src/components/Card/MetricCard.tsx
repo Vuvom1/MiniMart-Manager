@@ -20,28 +20,26 @@ const MetricCard = ({
         <div className="flex justify-between bg-white rounded-lg p-6 shadow-lg h-full w-full">
             <div className="flex flex-col justify-between ">
                 <h3 className="text-gray-600 text-lg font-medium">{title}</h3>
-               
-                    <span className="text-3xl font-bold text-gray-800">{value}</span>
-                    <div className="flex items-center mt-2 gap-x-2">
-                        <div className={`flex ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                            <svg
-                                className={`w-5 h-5 ml-1 transform ${isPositive ? 'rotate-0' : 'rotate-180'}`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M10 18a1 1 0 01-1-1V6.414L5.707 10.707a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414L11 6.414V17a1 1 0 01-1 1z"
-                                    clipRule="evenodd"
-                                />
+
+                <span className="text-3xl font-bold text-gray-800">{value}</span>
+                <div className="flex items-center mt-2 gap-x-2">
+                    <div className={`flex ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                        {isPositive ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
                             </svg>
-                            <span className="text-sm  font-medium">{isPositive ? '+' : '-'}{percentage}%</span>
 
-                        </div>
-                        <p className="text-gray-500 text-sm">vs last {period}</p>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
+                            </svg>
+                        )}
+                        <span className="text-sm font-medium">{isPositive ? '+' : '-'}{percentage}%</span>
                     </div>
+                    <p className="text-gray-500 text-sm">vs last {period}</p>
+                </div>
 
-          
+
 
             </div>
             <div className="">

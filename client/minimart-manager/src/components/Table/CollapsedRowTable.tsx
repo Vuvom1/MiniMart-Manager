@@ -8,6 +8,7 @@ import { ColumnData } from '../../data/ColumnData/ColumnData';
 import { StatusBadge } from '../Badge/StatusBadge';
 import { ColumnType } from '../../constant/enum';
 import StatusPickerModal from '../Picker/StatusPicker';
+import { CheckSlider } from '../check/CheckSlider';
 
 interface ItemsProps {
     statuses: Record<string, string>;
@@ -16,10 +17,10 @@ interface ItemsProps {
     columnData: ColumnData[];
     seeAll?: () => void;
     addItem?: () => void;
-    statusMapping: Record<string, string>; 
     itemsPerPageOptions?: number[];
     onItemDataChange?: (updatedData: any[]) => void;
     onSave?: (updatedData: any) => void;
+    onStatusChange?: (id: string, status: boolean) => void;
 }
 
 const CollapsedRowTable: React.FC<ItemsProps> = ({
@@ -29,10 +30,10 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
     columnData = [],
     seeAll,
     addItem,
-    statusMapping,
     itemsPerPageOptions = [5, 10, 20],
     onItemDataChange,
     onSave,
+    onStatusChange,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
@@ -120,12 +121,12 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                 </div>
             </div>
 
-            <table className="flex-auto min-w-full bg-white text-center items-center grow rounded-lg overflow-hidden shadow-md">
+            <table className="flex-auto min-w-full bg-white items-center grow rounded-lg overflow-hidden shadow-md">
                 <thead className="table-header">
                     <tr className="rounded-md">
                         {columnData.map((column, index) => (
                             !column.isCollapsed &&
-                            <th key={index} className="px-4 py-2 text-gray-500 font-semibold bg-gray-100">
+                            <th key={index} className={`px-4 py-2 text-gray-500 font-semibold ${(column.type === ColumnType.STATUS || column.type === ColumnType.CHECK) ? 'text-center' : 'text-start'} bg-gray-100`}>
                                 {column.header}
                             </th>
                         ))}
@@ -161,15 +162,24 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                             (column.type === ColumnType.STATUS ? (
                                                 <div className='justify-center flex'>
                                                     {column.isEditable && expandedRows == index ? (
-                                                        <StatusPickerModal initialValue={item[column.field]} statusEnum={statuses} colorMapping={statusMapping} onSelect={(newValue) => handleValueChange(startIndex + index, column.field, newValue)}/>
-                                                       ) : (<StatusBadge value={item[column.field]} mapping={statusMapping} />)}
+                                                        <StatusPickerModal initialValue={item[column.field]} statusEnum={statuses} colorMapping={column.colorMapping} onSelect={(newValue) => handleValueChange(startIndex + index, column.field, newValue)} />
+                                                    ) : (<StatusBadge value={item[column.field]} mapping={column.colorMapping} />)}
 
                                                 </div>
 
-                                            ) : (
+                                            ) : (column.type === ColumnType.CHECK ? (
 
                                                 <div className='justify-center flex'>
-                                                    { column.isEditable ? 
+
+                                                    <CheckSlider initialValue={item[column.field] == 'Active' ? true : false} onValueChange={(value) =>
+                                                        onStatusChange ? onStatusChange(item.id, value) : undefined
+                                                    } />
+
+
+                                                </div>
+                                            ) : (
+                                                <div className='justify-start flex'>
+                                                    {column.isEditable ?
                                                         (
                                                             <EditableInfo
                                                                 validations={column.validations}
@@ -181,7 +191,8 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                                     }
 
 
-                                                </div>
+                                                </div>)
+
 
 
 

@@ -31,7 +31,7 @@ export const addSupplier = async (name:string, email:string, phone:string, addre
 
 export const updateSupplier = async (id: string, supplierData: {name:string, email:string, status: String, phone:string, address:string, description:string}) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${id}`, {
+        const response = await axios.put(`${BASE_URL}/${id}/edit`, {
             supplierData
         }, {
             withCredentials: true,
