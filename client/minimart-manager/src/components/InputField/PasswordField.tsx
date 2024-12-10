@@ -15,7 +15,7 @@ interface PasswordFieldProps {
     validations?: Array<(value: string) => string | null>;
     validationPassed?: (isValid: boolean) => void;
     confirmValue?: string;
-    isConfirmField?: boolean; 
+    isConfirmField?: boolean;
 }
 
 export default function PasswordField({
@@ -32,7 +32,7 @@ export default function PasswordField({
     validations = [],
     validationPassed,
     confirmValue = '',
-    isConfirmField = false, 
+    isConfirmField = false,
 }: PasswordFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [internalError, setInternalError] = useState<string | null>(error);
@@ -97,7 +97,7 @@ export default function PasswordField({
                     onChange={handleChange}
                     placeholder={placeholder}
                     className={`block w-full rounded-md border-0 py-1.5 ${prefix ? 'pl-10' : 'pl-3'
-                        } pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                        } pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6`}
                     style={{ height }}
                 />
                 <button
@@ -114,12 +114,13 @@ export default function PasswordField({
                         </svg>
                     }
                 </button>
-                {(internalError || error) && (
-                    <p className="text-xs text-red-500">
-                        {internalError || error}
-                    </p>
-                )}
+
             </div>
+            {(internalError || error) && (
+                <p className="text-xs text-red-500">
+                    {internalError || error}
+                </p>
+            )}
 
         </div>
     );

@@ -1,10 +1,25 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import CustomerHeader from './Header/CustomerHeader';
 import CustomerFooter from './Footer/CustomerFooter';
 import CartDialog from '../components/Dialog/CartDialog';
+import { useLocation } from 'react-router-dom';
+
 
 const CustomerLayout = ({ children }: { children: ReactNode }) => {
     const [cartDialogOpen, setCartDialogOpen] = useState(false);
+    const [CustomerHeaderVisible, setCustomerHeaderVisible] = useState(true);
+
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const path = location.pathname;
+        if (path === '/minimartonline/login' || path === '/minimartonline/signup') {
+            setCustomerHeaderVisible(false);
+        } else {
+            setCustomerHeaderVisible(true);
+        }
+    }, [location]);
 
 
     return (
@@ -12,7 +27,9 @@ const CustomerLayout = ({ children }: { children: ReactNode }) => {
         <>
 
             <div className={`flex flex-col w-full bg-white`}>
-                <CustomerHeader onCartOpen={() => { setCartDialogOpen(true) }} />
+                {
+                    CustomerHeaderVisible && <CustomerHeader onCartOpen={() => { setCartDialogOpen(true) }} />
+                }
                 <div className={`flex flex-col h-full overflow-y-auto w-full`}>
                     <div className='w-full h-full'>
                         <div className='px-10'>
