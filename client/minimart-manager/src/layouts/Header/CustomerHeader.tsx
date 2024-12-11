@@ -4,10 +4,9 @@ import { useEffect, useState, useContext } from "react";
 import { Category } from "../../data/Entities/Category";
 import { getAllCategories } from "../../services/api/CategoryApi";
 import { useAuth } from "../../providers/AuthProvider";
-import CircleButton from '../../components/Button/CircleButton';
-import Avatar from '../../components/Avatar';
 import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/16/solid';
 import {CartContext} from '../../contexts/CartContext';
+import Urls from '../../constant/urls';
 
 interface CustomerHeaderProps {
     onCartOpen: () => void;
@@ -17,11 +16,12 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
     const navigate = useNavigate();
     const auth = useAuth();
     const [categories, setCategories] = useState<Category[]>([]);
-    const {totalItems} = useContext(CartContext);
+    const cartContext = useContext(CartContext);
+    const totalItems = cartContext ? cartContext.totalItems : 0;
 
     function handleLogout() {
         auth.logout();
-        navigate('/login');
+        navigate(Urls.CUSTOMER.LOGIN.Path);
     }
 
     const fetchCategories = async () => {
@@ -34,7 +34,7 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
     }
 
     const onCategoryClick = (id: string) => {
-        navigate(`/minimartonline/category/${id}`);
+        navigate(`${Urls.CUSTOMER.CATEGORY.Path}/${id}`);
     }
 
     useEffect(() => {
@@ -79,11 +79,11 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
 
                 <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                  <a href={Urls.CUSTOMER.LOGIN.Path} className="text-sm font-medium text-gray-700 hover:text-gray-800">
                     Sign in
                   </a>
                   <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                  <a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                  <a href={Urls.CUSTOMER.SIGNUP.Path} className="text-sm font-medium text-gray-700 hover:text-gray-800">
                     Create account
                   </a>
                 </div>

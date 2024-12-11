@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
-import { CartContext } from "../contexts/CartContext";
-import { CartItem } from "../../data/Entities/CartItem";
-import { Product } from "../../data/Entities/Product";
+import { CartItem } from "../data/Entities/CartItem"
+import { Product } from "../data/Entities/Product"
 import { CalculateUtil } from "../utils/CalculateUtil";
+import { CartContext } from "../contexts/CartContext";
 
 interface CartProviderProps {
     children: ReactNode;
@@ -10,7 +10,7 @@ interface CartProviderProps {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const storedCartItems = localStorage.getItem('cartItems');
-    const [cartItems, setCartItems] = useState<CartItem[]>(JSON.parse(storedCartItems));
+    const [cartItems, setCartItems] = useState<CartItem[]>(storedCartItems ? JSON.parse(storedCartItems) : []);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);  
    
@@ -28,8 +28,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         i.product._id === product._id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      const netPrice = CalculateUtil.calculateDiscountPrice(product.price , product.promotion?.discountPercentage || 0);
-      return [...prevItems, { product, quantity: 1, netPrice }];
+      const netPrice = CalculateUtil.calculateDiscountPrice(product.price || 0 , product.promotion?.discountPercentage ?? 0);
+      return [...prevItems, { product, quantity: 1, netPrice, filter: (arg0: (item: CartItem) => boolean) => true }];
       });
     };
 

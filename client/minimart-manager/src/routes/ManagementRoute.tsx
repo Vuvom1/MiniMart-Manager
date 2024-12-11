@@ -15,6 +15,7 @@ import AddPromotion from '../pages/employee/PromotionManagement/AddPromotion';
 import EditPromotion from '../pages/employee/PromotionManagement/EditPromotion';
 import Dashboard from '../pages/employee/Dashboard/Dashboard';
 import CustomerManagement from '../pages/employee/CustomerManagement/CustomerManangement';
+import Urls from '../constant/urls';
 
 const AppRouter = () => {
     const { user, loading } = useAuth();
@@ -26,32 +27,32 @@ const AppRouter = () => {
 
     return (
         <Routes>
-            <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Signup />} />
+            <Route path={Urls.ADMIN.LOGIN.Route} element={<Login />} />
+            <Route path={Urls.ADMIN.SIGNUP.Route} element={<Signup />} />
 
             <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN]} />}>
             </Route>
 
             <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER]} />}>
-                <Route path="supplies" >
+                <Route path={Urls.ADMIN.SUPPLIES.BASE.Route} >
                     <Route path="" element={<SupplyManagement />} />
-                    <Route path='imports' element={<ImportList />} />
-                    <Route path='imports/add' element={<AddImport />} />
-                    <Route path='imports/:id' element={<EditImport />} />
+                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Route} element={<ImportList />} />
+                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.ADD.Route} element={<AddImport />} />
+                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.EDIT.Route} element={<EditImport />} />
                 </Route>
 
-                <Route path="promotions" >
+                <Route path={Urls.ADMIN.PROMOTIONS.BASE.Route} >
                     <Route path="" element={<PromotionManagement />} />
-                    <Route path='add' element={<AddPromotion />} />
-                    <Route path=':id' element={<EditPromotion />} />
+                    <Route path={Urls.ADMIN.PROMOTIONS.ADD.Route} element={<AddPromotion />} />
+                    <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
                 </Route>
             </Route>
 
             <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER, Role.STAFF]} />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path='/customers' element={<CustomerManagement />} />
-                <Route path='/schedule'>
-                    <Route path='' element={<ScheduleManagement />} />
+                <Route path={Urls.ADMIN.DASHBOARD.Route} element={<Dashboard />} />
+                <Route path={Urls.ADMIN.CUSTOMERS.Route} element={<CustomerManagement />} />
+                <Route path={Urls.ADMIN.SCHEDULE.Route}>
+                    <Route path="" element={<ScheduleManagement />} />
                 </Route>
             </Route>
 

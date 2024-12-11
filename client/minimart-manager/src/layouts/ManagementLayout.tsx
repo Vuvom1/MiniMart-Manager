@@ -15,7 +15,7 @@ const CustomerLayout = ({ children }: { children: ReactNode }) => {
         if (userRole === Role.ADMIN || userRole === Role.MANAGER || userRole === Role.STAFF) {
             setSideLayoutVisible(true);
         }
-    }, [userRole]);
+    }, [user]);
 
     if (loading) {
         return <div>Loading...</div>;

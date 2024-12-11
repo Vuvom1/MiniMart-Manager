@@ -11,7 +11,11 @@ interface CartDialogProps {
 }
 
 export default function CartDialog({ open, onClose }: CartDialogProps) {
-    const { cartItems, totalPrice,totalItems, changeQuantity, removeFromCart } = useContext(CartContext)
+    const cartContext = useContext(CartContext);
+    if (!cartContext) {
+        return null;
+    }
+    const { cartItems, totalPrice, totalItems, changeQuantity, removeFromCart } = cartContext;
     const navigate = useNavigate();
 
     return (
@@ -49,7 +53,7 @@ export default function CartDialog({ open, onClose }: CartDialogProps) {
                                         <div className="flow-root overflow-y-scroll h-full">
                                             <ul role="list" className="-my-6 divide-y divide-gray-200">
                                                 {cartItems.map((cartItem) => (
-                                                   <CartItemCard key={cartItem.id} cartItem={cartItem} onChangeQuantity={(id,quantity)=>changeQuantity(id, quantity)} onRemove={(id)=>removeFromCart(id)}/>
+                                                   <CartItemCard key={cartItem.product._id} cartItem={cartItem} onChangeQuantity={(id, quantity) => changeQuantity(id, quantity)} onRemove={(id) => removeFromCart(id)} id={0}/>
                                                 ))}
                                             </ul>
                                         </div>

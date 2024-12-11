@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import CustomErrorToast from '../../../components/Toast/ErrorToast';
 import SuccessToast from '../../../components/Toast/SuccessToast';
 import { Role } from '../../../constant/enum';
+import Urls from '../../../constant/urls';
 
 
 function CustomerSignup() {
@@ -60,7 +61,7 @@ function CustomerSignup() {
       };
 
     function navigateLogin() {
-        navigate('../login')
+        navigate(Urls.CUSTOMER.LOGIN.Path);
     }
 
     return <div className="w-full h-full flex bg-cyan-500 my-10">

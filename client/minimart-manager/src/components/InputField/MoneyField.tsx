@@ -24,7 +24,7 @@ const MoneyField: React.FC<MoneyFieldProps> = ({
   value = 0.00,
   onChange,
   placeholder,
-  height = '40px',
+  height = '50px',
   width = '100%',
   error = null,
 }) => {
@@ -47,7 +47,7 @@ const MoneyField: React.FC<MoneyFieldProps> = ({
           {label}
         </label>
       )}
-      <div className={`relative rounded-md shadow-sm border ${error ? 'border-red-500' : 'border-gray-300'}`} style={{ height }}>
+      <div className={`relative rounded-md border ${error ? 'border-red-500' : 'border-gray-300'}`} style={{ height }}>
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}
@@ -60,7 +60,7 @@ const MoneyField: React.FC<MoneyFieldProps> = ({
           value={currentValue}
           onChange={handleMoneyChange}
           placeholder={placeholder}
-          className={`block w-full pl-7 pr-12 sm:text-sm`}
+          className={`block w-full pl-7 pr-12 pb-1 sm:text-sm`}
           style={{ height }}
         />
         {suffixIcon && (

@@ -8,6 +8,7 @@ import ManagementLayout from './layouts/ManagementLayout';
 import ManagementRoute from './routes/ManagementRoute';
 import CustomerLayout from './layouts/CustomerLayout';
 import {CartProvider} from './providers/CartProvider';
+import Urls from './constant/urls';
 
 function App() {
   return (
@@ -25,8 +26,8 @@ function App() {
           />
           <Router>
             <Routes>
-              <Route path="/admin/*" element={<ManagementLayout><ManagementRoute /></ManagementLayout>} />
-              <Route path="/minimartonline/*" element={<CustomerLayout><CustomerRoute/></CustomerLayout>} />
+              <Route path={`${Urls.ADMIN.BASE}/*`} element={<ManagementLayout><ManagementRoute /></ManagementLayout>} />
+              <Route path={`${Urls.CUSTOMER.BASE}/*`} element={<CustomerLayout><CustomerRoute/></CustomerLayout>} />
             </Routes>
           </Router>
           </CartProvider>

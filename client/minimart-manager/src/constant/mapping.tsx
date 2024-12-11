@@ -44,7 +44,6 @@ export const promotionStatusColorMapping: { [key in PromotionStatus]: string } =
 
   export const discountTypeColorMapping: { [key in DiscountType]: string } = {
     [DiscountType.PERCENTAGE]: 'green-500',    
-    [DiscountType.FIXED_AMOUNT]: 'blue-500',     
     [DiscountType.GET_MORE]: 'yellow-500',      
     [DiscountType.FREE_GIFT]: 'purple-500',     
 };
@@ -52,17 +51,14 @@ export const promotionStatusColorMapping: { [key in PromotionStatus]: string } =
 export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: DiscountType[] } = {
   [PromotionType.PRODUCT_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
       DiscountType.GET_MORE,
       DiscountType.FREE_GIFT,
   ],
   [PromotionType.ORDER_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
   ],
   [PromotionType.CUSTOMER_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
   ],
   // [PromotionType.BRAND_SUPPLIER_BASED]: [
   //     DiscountType.PERCENTAGE,
@@ -70,7 +66,6 @@ export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: Disco
   // ],
   [PromotionType.ONLINE]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
       DiscountType.FREE_GIFT,
   ],
 };

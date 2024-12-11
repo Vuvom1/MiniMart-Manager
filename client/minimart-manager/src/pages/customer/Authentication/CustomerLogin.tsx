@@ -10,6 +10,7 @@ import ValidationUtil from '../../../utils/ValidationUtil';
 import { useAuth } from '../../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import SuccessToast from '../../../components/Toast/SuccessToast';
+import Urls from '../../../constant/urls';
 
 
 function Login() {
@@ -28,15 +29,15 @@ function Login() {
         setLoading(true);
 
         try {
-            // await auth.login(email, password);
+            await auth.login(email, password);
 
-            // toast.custom((t) => (
-            //     <SuccessToast
-            //         message="Welcome back!"
-            //         onDismiss={() => toast.dismiss(t.id)}
-            //     />
-            // ));
-            navigate('../');
+            toast.custom((t) => (
+                <SuccessToast
+                    message="Welcome back!"
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
+            navigate(Urls.CUSTOMER.BASE);
         } catch (err: any) {
             setError(`Login failed: ${err || "An unknown error occurred"}`);
         } finally {
@@ -49,7 +50,7 @@ function Login() {
     };
 
     function navigateSignup() {
-        navigate('../signup')
+        navigate(Urls.CUSTOMER.SIGNUP.Path);
     }
 
     return (

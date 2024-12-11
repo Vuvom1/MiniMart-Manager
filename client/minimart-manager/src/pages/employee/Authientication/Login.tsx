@@ -10,6 +10,7 @@ import ValidationUtil from '../../../utils/ValidationUtil';
 import { useAuth } from '../../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import SuccessToast from '../../../components/Toast/SuccessToast';
+import Urls from '../../../constant/urls';
 
 
 function Login() {
@@ -36,7 +37,7 @@ function Login() {
                   onDismiss={() => toast.dismiss(t.id)}
               />
           ));
-            navigate('dashboard');
+            navigate(Urls.ADMIN.DASHBOARD.Path);
         } catch (err: any) {
             setError(`Login failed: ${err || "An unknown error occurred"}`);
         } finally {
@@ -49,7 +50,7 @@ function Login() {
     };
 
     function navigateSignup() {
-      navigate('../signup')
+      navigate(Urls.ADMIN.SIGNUP.Path);
     }
 
     return (
