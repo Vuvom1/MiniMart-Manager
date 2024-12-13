@@ -14,8 +14,9 @@ const Urls = Object.freeze({
         LOGIN: createUrl(baseCustomerUrl, 'login'),
         SIGNUP: createUrl(baseCustomerUrl, 'signup'),
         CATEGORY: createUrl(baseCustomerUrl, 'category'),
-        PRODUCT: createUrl(baseCustomerUrl, 'product'),
-        CHECKOUT: createUrl(baseCustomerUrl, 'checkout')
+        PRODUCT: createUrl(baseCustomerUrl, 'product/:id'),
+        CHECKOUT: createUrl(baseCustomerUrl, 'checkout'),
+        ORDER_TRACKING: createUrl(baseCustomerUrl, 'order-tracking')
     },
     ADMIN: {
         BASE: baseAdminUrl,
@@ -36,7 +37,11 @@ const Urls = Object.freeze({
         },
         CUSTOMERS: createUrl(baseAdminUrl, 'customers'),
         SCHEDULE: createUrl(baseAdminUrl, 'schedule'),
-        DASHBOARD: createUrl(baseAdminUrl, 'dashboard')
+        DASHBOARD: createUrl(baseAdminUrl, 'dashboard'),
+        ORDER: {
+            BASE: createUrl(baseAdminUrl, 'orders'),
+            DETAIL: createUrl(baseAdminUrl, 'orders/:id')
+        }
     }
 });
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const PromotionType = require('../constant/PromotionType');
 const DiscountType = require('../constant/DiscountType');
 const PromotionStatus = require('../constant/PromotionStatus');
+const Product = require('./Product');
 
 const promotionSchema = new mongoose.Schema({
     name: {
@@ -50,7 +51,7 @@ const promotionSchema = new mongoose.Schema({
     applicableProducts: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: Product,
             required: function () {
                 return this.type === PromotionType.PRODUCT_BASED;
             },
@@ -85,7 +86,7 @@ const promotionSchema = new mongoose.Schema({
     giftItems: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: Product,
             required: function () {
                 return this.discountType === DiscountType.FREE_GIFT;
             },

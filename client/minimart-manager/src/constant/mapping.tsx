@@ -1,4 +1,4 @@
-import { CustomerStatus, DiscountType, ImportStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
+import { CustomerStatus, DiscountType, ImportStatus, ProductStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
@@ -69,6 +69,13 @@ export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: Disco
       DiscountType.FREE_GIFT,
   ],
 };
+
+export const productStatusColorMapping: { [key: string]: string } = {
+  [ProductStatus.IN_STOCK]: 'green-200', 
+  [ProductStatus.OUT_OF_STOCK]: 'red-200',
+  [ProductStatus.UNAVAILABLE]: 'gray-200',
+  [ProductStatus.EXPIRED]: 'gray-200',
+}
   
 
 export const tailwindColorMap: { [key: string]: string } = {

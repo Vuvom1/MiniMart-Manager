@@ -32,9 +32,9 @@ const CustomerLayout = ({ children }: { children: ReactNode }) => {
                 }
                 <div className={`flex flex-col h-full overflow-y-auto w-full`}>
                     <div className='w-full h-full'>
-                        <div className='px-10'>
+                        
                             {children}
-                        </div>
+                        
 
                         <div className='w-vh mt-10 '>
                             <CustomerFooter />

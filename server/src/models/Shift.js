@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Position = require('./Position')
+const Schedule = require('./Schedule')
 
 const shiftSchema = new mongoose.Schema({
     title: {
@@ -27,12 +28,12 @@ const shiftSchema = new mongoose.Schema({
     },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Schedule',
+        ref: Schedule,
         required: true,
     },
     position: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Position',
+        ref: Position,
         required: true,
     },
     notes: {

@@ -13,6 +13,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>(storedCartItems ? JSON.parse(storedCartItems) : []);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);  
+
+    const itemQuantity = (id: string) => {
+        return cartItems.find((item) => item.product._id === id)?.quantity ?? 0;
+    };
    
     const saveCartItems = (items: CartItem[]) => {
       localStorage.setItem('cartItems', JSON.stringify(items));
@@ -42,6 +46,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     };
 
     const changeQuantity = (id: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeFromCart(id);
+        return;
+      }
       setCartItems((prevItems: CartItem[]) => prevItems.map((item: CartItem) => item.product._id === id ? { ...item, quantity } : item));
     }
   
@@ -50,7 +58,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }, [cartItems]);
 
     return (
-      <CartContext.Provider value={{ cartItems, totalItems, totalPrice, addToCart, changeQuantity, removeFromCart, clearCart }}>
+      <CartContext.Provider value={{ cartItems, totalItems, totalPrice, itemQuantity, addToCart, changeQuantity, removeFromCart, clearCart }}>
         {children}
       </CartContext.Provider>
     );

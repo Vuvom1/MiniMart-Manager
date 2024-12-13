@@ -7,6 +7,8 @@ interface CartContextProps {
   totalItems: number;
   totalPrice: number;
   
+  itemQuantity: (id: string) => number;
+
   addToCart: (product: Product) => void;
 
   removeFromCart: (id: string) => void;

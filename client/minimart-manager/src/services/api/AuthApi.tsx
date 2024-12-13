@@ -28,6 +28,9 @@ export const registerUser = async (firstname: string, lastname: string, username
         }, {
             withCredentials: true,
         });
+        if (role === Role.CUSTOMER) {
+            
+        }
         return response.data;
     } catch(error: any) {
         throw error.response?.data?.message || 'Signup failed'; 

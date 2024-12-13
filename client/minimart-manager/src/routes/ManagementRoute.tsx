@@ -16,10 +16,11 @@ import EditPromotion from '../pages/employee/PromotionManagement/EditPromotion';
 import Dashboard from '../pages/employee/Dashboard/Dashboard';
 import CustomerManagement from '../pages/employee/CustomerManagement/CustomerManangement';
 import Urls from '../constant/urls';
+import OrderManagement from '../pages/employee/Order/OrderManagement';
 
 const AppRouter = () => {
     const { user, loading } = useAuth();
-    const userRole = user?.role
+    const userRole: Role = (user?.role as Role) ?? Role.STAFF;
 
     if (loading) {
         return <div>Loading...</div>;
@@ -45,6 +46,9 @@ const AppRouter = () => {
                     <Route path="" element={<PromotionManagement />} />
                     <Route path={Urls.ADMIN.PROMOTIONS.ADD.Route} element={<AddPromotion />} />
                     <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
+                </Route>
+
+                <Route path={Urls.ADMIN.ORDER.BASE.Route} element={<OrderManagement />} >
                 </Route>
             </Route>
 

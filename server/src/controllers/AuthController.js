@@ -2,7 +2,9 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken'); 
 const createToken = require('../util/JwtUtil')
 const errors = require('../constant/errors')
-const UserStatus = require('../constant/UserStatus')
+const UserStatus = require('../constant/UserStatus');
+const { UserRole } = require('../constant/UserRole');
+const CustomerController = require('./CustomerController');
 
 
 class AuthController {
@@ -29,8 +31,6 @@ class AuthController {
                 throw error;
             }
 
-            
-
             if (existingUsername) {
                 const error = new Error(errors.alreadyExistUsername.message);
                 error.code = 'alreadyExistUsername';
@@ -38,6 +38,11 @@ class AuthController {
             }
 
             const user = await User.create({firstname, lastname, username, email, password, role, image, dateOfBirth, phone, address, status});
+
+            if ((role === UserRole.Customer) ) {
+                await CustomerController.createCustomer(user);
+            }
+
             const token = createToken(user)
             res.cookie('jwt', token, {httpOnly: true, secure: false, maxAge: 3600000})
             res.status(201).json(user);

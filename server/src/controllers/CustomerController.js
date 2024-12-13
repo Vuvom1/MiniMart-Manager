@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const UserRole = require('../constant/UserRole')
 const Customer = require('../models/Customer')
 const CustomerDTO = require('../dto/Cutomer/CustomerDTO')
 const DateUtil = require('../util/DateUtil')
@@ -20,7 +19,16 @@ class CustomerController {
         } catch (error) {
             throw error;
         }
+    }
 
+    createCustomer = async(user) => {
+        try {
+            const customer = await Customer.create({ user: user._id });
+
+            return new CustomerDTO(user, customer);
+        } catch (error) {
+            throw error;
+        }
     }
 
     updateStatus_put = async (req, res) => {

@@ -149,4 +149,28 @@ export enum PaymentMethod {
     ONLINE = 'Online',  
 }
 
+export enum ProductStatus {
+    IN_STOCK = 'In Stock',
+    OUT_OF_STOCK = 'Out of Stock',
+    UNAVAILABLE = 'Unavailable',
+    EXPIRED= 'Expired',
+}
+
+export enum TransactionType {
+    DELIVERY = 'Delivery',
+    IN_STORE = 'In Store',
+}
+
+export enum ReceiptStatus {
+    PENDING= 'Pending',
+    PAID= 'Paid',
+    CANCELLED= 'Cancelled',
+}
   
+export enum OrderStatus {
+    PENDING= 'Pending',
+    WAIT_FOR_PAYMENT= 'Wait for Payment',
+    CONFIRM = 'Confirm',
+    DELIVERED= 'Delivered',
+    CANCELLED= 'Cancelled',
+}

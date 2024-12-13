@@ -1,10 +1,10 @@
 import React from 'react';
 
 interface RadioGroupProps {
-    options: { label: string; value: string }[];
+    options: { label: string; value: any }[];
     name: string;
     selectedValue: string;
-    onChange: (value: string) => void;
+    onChange: (value: any) => void;
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({ options, name, selectedValue, onChange }) => {

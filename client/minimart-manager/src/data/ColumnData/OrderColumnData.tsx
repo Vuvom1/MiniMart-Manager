@@ -2,33 +2,33 @@ import { ColumnType } from "../../constant/enum";
 import { importStatusColorMapping } from "../../constant/mapping";
 import { ColumnData } from "./ColumnData";
 
-export const importsColumnData: ColumnData[] = [
+export const orderColumnData: ColumnData[] = [
     {
-        field: "id",
+        field: "_id",
         header: "ID",
         isEditable: false,
         type: ColumnType.ID,
         isCollapsed: true,
     },
     {
-        field: "invoiceNumber",
-        header: "Invoice number",
+        field: "receipientName",
+        header: "Receipant",
         isEditable: false,
         type: ColumnType.TEXT,
         isCollapsed: true,
     },
     {
-        field: "supplier.name",
-        header: "Supplier",
+        field: "deliveryFee",
+        header: "Delivery Fee",
         isEditable: false,
         type: ColumnType.TEXT,
         isCollapsed: true,
     },
     {
-        field: "date",
-        header: "Date",
+        field: "receipt.time",
+        header: "Time",
         isEditable: false,
-        type: ColumnType.DATETIME,
+        type: ColumnType.DATE,
         isCollapsed: true,
     },
     {
@@ -40,15 +40,8 @@ export const importsColumnData: ColumnData[] = [
         colorMapping: importStatusColorMapping,
     },
     {
-        field: "totalQuantity",
-        header: "Total Quantity",
-        isEditable: false,
-        type: ColumnType.TEXT,
-        isCollapsed: false,
-    },
-    {
-        field: "totalImportPrice",
-        header: "Total Import Price",
+        field: "receipt.totalNetPrice",
+        header: "Total Amount",
         isEditable: false,
         type: ColumnType.TEXT,
         isCollapsed: false,

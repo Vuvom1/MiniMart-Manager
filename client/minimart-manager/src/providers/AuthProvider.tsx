@@ -1,9 +1,10 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { loginUser, logoutUser, registerUser } from "../services/api/AuthApi";
 import { Role } from "../constant/enum";
+import { User } from "../data/Entities/User";
 
 interface AuthContextProps {
-    user: any;
+    user: User | null;
     login: (email: string, password: string) => void;
     signup: (firstname: string, lastname: string, username: string, email: string, password: string, role: Role, dateOfBirth: string, phone: string, address: string) =>void;
     logout:() => void,
@@ -26,7 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }: AuthProviderProps) => {
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

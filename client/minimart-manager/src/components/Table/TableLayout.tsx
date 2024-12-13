@@ -37,7 +37,7 @@ const TableLayout: React.FC<TableLayoutProps> = ({
     const totalPages = Math.ceil(data.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = data.slice(startIndex, endIndex);
+    const currentItems = data.length > 0 ? data.slice(startIndex, endIndex) : [];
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(currentItems);
 
@@ -103,60 +103,67 @@ const TableLayout: React.FC<TableLayoutProps> = ({
 
                     </thead>
                     <tbody className="table-body font-normal">
-                        {filteredData.map((item) => (
+                        {filteredData.length === 0 ? (
+                            <div>
 
-                            <tr
-                                key={`${item.id}-row`}
-                                className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
+                            </div>
+                        ) :
+                            filteredData.map((item) => (
 
-                            >
-                                {columns.map((column, index) => (
-                                    <td key={index} className="px-4 py-4 border-b border-gray-200 ">
-                                        {column.type === ColumnType.ID ? (
-                                            <span className="flex gap-x-2 items-center">
-                                                <button
-                                                    className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
-                                                    onClick={() => handleCopyId(item[column.field])}
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                                    </svg>
+                                <tr
+                                    key={`${item.id}-row`}
+                                    className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
-                                                </button>
-                                                {item[column.field].slice(0, 8) + '...'}
+                                >
+                                    {columns.map((column, index) => (
+                                        <td key={index} className="px-4 py-4 border-b border-gray-200 ">
+                                            {column.type === ColumnType.ID ? (
+                                                <span className="flex gap-x-2 items-center">
+                                                    <button
+                                                        className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
+                                                        onClick={() => handleCopyId(item[column.field])}
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                        </svg>
 
-                                            </span>
-                                        ) :
-                                            (column.type === ColumnType.STATUS ? (
+                                                    </button>
+                                                    {item[column.field].slice(0, 8) + '...'}
 
-                                                <div className='justify-center flex'>
-                                                    <StatusBadge value={item[column.field]} mapping={column.colorMapping || 'N/A'} />
-                                                </div>
+                                                </span>
+                                            ) :
+                                                (column.type === ColumnType.STATUS ? (
 
-                                            ) : (column.type === ColumnType.DATETIME ? (
-                                                <div className='justify-start flex'>
-                                                    <p>{timeUtil.convertIsoDateToTimeAndDate(item[column.field])}</p>
-                                                </div>
-                                            ) : (<div className='justify-start flex'>
-                                                {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}
-                                            </div>)
+                                                    <div className='justify-center flex'>
+                                                        <StatusBadge value={item[column.field]} mapping={column.colorMapping || 'N/A'} />
+                                                    </div>
 
-                                            ))}
+                                                ) : (column.type === ColumnType.DATETIME ? (
+                                                    <div className='justify-start flex'>
+                                                        <p>{timeUtil.convertIsoDateToTimeAndDate(item[column.field])}</p>
+                                                    </div>
+                                                ) : (<div className='justify-start flex'>
+                                                    {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}
+                                                </div>)
+
+                                                ))}
+                                        </td>
+                                    ))}
+
+                                    <td className='px-4 py-4 border-b' onClick={() => action && action(item._id)}>
+                                        <span className="flex p-2 w-fit rounded-md items-center hover:bg-cyan-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </span>
+
                                     </td>
-                                ))}
 
-                                <td className='px-4 py-4 border-b' onClick={() => action && action(item._id)}>
-                                    <span className="flex p-2 w-fit rounded-md items-center hover:bg-cyan-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                        </svg>
-                                    </span>
+                                </tr>
 
-                                </td>
+                            ))}
 
-                            </tr>
 
-                        ))}
                     </tbody>
 
                 </table>
