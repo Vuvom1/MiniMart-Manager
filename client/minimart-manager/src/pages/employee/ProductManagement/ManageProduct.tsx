@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import RoundedButton from "../../components/Button/RoundedButton";
-import { getAllProducts } from "../../services/api/ProductApi";
-import OverviewTable from "../../components/Table/OverviewTable";
+
+import OverviewTable from "../../../components/Table/OverviewTable"
+import { getAllProducts } from "../../../services/api/ProductApi";
+import RoundedButton from "../../../components/Button/RoundedButton";
+import { productColumnData } from "../../../data/ColumnData/ProductColumnData";
 interface Product {
   _id: String;
   name: String;
@@ -30,8 +32,7 @@ const ManageProduct = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-  const columnHeaders = ["ID", "Name", "Price", "Stock", "Status"];
-  const dataFields = ["_id", "name", "price", "stock", "status"];
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Products</h1>
@@ -87,8 +88,7 @@ const ManageProduct = () => {
         <OverviewTable
           title="Products Overview"
           itemData={data}
-          columnHeaders={columnHeaders}
-          dataFields={dataFields}
+          columnData={productColumnData}
         />
       </div>
 

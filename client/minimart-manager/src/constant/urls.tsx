@@ -41,6 +41,11 @@ const Urls = Object.freeze({
         ORDER: {
             BASE: createUrl(baseAdminUrl, 'orders'),
             DETAIL: createUrl(baseAdminUrl, 'orders/:id')
+        }, 
+        PRODUCT: {
+            BASE: createUrl(baseAdminUrl, 'products'),
+            ADD: createUrl(baseAdminUrl, 'products/add'),
+            EDIT: createUrl(baseAdminUrl, 'products/:id')
         }
     }
 });

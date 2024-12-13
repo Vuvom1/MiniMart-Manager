@@ -10,7 +10,7 @@ function SideMenu() {
         { label: 'Employees', icon: <EmployeesIcon />, path: '' },
         { label: 'Customers', icon: <CustomersIcon />, path: Urls.ADMIN.CUSTOMERS.Path },
         { label: 'Schedule', icon: <ScheduleIcon />, path: Urls.ADMIN.SCHEDULE.Path },
-        { label: 'Products', icon: <ProductsIcon />, path: '' },
+        { label: 'Products', icon: <ProductsIcon />, path: Urls.ADMIN.PRODUCT.BASE.Path }, 
         { label: 'Supplies', icon: <ImportIcon />, path: Urls.ADMIN.SUPPLIES.BASE.Path },
         { label: 'Promotion', icon: <PromotionIcon />, path: Urls.ADMIN.PROMOTIONS.BASE.Path },
         {
