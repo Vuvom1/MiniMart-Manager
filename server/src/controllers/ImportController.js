@@ -25,10 +25,7 @@ class ImportController {
                 })
                 .exec();
 
-
-            const importDTOs = imports.map(importData => new ImportDTO(importData));
-
-            res.status(200).json(importDTOs);
+            res.status(200).json(imports);
         } catch (error) {
             throw error;
         }

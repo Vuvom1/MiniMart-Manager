@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Period } from "../../../constant/enum";
 import ComboBox from "../../../components/ComboBox";
 import RoundedButton from "../../../components/Button/RoundedButton";
+import Urls from "../../../constant/urls";
 
 function PromotionManagement() {
     const navigate = useNavigate();
@@ -71,11 +72,10 @@ function PromotionManagement() {
         <div className="grow mb-4">
             <TableLayout
                 action={(id: string) => { navigate(`${id}`) }}
-                addItem={() => { navigate('add') }}
+                addItem={() => { navigate(Urls.ADMIN.PROMOTIONS.ADD.Path) }}
                 title="Promotion List"
                 data={promotions}
-                columns={promotionColumnData}
-                height="100%" />
+                columns={promotionColumnData} />
 
         </div>
 

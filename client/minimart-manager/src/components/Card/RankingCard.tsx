@@ -15,10 +15,10 @@ const RankingCard: React.FC<RankingCardProps> = ({ customers }) => {
         {sortedCustomers.map((customer, index) => (
           <li key={index} className="py-2 flex justify-between items-center">
             <div className="flex items-center">
-              <span className="font-bold text-lg mr-2">{index + 1}.</span>
-              <span className="text-gray-700 font-semibold">{customer.name}</span>
+              <span className="mr-2">{index + 1}.</span>
+              <span className="text-gray-700 font-medium">{customer.name}</span>
             </div>
-            <span className="text-blue-600 font-semibold">{customer.point} points</span>
+            <span className="text-cyan-700 font-medium">{customer.point} points</span>
           </li>
         ))}
       </ul>

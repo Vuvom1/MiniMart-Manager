@@ -6,7 +6,7 @@ export interface ColumnData {
     isEditable: boolean;
     validations?: Array<(value: string) => string | null>;
     options?: any[];
-    isCollapsed?: boolean;
+    isHidden?: boolean;
     type: ColumnType,
     colorMapping?: any;
 }

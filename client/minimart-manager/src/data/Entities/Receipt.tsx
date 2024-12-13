@@ -6,9 +6,9 @@ import { Customer } from './Customer';
 
 export interface Receipt {
     receiptNumbe?: string;
-    employee?: Employee | String;
-    promotion?: Promotion | String;
-    customer?: Customer | String;
+    employee?: Employee;
+    promotion?: Promotion;
+    customer?: Customer;
     paymentMethod: PaymentMethod;
     time: Date;
     transactionType: TransactionType;

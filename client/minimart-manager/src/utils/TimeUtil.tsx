@@ -48,7 +48,7 @@ export class TimeUtil {
     getCurrentWeekDays = () => {
         const today = new Date();
         const currentDayOfWeek = today.getDay();
-        const diff = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek; 
+        const diff = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
         const startOfWeek = new Date(today);
         startOfWeek.setDate(today.getDate() + diff);
 
@@ -58,42 +58,42 @@ export class TimeUtil {
 
             return {
                 dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }),
-                date: date.toISOString().split("T")[0], 
+                date: date.toISOString().split("T")[0],
             };
         });
     };
 
     getPrevWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
-    const startOfCurrentWeek = new Date(currentWeek[0].date);
-    
-    startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() - 7);
+        const startOfCurrentWeek = new Date(currentWeek[0].date);
 
-    return Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(startOfCurrentWeek);
-        date.setDate(startOfCurrentWeek.getDate() + i);
+        startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() - 7);
 
-        return {
-            dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }), 
-            date: date.toISOString().split("T")[0], 
-        };
-    });
-};
+        return Array.from({ length: 7 }, (_, i) => {
+            const date = new Date(startOfCurrentWeek);
+            date.setDate(startOfCurrentWeek.getDate() + i);
 
-getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
-    const startOfCurrentWeek = new Date(currentWeek[0].date);
-    
-    startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + 7);
+            return {
+                dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }),
+                date: date.toISOString().split("T")[0],
+            };
+        });
+    };
 
-    return Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(startOfCurrentWeek);
-        date.setDate(startOfCurrentWeek.getDate() + i);
+    getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
+        const startOfCurrentWeek = new Date(currentWeek[0].date);
 
-        return {
-            dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }), 
-            date: date.toISOString().split("T")[0], 
-        };
-    });
-};
+        startOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + 7);
+
+        return Array.from({ length: 7 }, (_, i) => {
+            const date = new Date(startOfCurrentWeek);
+            date.setDate(startOfCurrentWeek.getDate() + i);
+
+            return {
+                dayOfWeek: date.toLocaleDateString("en-US", { weekday: "long" }),
+                date: date.toISOString().split("T")[0],
+            };
+        });
+    };
 
 
     formatDate = (dateString: string) => {
@@ -105,14 +105,14 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
     };
 
     formatDateToDayMonthYear = (dateString: string): string => {
-    const date = new Date(dateString);
+        const date = new Date(dateString);
 
-    const day = date.getDate();
-    const month = date.toLocaleString('en-US', { month: 'short' }); 
-    const year = date.getFullYear();
+        const day = date.getDate();
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
 
-    return `${day} ${month} ${year}`;
-};
+        return `${day} ${month} ${year}`;
+    };
 
 
     getCurrentWeek(): { day: string, month: string, year: number }[] {
@@ -138,15 +138,15 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
     convertIsoDateToTimeAndDate(isoDate: string | Date): string {
         console.log(isoDate);
         const date = new Date(isoDate);
-        
+
         const day = date.getDate().toString().padStart(2, '0');
         const month = date.toLocaleString('en-US', { month: 'long' });
         const year = date.getFullYear();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
 
-    return `${day} ${month} ${year}, ${minutes}:${hours}`;
-}
+        return `${day} ${month} ${year}, ${minutes}:${hours}`;
+    }
 
     timeDifference(startTime: string, endTime: string): string {
         const [startHours, startMinutes] = startTime.split(":").map(Number);

@@ -23,7 +23,11 @@ export default function CartDialog({ open, onClose }: CartDialogProps) {
     const user = auth?.user;
 
     const handelNavigateCheckout = () => { 
-        if (user != null) {
+        if (totalItems == 0) {
+            alert('Your cart is empty. Please add items to your cart before proceeding to checkout.');
+            return;
+        }
+        if (user != null ) {
             navigate(Urls.CUSTOMER.CHECKOUT.Path)
         } else {
             navigate(Urls.CUSTOMER.LOGIN.Path)
@@ -81,7 +85,7 @@ export default function CartDialog({ open, onClose }: CartDialogProps) {
                                     <div className="mt-6 w-full">
                                         <button
 
-                                            onClick={() => handelNavigateCheckout()}
+                                            onClick={() => {handelNavigateCheckout(), onClose()}}
                                             className="flex w-full items-center justify-center rounded-md border border-transparent bg-cyan-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-cyan-700"
                                         >
                                             {user != null ? 'Checkout' : 'Login to Checkout'}

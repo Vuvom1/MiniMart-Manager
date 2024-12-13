@@ -2,6 +2,8 @@ const Order = require('../models/Order')
 const Receipt = require('../models/Receipt')
 const Customer = require('../models/Customer')
 const User = require('../models/User')
+const CustomerController = require('./CustomerController')
+const {CUSTOMER_POINT_PERCENT} = require('../constant/CustomerPoint')
 
 class OrderController {
     all_get = async (req, res) => {
@@ -12,6 +14,24 @@ class OrderController {
                 .exec();
 
             res.status(200).json(orders);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    getById_get = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const order = await Order
+                .findById(id)
+                .populate('receipt')
+                .populate({
+                    path: 'receipt',
+                    populate: { path: 'details.product' }
+                })  
+                .exec();
+
+            res.status(200).json(order);
         } catch (error) {
             throw error;
         }
@@ -88,12 +108,15 @@ class OrderController {
             const {order, user} = req.body;
 
             const customer = await Customer.findOne({ user: user._id });
+            
             if (!customer) {
                 return res.status(400).json('Customer not found');
             }
 
             order.receipt.customer = customer._id;  
             const receipt = await Receipt.create(order.receipt);
+            const addedPoint = receipt.totalPrice  * CUSTOMER_POINT_PERCENT;
+            const updatedCustomer = await CustomerController.addPointToCustomer(customer._id, addedPoint);
 
             order.receipt = receipt._id;
 

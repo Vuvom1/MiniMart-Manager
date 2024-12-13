@@ -15,6 +15,16 @@ export const getAllOrders = async () => {
     }
 }
 
+export const getOrderById = async (id: string) => {   
+    try {
+        const response = await axios.get(`${BASE_URL}/${id}`);
+       
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch data failed'; 
+    }
+}
+
 export const getOrdersSortedByStatuses = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/getOrdersSortedByStatuses`);

@@ -23,10 +23,10 @@ import Urls from "../../../constant/urls";
 
 function EditImport() {
     const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>(); 
+    const { id } = useParams<{ id: string }>();
 
     const [importData, setImportData] = useState<Import>();
-   
+
     const [supplierOptions, setSupplierOptions] = useState([])
     const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
     const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
@@ -34,9 +34,9 @@ function EditImport() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [invoiceNumber, setInvoiceNumber] = useState<string>("");
     const [deliveryMan, setDeliveryMan] = useState<string>("");
-    const [supplier, setSupplier] = useState<{value: string, label: string}>()
+    const [supplier, setSupplier] = useState<{ value: string, label: string }>()
     const [description, setDescription] = useState<string>("");
-   
+
     const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false);
     const [isScannerOpened, setIsScannerOpened] = useState(false);
@@ -61,14 +61,14 @@ function EditImport() {
     };
 
     const fetchImportById = async (id: string) => {
-    
+
         if (!id) {
             console.error('No ID provided');
             return;
         }
-    
+
         try {
-            const data = await getImportById(id); 
+            const data = await getImportById(id);
 
             setImportData(data);
 
@@ -81,12 +81,12 @@ function EditImport() {
     };
 
     const handleEditImport = async (id: string) => {
-    
+
         if (!id) {
             console.error('No ID provided');
             return;
         }
-    
+
         try {
             const response = await updateImport(id, supplier?.value || "", invoiceNumber, deliveryMan, status, description, importDetails);
 
@@ -115,12 +115,12 @@ function EditImport() {
     }, []);
 
     useEffect(() => {
-            setSupplier({label: importData?.supplier.name || "", value: importData?.supplier._id || ""})
-            setInvoiceNumber(importData?.invoiceNumber||"")
-            setDeliveryMan(importData?.deliveryMan||"")
-            setStatus(importData?.status||ImportStatus.PENDING)
-            setDescription( importData?.description||"")
-            setImportDetails(importData?.importDetails||[])
+        setSupplier({ label: importData?.supplier.name || "", value: importData?.supplier._id || "" })
+        setInvoiceNumber(importData?.invoiceNumber || "")
+        setDeliveryMan(importData?.deliveryMan || "")
+        setStatus(importData?.status || ImportStatus.PENDING)
+        setDescription(importData?.description || "")
+        setImportDetails(importData?.importDetails || [])
     }, [importData]);
 
     useEffect(() => {
@@ -229,7 +229,7 @@ function EditImport() {
                             placeholder="Choose supplier..."
                             options={supplierOptions}
                             onChange={(selectedOption) => {
-                                setSupplier(selectedOption|| {label: importData?.supplier.name || "", value: importData?.supplier._id || ""});
+                                setSupplier(selectedOption || { label: importData?.supplier.name || "", value: importData?.supplier._id || "" });
                             }} />
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -267,6 +267,7 @@ function EditImport() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
                         </svg>
                         <TextField
+                            multiline={true}
                             value={description}
                             placeholder="Enter import description"
                             height="150px"
@@ -332,7 +333,7 @@ function EditImport() {
 
                     <div className="flex gap-y-2 justify-end py-4">
                         <div className="w-20">
-                            <RoundedButton disable={!isValidForm} label="Save" onClick={() => handleEditImport(id||"")} />
+                            <RoundedButton disable={!isValidForm} label="Save" onClick={() => handleEditImport(id || "")} />
                         </div>
                     </div>
                 </div>
@@ -343,15 +344,15 @@ function EditImport() {
                     height="350px"
                     defaultPosition={{ x: 100, y: -500 }}
                 >
-                   
-                    
-                            <ProductScannerComponent
-                                onProductScanned={handleProductScanned}
-                                width={400}
-                                height={300}
-                            />
-                       
-         
+
+
+                    <ProductScannerComponent
+                        onProductScanned={handleProductScanned}
+                        width={400}
+                        height={300}
+                    />
+
+
                 </DraggableFloatComponent>
             }
 

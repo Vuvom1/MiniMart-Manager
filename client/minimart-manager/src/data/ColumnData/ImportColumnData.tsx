@@ -4,39 +4,39 @@ import { ColumnData } from "./ColumnData";
 
 export const importsColumnData: ColumnData[] = [
     {
-        field: "id",
+        field: "_id",
         header: "ID",
         isEditable: false,
         type: ColumnType.ID,
-        isCollapsed: true,
+        isHidden: true,
     },
     {
         field: "invoiceNumber",
         header: "Invoice number",
         isEditable: false,
         type: ColumnType.TEXT,
-        isCollapsed: true,
+        isHidden: true,
     },
     {
         field: "supplier.name",
         header: "Supplier",
         isEditable: false,
         type: ColumnType.TEXT,
-        isCollapsed: true,
+        isHidden: true,
     },
     {
         field: "date",
         header: "Date",
         isEditable: false,
         type: ColumnType.DATETIME,
-        isCollapsed: true,
+        isHidden: true,
     },
     {
         field: "status",
         header: "Status",
         isEditable: true,
         type: ColumnType.STATUS,
-        isCollapsed: true,
+        isHidden: true,
         colorMapping: importStatusColorMapping,
     },
     {
@@ -44,13 +44,13 @@ export const importsColumnData: ColumnData[] = [
         header: "Total Quantity",
         isEditable: false,
         type: ColumnType.TEXT,
-        isCollapsed: false,
+        isHidden: false,
     },
     {
         field: "totalImportPrice",
         header: "Total Import Price",
         isEditable: false,
         type: ColumnType.TEXT,
-        isCollapsed: false,
+        isHidden: false,
     },
 ];

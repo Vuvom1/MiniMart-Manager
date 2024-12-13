@@ -18,6 +18,7 @@ import CustomerManagement from '../pages/employee/CustomerManagement/CustomerMan
 import Urls from '../constant/urls';
 import OrderManagement from '../pages/employee/Order/OrderManagement';
 import ManageProduct from '../pages/employee/ProductManagement/ManageProduct';
+import OrderDetail from '../pages/employee/Order/OrderDetail';
 
 const AppRouter = () => {
     const { user, loading } = useAuth();
@@ -49,7 +50,9 @@ const AppRouter = () => {
                     <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
                 </Route>
 
-                <Route path={Urls.ADMIN.ORDER.BASE.Route} element={<OrderManagement />} >
+                <Route path={Urls.ADMIN.ORDER.BASE.Route} >
+                    <Route path="" element={<OrderManagement />} />
+                    <Route path={Urls.ADMIN.ORDER.DETAIL.Route} element={<OrderDetail />} />
                 </Route>
             </Route>
 
