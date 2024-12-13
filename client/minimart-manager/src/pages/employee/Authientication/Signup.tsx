@@ -12,6 +12,8 @@ import { useAuth } from '../../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import CustomErrorToast from '../../../components/Toast/ErrorToast';
 import SuccessToast from '../../../components/Toast/SuccessToast';
+import Urls from '../../../constant/urls';
+import { Role } from '../../../constant/enum';
 
 
 function Signup() {
@@ -34,14 +36,14 @@ function Signup() {
         e.preventDefault();
         setLoading(true);
         try {
-            await auth.signup(firstname, lastname, username, email, password, dateOfBirth, phone, address)
+            await auth.signup(firstname, lastname, username, email, password, Role.STAFF, dateOfBirth, phone, address)
             toast.custom((t) => (
                 <SuccessToast
                     message="Register user success!"
                     onDismiss={() => toast.dismiss(t.id)}
                 />
             ));
-            navigate('/');
+            navigate(Urls.ADMIN.DASHBOARD.Path);
         } catch (err: any) {
             toast.custom((t) => (
                 <CustomErrorToast
@@ -59,7 +61,7 @@ function Signup() {
       };
 
     function navigateLogin() {
-        navigate('../login')
+        navigate(Urls.ADMIN.LOGIN.Path);
     }
 
     return <div className="w-full h-full flex bg-cyan-500">

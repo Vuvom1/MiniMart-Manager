@@ -10,6 +10,8 @@ const shiftRoutes = require('./ShiftRoutes')
 const positionRoutes = require('./PositionRoutes')
 const promotionRoutes = require('./PromotionRoutes')
 const categoryRoutes = require('./CategoryRoutes')
+const receiptRoutes = require('./ReceiptRoutes')
+const orderRoutes = require('./OrderRoutes')
 
 function route(app)  {
     app.use('/api/auth', authRoutes);
@@ -23,6 +25,8 @@ function route(app)  {
     app.use('/api/positions', positionRoutes);
     app.use('/api/promotions', promotionRoutes);
     app.use('/api/categories', categoryRoutes);
+    app.use('/api/receipts', receiptRoutes);
+    app.use('/api/orders', orderRoutes);
 }
 
 module.exports = route;

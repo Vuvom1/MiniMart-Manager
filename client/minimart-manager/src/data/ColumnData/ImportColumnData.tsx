@@ -28,7 +28,7 @@ export const importsColumnData: ColumnData[] = [
         field: "date",
         header: "Date",
         isEditable: false,
-        type: ColumnType.DATE,
+        type: ColumnType.DATETIME,
         isCollapsed: true,
     },
     {

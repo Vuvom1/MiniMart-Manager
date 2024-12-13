@@ -4,6 +4,8 @@ import { useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../contexts/CartContext.tsx';
 import {CartItemCard} from '../Card/CartItemCard.jsx';
+import { useAuth } from '../../providers/AuthProvider.tsx';
+import Urls from '../../constant/urls.tsx';
 
 interface CartDialogProps {
     open: boolean;
@@ -11,8 +13,22 @@ interface CartDialogProps {
 }
 
 export default function CartDialog({ open, onClose }: CartDialogProps) {
-    const { cartItems, totalPrice,totalItems, changeQuantity, removeFromCart } = useContext(CartContext)
+    const cartContext = useContext(CartContext);
+    if (!cartContext) {
+        return null;
+    }
+    const { cartItems, totalPrice, totalItems, changeQuantity, removeFromCart } = cartContext;
     const navigate = useNavigate();
+    const auth = useAuth();
+    const user = auth?.user;
+
+    const handelNavigateCheckout = () => { 
+        if (user != null) {
+            navigate(Urls.CUSTOMER.CHECKOUT.Path)
+        } else {
+            navigate(Urls.CUSTOMER.LOGIN.Path)
+        }
+    }
 
     return (
         <Dialog open={open} onClose={onClose} className="relative z-10">
@@ -49,7 +65,7 @@ export default function CartDialog({ open, onClose }: CartDialogProps) {
                                         <div className="flow-root overflow-y-scroll h-full">
                                             <ul role="list" className="-my-6 divide-y divide-gray-200">
                                                 {cartItems.map((cartItem) => (
-                                                   <CartItemCard key={cartItem.id} cartItem={cartItem} onChangeQuantity={(id,quantity)=>changeQuantity(id, quantity)} onRemove={(id)=>removeFromCart(id)}/>
+                                                   <CartItemCard key={cartItem.product._id} cartItem={cartItem} onChangeQuantity={(id, quantity) => changeQuantity(id, quantity)} onRemove={(id) => removeFromCart(id)} id={0}/>
                                                 ))}
                                             </ul>
                                         </div>
@@ -65,10 +81,10 @@ export default function CartDialog({ open, onClose }: CartDialogProps) {
                                     <div className="mt-6 w-full">
                                         <button
 
-                                            onClick={() => navigate('/minimartonline/checkout')}
+                                            onClick={() => handelNavigateCheckout()}
                                             className="flex w-full items-center justify-center rounded-md border border-transparent bg-cyan-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-cyan-700"
                                         >
-                                            Checkout
+                                            {user != null ? 'Checkout' : 'Login to Checkout'}
                                         </button>
                                     </div>
                                     <div className="mt-6 flex justify-center text-center text-sm text-gray-500">

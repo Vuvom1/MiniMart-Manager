@@ -1,4 +1,3 @@
-const User = require('../models/User')
 const {UserRole} = require('../constant/UserRole')
 const DateUtil = require('../util/DateUtil');
 const Employee = require('../models/Employee');

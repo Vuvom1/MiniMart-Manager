@@ -1,10 +1,12 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { loginUser, logoutUser, registerUser } from "../services/api/AuthApi";
+import { Role } from "../constant/enum";
+import { User } from "../data/Entities/User";
 
 interface AuthContextProps {
-    user: any;
+    user: User | null;
     login: (email: string, password: string) => void;
-    signup: (firstname: string, lastname: string, username: string, email: string, password: string, dateOfBirth: string, phone: string, address: string) =>void;
+    signup: (firstname: string, lastname: string, username: string, email: string, password: string, role: Role, dateOfBirth: string, phone: string, address: string) =>void;
     logout:() => void,
     loading: boolean,
   }
@@ -25,7 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }: AuthProviderProps) => {
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -58,10 +60,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }: AuthProv
         }
     };
 
-    const signup = async (firstname: string, lastname: string, username: string, email: string, password: string, dateOfBirth: string, phone: string, address: string) => {
+    const signup = async (firstname: string, lastname: string, username: string, email: string, password: string, role: Role, dateOfBirth: string, phone: string, address: string) => {
         try {
             setLoading(true);
-            const userData = await registerUser(firstname, lastname, username, email, password, dateOfBirth, phone, address);
+            const userData = await registerUser(firstname, lastname, username, email, password, role, dateOfBirth, phone, address);
             setUser(userData)
             localStorage.setItem('user',  JSON.stringify(userData));
             setLoading(false);

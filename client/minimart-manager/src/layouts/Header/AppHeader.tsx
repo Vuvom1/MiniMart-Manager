@@ -42,10 +42,10 @@ function AppHeader() {
 
             <div className="h-full w-px bg-gray-300"></div>
 
-            <Avatar size="50px" src={auth?.user?.image} alt="User Avatar" />
+            <Avatar size="50px" src={auth?.user?.image} />
 
             <Popover className="relative align-middle">
-                <Popover.Button className="bg-blue-500 flex items-center gap-x-2 bg-white rounded-md text-black">
+                <Popover.Button className="flex items-center gap-x-2 bg-white rounded-md text-black">
                     <div className="text-start">
                         <p className="font-semibold">{auth?.user?.username}</p>
                         <p className="text-slate-500">{auth?.user?.email}</p>

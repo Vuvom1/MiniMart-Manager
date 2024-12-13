@@ -19,6 +19,7 @@ import StatusPickerPopover from "../../../components/Picker/StatusPicker";
 import { importStatusColorMapping } from "../../../constant/mapping";
 import { ImportDetail } from "../../../data/Entities/ImportDetail";
 import { Import } from "../../../data/Entities/Import";
+import Urls from "../../../constant/urls";
 
 function EditImport() {
     const navigate = useNavigate();
@@ -104,7 +105,7 @@ function EditImport() {
             ));
         } finally {
             setLoading(false);
-            navigate('/supplies/imports')
+            navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
         }
     };
 
@@ -307,6 +308,7 @@ function EditImport() {
                                 initialQuantity={detail.quantity}
                                 key={detail.product._id}
                                 product={detail.product}
+                                showImage={true}
                                 onPriceChange={(price) => handlePriceChange(detail.product, price)}
                                 onTotalQuantityChange={(quantity) => handleTotalQuantityChange(detail.product._id, quantity)}
                                 onTotalPriceChange={(totalPrice) => handleTotalPriceChange(detail.product._id, totalPrice)}

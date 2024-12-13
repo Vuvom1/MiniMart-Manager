@@ -31,8 +31,7 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
         calculateTotalPrice(totalQuantity, importPrice);
     }, [totalQuantity, importPrice]);
 
-    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value, 10);
+    const handleQuantityChange = (value: number) => {
         if (!isNaN(value) && value >= 0) {
             setTotalQuantity(value);
             onTotalQuantityChange(value);

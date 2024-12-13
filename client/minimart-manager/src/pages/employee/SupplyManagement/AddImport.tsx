@@ -19,6 +19,7 @@ import { ImportDetail } from "../../../data/Entities/ImportDetail";
 import { ImportFormData } from "../../../data/FormData/ImportFormData";
 import StatusPickerPopover from "../../../components/Picker/StatusPicker";
 import { importStatusColorMapping } from "../../../constant/mapping";
+import Urls from "../../../constant/urls";
 
 
 function AddImport() {
@@ -202,7 +203,7 @@ function AddImport() {
             ));
         } finally {
             setLoading(false);
-            navigate('../');
+            navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
         }
     };
 
@@ -301,6 +302,7 @@ function AddImport() {
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
                         {importDetails.map(detail => (
                             <ImportProductHorizontalCard
+                                showImage={true}
                                 key={detail.product._id}
                                 product={detail.product}
                                 onPriceChange={(price) => handlePriceChange(detail.product, price)}

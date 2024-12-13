@@ -1,3 +1,5 @@
+import { Role } from "../../constant/enum";
+
 export interface User {
     _id?: string,
     username: string,
@@ -5,8 +7,9 @@ export interface User {
     address: string,
     dateOfBirth: string,
     firstname: string,
-    image: string,
+    image?: string,
     lastname: string,
     phone: string,
-    role: string,  
+    role: string, 
+    status: Role, 
 }

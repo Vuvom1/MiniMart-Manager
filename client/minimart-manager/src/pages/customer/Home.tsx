@@ -37,7 +37,7 @@ const Home: React.FC = () => {
     }, []);
 
     return (
-        <div className='flex flex-col gap-y-8 pt-4 text-cyan-900'>
+        <div className='flex px-10 flex-col gap-y-8 pt-4 text-cyan-900'>
             <Carousel showThumbs={false} dynamicHeight={false} swipeable={true}>
                 <div>
                     <img src="src/assets/images/carousel/carousel02.jpg" className='rounded-lg' alt="Image 1" />

@@ -1,7 +1,6 @@
 const errors = require('../constant/errors');
 const Promotion = require('../models/Promotion')
 const DateUtil = require('../util/DateUtil');
-const Product = require('../models/Product');
 
 class PromotionController {
 

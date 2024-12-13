@@ -1,4 +1,4 @@
-import { CustomerStatus, DiscountType, ImportStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
+import { CustomerStatus, DiscountType, ImportStatus, ProductStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
@@ -44,7 +44,6 @@ export const promotionStatusColorMapping: { [key in PromotionStatus]: string } =
 
   export const discountTypeColorMapping: { [key in DiscountType]: string } = {
     [DiscountType.PERCENTAGE]: 'green-500',    
-    [DiscountType.FIXED_AMOUNT]: 'blue-500',     
     [DiscountType.GET_MORE]: 'yellow-500',      
     [DiscountType.FREE_GIFT]: 'purple-500',     
 };
@@ -52,17 +51,14 @@ export const promotionStatusColorMapping: { [key in PromotionStatus]: string } =
 export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: DiscountType[] } = {
   [PromotionType.PRODUCT_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
       DiscountType.GET_MORE,
       DiscountType.FREE_GIFT,
   ],
   [PromotionType.ORDER_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
   ],
   [PromotionType.CUSTOMER_BASED]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
   ],
   // [PromotionType.BRAND_SUPPLIER_BASED]: [
   //     DiscountType.PERCENTAGE,
@@ -70,10 +66,16 @@ export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: Disco
   // ],
   [PromotionType.ONLINE]: [
       DiscountType.PERCENTAGE,
-      DiscountType.FIXED_AMOUNT,
       DiscountType.FREE_GIFT,
   ],
 };
+
+export const productStatusColorMapping: { [key: string]: string } = {
+  [ProductStatus.IN_STOCK]: 'green-200', 
+  [ProductStatus.OUT_OF_STOCK]: 'red-200',
+  [ProductStatus.UNAVAILABLE]: 'gray-200',
+  [ProductStatus.EXPIRED]: 'gray-200',
+}
   
 
 export const tailwindColorMap: { [key: string]: string } = {

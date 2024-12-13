@@ -135,21 +135,18 @@ getNextWeekDays = (currentWeek: { dayOfWeek: string; date: string }[]) => {
         return week;
     }
 
-    convertIsoDateToTimeAndDate(isoDate: string): string {
-    const date = new Date(isoDate);
+    convertIsoDateToTimeAndDate(isoDate: string | Date): string {
+        console.log(isoDate);
+        const date = new Date(isoDate);
+        
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = date.toLocaleString('en-US', { month: 'long' });
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
 
-   
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const time = `${hours}:${minutes}`;
-
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleString('en-US', { month: 'short' });
-    const year = date.getFullYear();
-
-    return `${day} ${month} ${year}, ${time}`;
+    return `${day} ${month} ${year}, ${minutes}:${hours}`;
 }
-
 
     timeDifference(startTime: string, endTime: string): string {
         const [startHours, startMinutes] = startTime.split(":").map(Number);

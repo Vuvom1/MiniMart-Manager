@@ -11,6 +11,7 @@ import { Import } from "../../../data/Entities/Import";
 import { TimeUtil } from "../../../utils/TimeUtil";
 import { ColumnType } from "../../../constant/enum";
 import { importStatusColorMapping } from "../../../constant/mapping";
+import Urls from "../../../constant/urls";
 
 
 function ImportList() {
@@ -21,8 +22,6 @@ function ImportList() {
     const [itemsPerPage, setItemsPerPage] = useState(13);
 
     const totalPages = Math.ceil(imports.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
     const timeUtil = new TimeUtil();
 
     const { searchTerm, handleSearchChange, filteredData } = useSearch(imports);
@@ -48,7 +47,7 @@ function ImportList() {
     };
 
     function navigateAddImport() {
-        navigate('add')
+        navigate(Urls.ADMIN.SUPPLIES.IMPORTS.ADD.Path); 
     }
 
     const handleItemDetailClick = (item: Import) => {

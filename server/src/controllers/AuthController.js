@@ -2,6 +2,9 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken'); 
 const createToken = require('../util/JwtUtil')
 const errors = require('../constant/errors')
+const UserStatus = require('../constant/UserStatus');
+const { UserRole } = require('../constant/UserRole');
+const CustomerController = require('./CustomerController');
 
 
 class AuthController {
@@ -16,7 +19,8 @@ class AuthController {
 
     signup_post = async (req, res, next) => {
         try {
-            const {firstname, lastname, username, email, password, role, image, dateOfBirth, phone, address} = req.body;
+            const {firstname, lastname, username, email, password, role, image, dateOfBirth, phone, address, status} = req.body;
+            
 
             const existingEmail = await User.findOne({ email });
             const existingUsername = await User.findOne({ username });
@@ -33,10 +37,16 @@ class AuthController {
                 throw error;
             }
 
-            const user = await User.create({firstname, lastname, username, email, password, role, image, dateOfBirth, phone, address});
+            const user = await User.create({firstname, lastname, username, email, password, role, image, dateOfBirth, phone, address, status});
+
+            if ((role === UserRole.Customer) ) {
+                await CustomerController.createCustomer(user);
+            }
+
             const token = createToken(user)
             res.cookie('jwt', token, {httpOnly: true, secure: false, maxAge: 3600000})
             res.status(201).json(user);
+            console.log(user)
         } catch (error) {
             next(error);
         }

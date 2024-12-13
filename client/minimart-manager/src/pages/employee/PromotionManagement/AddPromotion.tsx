@@ -19,6 +19,7 @@ import ErrorToast from "../../../components/Toast/ErrorToast";
 import { TimeUtil } from "../../../utils/TimeUtil";
 import SuccessToast from "../../../components/Toast/SuccessToast";
 import { useNavigate } from "react-router-dom";
+import Urls from "../../../constant/urls";
 
 function AddPromotion() {
     const navigate = useNavigate();
@@ -36,7 +37,6 @@ function AddPromotion() {
     const [discountType, setDiscountType] = useState<DiscountType>(DiscountType.PERCENTAGE);
     const [discountPercentage, setDiscountPercentage] = useState(0);   
     const [maxDiscountAmount, setMaxDiscountAmount] = useState(0);
-    const [fixedAmount, setFixedAmount] = useState(0);
     const [requireQuantity, setRequireQuantity] = useState(0);
     const [rewardQuantity, setRewardQuantity] = useState(0);
     const [requireOrderAmount, setRequireOrderAmount] = useState(0);    
@@ -88,7 +88,7 @@ function AddPromotion() {
                     message={response}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
-            navigate('../');    
+            navigate(Urls.ADMIN.PROMOTIONS.BASE.Path);    
         } catch (error: any) {
             toast.custom((t) => (
                 <ErrorToast
@@ -147,7 +147,7 @@ function AddPromotion() {
                     </div>
                     <div className="flex gap-x-6 px-4 items-center">
                         <p className="w-[20%] text-sm font-medium leading-6 text-gray-900">Max usage</p>
-                        <IncrementalField onQuantityChange={(e)=>setMaxUsage(Number(e.target.value))} />
+                        <IncrementalField onQuantityChange={(value)=>setMaxUsage(Number(value))} />
                     </div>
                     <div className="flex gap-x-6 px-4 items-center">
                         <TextField multiline={true} rows={5} value={description} onChange={(e) => setDescription(e.target.value)} label="Description" height="200px" placeholder="Promotion description (Optional)" />
@@ -207,11 +207,11 @@ function AddPromotion() {
                                 <>
                                     <div className="flex gap-x-4 items-center">
                                         <p className="text-sm font-semibold text-gray-800 w-[30%]">Require quantity</p>
-                                        <IncrementalField onQuantityChange={(e) => setRequireQuantity(Number(e.target.value))} />
+                                        <IncrementalField onQuantityChange={(value) => setRequireQuantity(Number(value))} />
                                     </div>
                                     <div className="flex gap-x-4 items-center">
                                         <p className="text-sm font-semibold text-gray-800 w-[30%]">Reward quantity</p>
-                                        <IncrementalField onQuantityChange={(e) => setRewardQuantity(Number(e.target.value))} />
+                                        <IncrementalField onQuantityChange={(value) => setRewardQuantity(Number(value))} />
                                     </div>
 
                                 </>
@@ -223,7 +223,7 @@ function AddPromotion() {
                                 <>
                                     <div className="flex gap-x-4 items-center">
                                         <p className="text-sm font-semibold text-gray-800 w-[30%]">Require quantity</p>
-                                        <IncrementalField onQuantityChange={(e) => setRequireQuantity(Number(e.target.value))} />
+                                        <IncrementalField onQuantityChange={(value) => setRequireQuantity(Number(value))} />
                                     </div>
                                     <div className="flex gap-x-4 items-center">
                                         <p className="text-sm font-semibold text-gray-800 w-[30%]">Gift</p>
