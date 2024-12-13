@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const SubCategory = require("./SubCategory");
+const Category = require("./Category");
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -12,10 +14,6 @@ const productSchema = new mongoose.Schema({
   barcode: {
     type: String,
     unique: true,
-    required: true,
-  },
-  status: {
-    type: String,
     required: true,
   },
   subCategory: {
@@ -39,6 +37,13 @@ const productSchema = new mongoose.Schema({
   },
   expiryDate: {
     type: Date,
+  },
+  sold: {
+    type: Number,
+    default: 0,
+  },
+  description: {
+    type: String,
   },
 });
 

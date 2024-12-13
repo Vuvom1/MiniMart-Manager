@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import RoundedButton from "../../components/Button/RoundedButton";
-import { getAllProducts } from "../../services/api/ProductApi";
-import OverviewTable from "../../components/Table/OverviewTable";
-import { getAllEmployees } from "../../services/api/EmployeeApi";
+import RoundedButton from "../../../components/Button/RoundedButton";
+import { getAllProducts } from "../../../services/api/ProductApi";
+import OverviewTable from "../../../components/Table/OverviewTable";
+import { getAllEmployees } from "../../../services/api/EmployeeApi";
 interface Employee {
   _id: String;
   firstname: String;
@@ -93,12 +93,11 @@ const ManageEmployee = () => {
             </tr>
           </tbody>
         </table> */}
-        <OverviewTable
+        {/* <OverviewTable
           title="Products Overview"
           itemData={data}
-          columnHeaders={columnHeaders}
-          dataFields={dataFields}
-        />
+          columnData={productColumnData}
+        /> */}
       </div>
 
       <div className="flex justify-between items-center mt-4">

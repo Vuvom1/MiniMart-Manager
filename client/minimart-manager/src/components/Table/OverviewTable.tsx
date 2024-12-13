@@ -3,12 +3,15 @@ import TextField from '../InputField/TextField';
 import RoundedButton from '../Button/RoundedButton';
 import RoundedIcon from '../Icon/RoundedIcon';
 import useSearch from '../../utils/SearchUtil';
+import { ColumnData } from '../../data/ColumnData/ColumnData';
+import NestedValueUtil from '../../utils/NestedValueUtil';
+import { ColumnType } from '../../constant/enum';
+import { StatusBadge } from '../Badge/StatusBadge';
 
 interface ItemsOverviewProps {
     title: string;
     itemData: any[];
-    columnHeaders: string[];
-    dataFields: string[];
+    columnData: ColumnData[];
     seeAll?: () => void;
     addItem?: () => void;
     itemsPerPageOptions?: number[];
@@ -17,8 +20,7 @@ interface ItemsOverviewProps {
 const OverviewTable: React.FC<ItemsOverviewProps> = ({
     title,
     itemData,
-    columnHeaders,
-    dataFields,
+    columnData = [],
     seeAll,
     addItem,
     itemsPerPageOptions = [5, 10, 20],
@@ -37,12 +39,6 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
         setCurrentPage(page);
     };
 
-    const getNestedValue = (obj: any, path: string) => {
-        console.log(path)
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-    };
-
-    console.log(filteredData)
 
     const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setItemsPerPage(Number(e.target.value));
@@ -54,7 +50,7 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
     };
 
     return (
-        <div className="flex flex-col bg-white shadow-md rounded-lg p-4 h-full">
+        <div className="flex flex-col bg-white shadow-md rounded-lg p-4 min-h-[500px] h-full">
             <div className='flex mb-4 items-center justify-between'>
                 <div className='flex gap-x-4 items-center justify-between'>
                     <RoundedIcon icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -86,76 +82,77 @@ const OverviewTable: React.FC<ItemsOverviewProps> = ({
                 </div>
             </div>
 
-            <table className="flex-auto min-w-full bg-white text-center items-center grow">
-                <thead className='table-header'>
+            <div className='flex-auto h-[400px] overflow-auto rounded-lg'>
+
+            <table className="min-w-full bg-white text-center items-center rounded-lg shadow-md">
+                <thead className='bg-gray-100 sticky top-0 '>
                     <tr className='rounded-md'>
-                        {columnHeaders.map((header, index) => (
-                            <th key={index} className="px-4 py-2 text-gray-500 font-semibold">
-                                {header}
+                        {columnData.map((column, index) => (
+                            <th key={index} className="sticky px-4 py-2 text-gray-500 font-semibold">
+                                {column.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody className="table-body font-normal">
-                    {filteredData.map((item, index) => (
-                        <>
-                            <tr
-                                key={index}
-                                className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
+                    {filteredData.map((item) => (
 
-                            >
-                                {dataFields.map((field, fieldIndex) => (
-                                    <td key={fieldIndex} className="px-4 py-4 border-b border-gray-200">
-                                        {field === "_id" ? (
-                                            <span className="relative group flex gap-x-2 items-center">
-                                                <button
-                                                    className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
-                                                    onClick={() => handleCopyId(item[field])}
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                                    </svg>
+                        <tr
+                            key={`${item.id}-row`}
+                            className={`border-t border-gray-200 cursor-pointer hover:bg-gray-50`}
 
-                                                </button>
-                                                {item[field].slice(0, 8) + '...'}
+                        >
+                            {columnData.map((column, index) => (
+                                <td key={index} className="px-4 py-4 border-b border-gray-200 ">
+                                    {column.type === ColumnType.ID ? (
+                                        <span className="flex gap-x-2 items-center">
+                                            <button
+                                                className="ml-2 p-1 border w-6 h-6 rounded hover:bg-gray-300"
+                                                onClick={() => handleCopyId(item[column.field])}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                </svg>
 
-                                            </span>
-                                        ) :
-                                            (field === "status" ? (
+                                            </button>
+                                            {item[column.field].slice(0, 8) + '...'}
 
-                                                <div className='justify-center flex'>
-                                                    {item[field]}
-                                                </div>
+                                        </span>
+                                    ) :
+                                        (column.type === ColumnType.STATUS ? (
 
+                                            <div className='justify-center flex'>
+                                                <StatusBadge value={item[column.field]} mapping={column.colorMapping} />
+                                            </div>
 
-
-                                            ) : (
-                                                <div className='justify-center flex'>
-
-                                                    {getNestedValue(item, field) ?? 'N/A'}
-
-                                                </div>
+                                        ) : (
+                                            <div className='justify-center flex'>
+                                                {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}
+                                            </div>
 
 
+                                        ))}
+                                </td>
+                            ))}
 
-                                            ))}
-                                    </td>
-                                ))}
+                        </tr>
 
-                            </tr>
 
-                        </>
                     ))}
                 </tbody>
 
             </table>
+
+            </div>
+
+        
 
             <div className="flex justify-between my-4">
 
                 <div className="flex items-center">
                     {Array.from({ length: totalPages }, (_, index) => (
                         <button
-                            key={index + 1}
+                            key={`${index+1}-paginate`}
                             className={`px-3 mx-1 py-1 rounded ${currentPage === index + 1 ? 'bg-cyan-500 text-white' : 'bg-white border border-black'}`}
                             onClick={() => handlePageChange(index + 1)}
                         >

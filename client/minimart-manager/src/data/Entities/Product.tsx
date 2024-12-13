@@ -1,3 +1,5 @@
+import { Category } from "./Category";
+import { Promotion } from "./Promotion";
 import { SubCategory } from "./SubCategory";
 
 export interface Product {
@@ -11,5 +13,7 @@ export interface Product {
   dateOfManufacture?: string;
   expiryDate?: string;
   status?: string;
-  subCategory?: SubCategory;
+  description?: string;
+  subCategory: SubCategory;
+  promotion?: Promotion;
 }

@@ -2,9 +2,6 @@ import validator from "validator";
 
 class ValidationUtil {
   static validateEmail(email: string) {
-    if (!email) {
-      return "Email is required.";
-    }
     if (!validator.isEmail(email)) {
       return "Invalid email format.";
     }
@@ -12,9 +9,6 @@ class ValidationUtil {
   }
 
   static validatePassword(password: string) {
-    if (!password) {
-      return "Password is required.";
-    }
     if (!validator.isLength(password, { min: 6 })) {
       return "Password must be at least 6 characters long.";
     }
@@ -51,10 +45,6 @@ class ValidationUtil {
   }
 
   static validateDateOfBirth(dob: string) {
-    if (!dob) {
-      return "Date of birth is required.";
-    }
-
     const date = new Date(dob);
     const today = new Date();
 
@@ -111,12 +101,12 @@ class ValidationUtil {
     }
     return null;
   }
-  static validateRequired(field: string, fieldName: string) {
-    if (validator.isEmpty(field)) {
-      return `${fieldName} is required.`;
-    }
-    return null;
-  }
+
+  static validateRequired = (fieldName: string) => {
+    return (value: string) => {
+      return value.trim() ? null : `${fieldName} is required`;
+    };
+  };
 }
 
 export default ValidationUtil;

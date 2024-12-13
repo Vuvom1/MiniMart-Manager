@@ -5,13 +5,15 @@ interface RoundedButtonProps {
   onClick?: () => void;
   color?: string; 
   size?: 'small' | 'medium' | 'large'; 
-  borderColor?: string, 
-  border?: string,
+  borderColor?: string; 
+  border?: string;
   height?: string; 
   width?: string;  
-  prefixIcon?: JSX.Element,
-  suffixIcon?: JSX.Element,
-  disable?: boolean,
+  prefixIcon?: JSX.Element;
+  suffixIcon?: JSX.Element;
+  disable?: boolean;
+  rounded?: string;
+  textColor?: string; // Add this line
 }
 
 const RoundedButton: React.FC<RoundedButtonProps> = ({
@@ -22,10 +24,12 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
   borderColor = 'transparent', 
   border = 'border',
   height = '40px', 
-  width = '100%',  
+  width = 'auto',  
   prefixIcon, 
   suffixIcon,
-  disable = false
+  disable = false,
+  rounded = 'rounded-md',
+  textColor = 'text-black'
 }) => {
  
   const sizeClasses = {
@@ -39,7 +43,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
       disabled={disable}
       onClick={onClick}
       style={{ height, width }}
-      className={`rounded-md items-center justify-center gap-x-2 shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}
+      className={`${rounded} items-center justify-center gap-x-2 shadow-sm flex ${color} ${sizeClasses[size]} ${border} ${borderColor} ${textColor} transition duration-200 hover:bg-opacity-90 focus:outline-none`}
     >
       {prefixIcon}
       {label}

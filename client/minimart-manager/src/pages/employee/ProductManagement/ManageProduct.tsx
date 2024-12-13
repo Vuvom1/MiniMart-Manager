@@ -109,12 +109,12 @@ const ManageProduct: React.FC = () => {
             ))}
           </tbody>
         </table>
-        <OverviewTable
+        {/* <OverviewTable
           title="Products Overview"
           itemData={data}
           columnHeaders={columnHeaders}
           dataFields={dataFields}
-        />
+        /> */}
       </div>
 
       <div className="flex justify-between items-center mt-4">

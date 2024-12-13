@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String,
         required: [true, 'Please enter address']
+    },
+    status: {
+        type: String,
+        required: true,
     }
 })
 
