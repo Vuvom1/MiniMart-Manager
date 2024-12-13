@@ -1,54 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import FormatUtil from '../../utils/FormatUttil';
 
 interface MoneyFieldProps {
   id?: string;
   label?: string;
   name?: string;
   prefix?: JSX.Element;
-  value?: string; 
+  suffixIcon?: JSX.Element;
+  value?: number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  height?: string; 
-  width?: string;  
+  height?: string;
+  width?: string;
   error?: string | null;
-  isMoney?: boolean; 
 }
 
-export default function MoneyField({
+const MoneyField: React.FC<MoneyFieldProps> = ({
   id,
   label,
   name,
   prefix,
-  value,
+  suffixIcon,
+  value = 0.00,
   onChange,
   placeholder,
-  height = '40px', 
-  width = '100%', 
+  height = '50px',
+  width = '100%',
   error = null,
-  isMoney = true, 
-}: MoneyFieldProps) {
+}) => {
+  const [currentValue, setCurrentValue] = useState<string>(FormatUtil.moneyFormat(value.toString()));
+
   const handleMoneyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value;
-
-  
-    inputValue = inputValue.replace(/[^0-9.]/g, '');
-
-
-    const parts = inputValue.split('.');
-    if (parts.length > 2) {
-      inputValue = parts[0] + '.' + parts.slice(1).join('').slice(0, 2);
-    } else if (parts.length === 2 && parts[1].length > 2) {
-      inputValue = parts[0] + '.' + parts[1].slice(0, 2);
+    const inputValue = e.target.value;
+    const formattedValue = FormatUtil.moneyFormat(inputValue);
+    setCurrentValue(formattedValue);
+    const decimalValue = parseFloat(inputValue.replace(/,/g, ''));
+    if (!isNaN(decimalValue)) {
+      onChange?.({ target: { value: decimalValue.toFixed(2) } } as React.ChangeEvent<HTMLInputElement>);
     }
-
-    const [integerPart, decimalPart] = inputValue.split('.');
-    const formattedIntegerPart = parseInt(integerPart, 10)
-      .toLocaleString(); 
-    const formattedValue = decimalPart 
-      ? `${formattedIntegerPart}.${decimalPart}` 
-      : formattedIntegerPart;
-
-    onChange?.({ target: { value: formattedValue } } as React.ChangeEvent<HTMLInputElement>);
   };
 
   return (
@@ -58,26 +47,31 @@ export default function MoneyField({
           {label}
         </label>
       )}
-      <div className="relative rounded-md shadow-sm" style={{ height }}>
+      <div className={`relative rounded-md border ${error ? 'border-red-500' : 'border-gray-300'}`} style={{ height }}>
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}
           </div>
         )}
         <input
+          type="text"
           id={id}
           name={name}
-          type="text"
-          value={isMoney ? value : value} 
-          onChange={isMoney ? handleMoneyChange : onChange} 
+          value={currentValue}
+          onChange={handleMoneyChange}
           placeholder={placeholder}
-          className={`block w-full rounded-md border-0 py-1.5 ${
-            prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
-          style={{ height }}  
+          className={`block w-full pl-7 pr-12 pb-1 sm:text-sm`}
+          style={{ height }}
         />
-        {error != null && <p className='text-xs' style={{ color: 'red' }}>{error}</p>} 
+        {suffixIcon && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            {suffixIcon}
+          </div>
+        )}
       </div>
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
-}
+};
+
+export default MoneyField;

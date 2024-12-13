@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 interface SelectFieldProps {
@@ -5,24 +6,47 @@ interface SelectFieldProps {
   label?: string;
   name?: string;
   value?: { label: string; value: string } | null;
+  initialValue?: { label: string; value: string } | null;
   onChange?: (selectedOption: { label: string; value: string } | null) => void;
   placeholder?: string;
   width?: string;
   error?: string | null;
-  options: { value: string; label: string }[]; 
+  options: { value: any; label: string}[]; 
+  prefixIcon?: JSX.Element;
 }
 
 export default function SelectField({
   id,
   label,
   name,
+  initialValue,
   value,
   onChange,
   placeholder = "Select an option",
   width = '100%',
   error = null,
   options,
+  prefixIcon,
 }: SelectFieldProps) {
+  const [selectedValue, setSelectedValue] = useState<{ label: string; value: string } | null>(
+    initialValue || null
+  );
+
+  console.log(selectedValue)
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelectedValue(value);
+    }
+  }, [value]);
+
+  const handleChange = (selectedOption: { label: string; value: string } | null) => {
+    setSelectedValue(selectedOption);
+    if (onChange) {
+      onChange(selectedOption);
+    }
+  };
+
   return (
     <div style={{ width }}>
       {label && (
@@ -31,11 +55,12 @@ export default function SelectField({
         </label>
       )}
       <div className="relative rounded-md shadow-sm">
+        {prefixIcon && prefixIcon}
         <Select
           id={id}
           name={name}
-          value={value}
-          onChange={onChange}
+          value={selectedValue}
+          onChange={handleChange}
           options={options}
           placeholder={placeholder}
           classNamePrefix="react-select" 

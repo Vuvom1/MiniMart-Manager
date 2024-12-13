@@ -3,6 +3,12 @@ const router = express.Router();
 const productController = require('../controllers/ProductController')
 
 router.get('/', productController.all_get)
+router.get('/getByCategories', productController.allByCategory_get)
+router.get('/popular', productController.popular_get)
+router.get('/top10Discount', productController.getTop10DiscountProducts)
+router.get('/getBySubCategoryWithPromotions/:id', productController.productsAndPromotionsBySubCategory_get)
+router.get('/:id/getDetailsWithPromotions/', productController.detailsWithPromotionById_get)
+router.get('/:id/getSimilarProductsWithPromotions', productController.getSimilarProductsWithPromotions)
 
 module.exports = router;
 

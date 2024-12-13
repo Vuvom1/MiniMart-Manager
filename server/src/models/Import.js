@@ -1,10 +1,12 @@
-// models/Import.js
 const mongoose = require('mongoose');
+const Supplier = require('./Supplier');     
+const Product = require('./Product');  
+const User = require('./User'); 
 
 const importDetailSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',  
+        ref: Product,  
         required: true,
     },
     quantity: {
@@ -14,18 +16,13 @@ const importDetailSchema = new mongoose.Schema({
     importPrice: {
         type: Number,
         required: true,
-    },
-    totalImportPrice: {
-        type: Number,
-        required: true,
-    },
-    
+    },    
 });
 
 const importSchema = new mongoose.Schema({
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Supplier', 
+        ref: Supplier, 
         required: true,
     },
     invoiceNumber: {
@@ -46,7 +43,7 @@ const importSchema = new mongoose.Schema({
     },
     staff: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', 
+        ref: User, 
         required: true,
     },
     totalQuantity: {
@@ -62,7 +59,7 @@ const importSchema = new mongoose.Schema({
         required: true,
     },
     importDetails: [importDetailSchema]
-});
+}, {timestamps: true});
 
 const Import = mongoose.model('Import', importSchema);
 

@@ -1,9 +1,11 @@
 import axios from 'axios'
+import { Role } from '../../constant/enum';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/auth'
 const defaultUserRole = 'STAFF'
 const defaultUserImage = ''
+const defautUserStatus = 'Active';  
 
 export const loginUser = async (email: String, password: String) => {
     try {
@@ -19,13 +21,16 @@ export const loginUser = async (email: String, password: String) => {
     }
 }
 
-export const registerUser = async (firstname: string, lastname: string, username: string, email: string, password: string, dateOfBirth: string, phone: string, address: string,) => {
+export const registerUser = async (firstname: string, lastname: string, username: string, email: string, password: string, role: Role, dateOfBirth: string, phone: string, address: string) => {
     try {
         const response = await axios.post(`${BASE_URL}/signup`, {
-            firstname, lastname, username, email, password, role: defaultUserRole, image: defaultUserImage, dateOfBirth, phone, address
+            firstname, lastname, username, email, password, role: role ?? defaultUserRole, image: defaultUserImage, dateOfBirth, phone, address, status: defautUserStatus
         }, {
             withCredentials: true,
         });
+        if (role === Role.CUSTOMER) {
+            
+        }
         return response.data;
     } catch(error: any) {
         throw error.response?.data?.message || 'Signup failed'; 

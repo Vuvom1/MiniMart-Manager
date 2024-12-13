@@ -24,8 +24,8 @@ const corsOptions = {
 const port = process.env.port || 8000; 
 
 app.use(cors(corsOptions));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({limit: '50mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
 
 mongodbConfig();
  

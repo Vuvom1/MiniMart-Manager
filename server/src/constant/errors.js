@@ -34,6 +34,26 @@ const errors = {
         message: "Incorrect email or password.",
         code: "incorrectEmailOrPassword",
     },
+    doesNotExistSchedule: {
+        statusCode: 400,
+        message: "Schedule does not exist",
+        code: "doesNotExistSchedule",
+    },
+    alreadyExistSchedule: {
+        statusCode: 400,
+        message: "Schedule already exist",
+        code: "alreadyExistSchedule",
+    },
+    requiredFieldMissing: {
+        statusCode: 400,
+        message: "Required fields missing",
+        code: "requiredFieldMissing",
+    },
+    promotionNotFound: {
+        statusCode: 400,
+        message: "Promotion not found",
+        code: "promotionNotFound",
+    }
 }
 
 module.exports = errors;
