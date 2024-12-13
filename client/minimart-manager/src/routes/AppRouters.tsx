@@ -7,17 +7,20 @@ import {
 import Dashboard from "../pages/Dashboard/Dashboard";
 import SideMenu from "../components/SideMenu/SideMenu";
 import AppHeader from "../components/AppHeader";
-import CustomerManage from "../pages/CustomerManagement/CustomerManange";
-import PromotionManage from "../pages/PromotionManagement/PromotionManage";
-import Login from "../pages/Authientication/Login";
-import Signup from "../pages/Authientication/Signup";
+import CustomerManage from "../pages/employee/CustomerManagement/CustomerManange";
+import PromotionManage from "../pages/employee/PromotionManagement/PromotionManage";
+import Login from "../pages/employee/Authientication/Login";
+import Signup from "../pages/employee/Authientication/Signup";
 import PrivateRoute from "./PrivateRoute";
 import { Role } from "../constant/enum";
 import SuppliesPackageRoot from "./SupplyRoutes";
 import Unauthorized from "../pages/Unauthorized/Unauthorized";
 import { useAuth } from "../components/providers/AuthProvider";
 import { useEffect, useState } from "react";
-import ManageProduct from "../pages/ProductManagement/ManageProduct";
+import ManageProduct from "../pages/employee/ProductManagement/ManageProduct";
+import AddProduct from "../pages/employee/ProductManagement/AddProduct";
+import ManageEmployee from "../pages/EmployeeManagement/ManageEmployee";
+import EditProduct from "../pages/employee/ProductManagement/EditProduct";
 
 const AppRouter = () => {
   const location = useLocation();
@@ -75,7 +78,11 @@ const AppRouter = () => {
             >
               <Route path="/" element={<Dashboard />} />
               <Route path="/customers" element={<CustomerManage />} />
-              <Route path="/products" element={<ManageProduct />} />
+
+              <Route path="/products" element={<ManageProduct />}></Route>
+              <Route path="/products/add" element={<AddProduct />} />
+              <Route path="/products/:id" element={<EditProduct />} />
+              <Route path="/employees" element={<ManageEmployee />} />
             </Route>
 
             <Route path="/unauthorized" element={<Unauthorized />} />

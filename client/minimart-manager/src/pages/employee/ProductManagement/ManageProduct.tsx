@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import RoundedButton from "../../components/Button/RoundedButton";
-import { getAllProducts } from "../../services/api/ProductApi";
-import OverviewTable from "../../components/Table/OverviewTable";
+import RoundedButton from "../../../components/Button/RoundedButton";
+import { getAllProducts } from "../../../services/api/ProductApi";
+import OverviewTable from "../../../components/Table/OverviewTable";
+import { useNavigate } from "react-router-dom";
 interface Product {
   _id: String;
   name: String;
@@ -10,7 +11,8 @@ interface Product {
   status: String;
 }
 
-const ManageProduct = () => {
+const ManageProduct: React.FC = () => {
+  const nav = useNavigate();
   const [data, setData] = useState<Product[]>([]);
   const fetchProducts = async () => {
     try {
@@ -52,38 +54,61 @@ const ManageProduct = () => {
           <RoundedButton
             label="Add New Product"
             color="text-white bg-cyan-500"
+            onClick={() => {
+              nav("add");
+            }}
           />
         </div>
       </div>
 
       <div className="overflow-x-auto">
-        {/* <table className="w-full border-collapse bg-white rounded-lg shadow-md">
+        <table className="w-full border-collapse bg-white rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Product ID</th>
+              {/* <th className="py-3 px-6 text-left">Product ID</th>
               <th className="py-3 px-6 text-left">Name</th>
               <th className="py-3 px-6 text-center">Price</th>
               <th className="py-3 px-6 text-center">Stock</th>
-              <th className="py-3 px-6 text-center">Actions</th>
+              <th className="py-3 px-6 text-center">Actions</th> */}
+              {columnHeaders.map((cName) => (
+                <th className="py-3 px-6 text-center">{cName}</th>
+              ))}
+              <th className="py-3 px-6 text-center"></th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            <tr className="border-b border-gray-200 hover:bg-gray-100">
-              <td className="py-3 px-6 text-left whitespace-nowrap">1</td>
-              <td className="py-3 px-6 text-left">Product Name</td>
-              <td className="py-3 px-6 text-center">$50</td>
-              <td className="py-3 px-6 text-center">In Stock</td>
-              <td className="py-3 px-6 text-center">
-                <button className="text-blue-600 hover:text-blue-800 mr-2">
-                  Edit
-                </button>
-                <button className="text-red-600 hover:text-red-800">
-                  Delete
-                </button>
-              </td>
-            </tr>
+            {data.map((item) => (
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-center whitespace-nowrap">
+                  {item._id}
+                </td>
+                <td className="py-3 px-6 text-center">{item.name}</td>
+
+                <td className="py-3 px-6 text-center">
+                  {item.price.toString()}
+                </td>
+                <td className="py-3 px-6 text-center">
+                  {item.stock.toString()}
+                </td>
+                <td className="py-3 px-6 text-center">{item.status}</td>
+
+                <td className="py-3 px-6 text-center">
+                  <button
+                    className="text-blue-600 hover:text-blue-800 mr-2"
+                    onClick={() => {
+                      nav(`${item._id}`);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button className="text-red-600 hover:text-red-800">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
-        </table> */}
+        </table>
         <OverviewTable
           title="Products Overview"
           itemData={data}

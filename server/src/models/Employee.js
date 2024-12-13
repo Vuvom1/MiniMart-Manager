@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const staffSchema = new mongoose.Schema({
-  userId: {
+const employeeSchema = new mongoose.Schema({
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -11,11 +11,11 @@ const staffSchema = new mongoose.Schema({
     required: true,
   },
   salaryPerHour: {
-    type: Double,
-    requirer: true,
+    type: Number,
+    required: true,
   },
 });
 
-const Staff = mongoose.model("Staff", staffSchema);
+const Employee = mongoose.model("Employee", employeeSchema);
 
-module.exports = Staff;
+module.exports = Employee;

@@ -9,7 +9,7 @@ function SideMenu() {
 
   const menuItems = [
     { label: "Dashboard", icon: <DashboardIcon />, path: "/" },
-    { label: "Employees", icon: <EmployeesIcon />, path: "/" },
+    { label: "Employees", icon: <EmployeesIcon />, path: "/employees" },
     { label: "Customers", icon: <CustomersIcon />, path: "/customers" },
     { label: "Products", icon: <ProductsIcon />, path: "/products" },
     { label: "Supplies", icon: <ImportIcon />, path: "/supplies" },

@@ -1,7 +1,7 @@
 class CustomerController {
-    index(req, res) {
-        res.send('Customer')
-    }
+  index(req, res) {
+    res.send("Customer");
+  }
 }
 
-module.exports = new CustomerController;
+module.exports = new CustomerController();
