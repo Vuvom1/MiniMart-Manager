@@ -32,8 +32,6 @@ export default function SelectField({
     initialValue || null
   );
 
-  console.log(selectedValue)
-
   useEffect(() => {
     if (value !== undefined) {
       setSelectedValue(value);
@@ -54,7 +52,7 @@ export default function SelectField({
           {label}
         </label>
       )}
-      <div className="relative rounded-md shadow-sm">
+      <div className="relative rounded-md shadow-sm focus-within:ring-2 focus-within:ring-cyan-500">
         {prefixIcon && prefixIcon}
         <Select
           id={id}
@@ -65,11 +63,11 @@ export default function SelectField({
           placeholder={placeholder}
           classNamePrefix="react-select" 
           styles={{
-            control: (provided) => ({
-              ...provided,
-              borderColor: error ? 'red' : provided.borderColor,
-              boxShadow: error ? '0 0 0 1px red' : provided.boxShadow,
-            }),
+        control: (provided) => ({
+          ...provided,
+          borderColor: error ? 'red' : provided.borderColor,
+          boxShadow: error ? '0 0 0 1px red' : provided.boxShadow,
+        }),
           }}
         />
         {error && <p className="text-xs" style={{ color: 'red' }}>{error}</p>}

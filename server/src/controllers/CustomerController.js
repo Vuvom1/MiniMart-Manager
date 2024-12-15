@@ -49,6 +49,43 @@ class CustomerController {
 
     }
 
+    updateCustomerPoint = async (id, point) => {
+        try {
+            const customer = await Customer.findByIdAndUpdate(id, { $inc: { point: point } }, { new: true });
+
+            if (!customer) {
+                return null;
+            }   
+
+            return customer;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    addPointToCustomer = async (id, point) => {
+        try { 
+            
+            const customer = await Customer.findById(id);   
+            if (!customer) {
+                return null;
+            }
+
+            const currenPoint = customer.point;
+            const addedPoint = currenPoint + point;
+            const addedPointCustomer = await this.updateCustomerPoint(id, addedPoint);
+
+            if (!addedPointCustomer) {
+                return null;
+            }
+
+            return addedPointCustomer;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     statistic_get = async (req, res) => {
         try {
             const statisticByDate = await this.statisticByDate();

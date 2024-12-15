@@ -18,6 +18,8 @@ import { deleteShift } from "../../../services/api/ShiftApi";
 import { Employee } from "../../../data/Entities/Employee";
 import TextField from "../../../components/InputField/TextField";
 import useSearch from "../../../utils/SearchUtil";
+import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
+import { set } from "date-fns";
 
 export function TeamSchedule() {
     const [loading, setLoading] = useState(true);
@@ -39,7 +41,6 @@ export function TeamSchedule() {
     const [isOpenEditEventModal, setIsOpenEditEventModal] = useState(false);
     const [isOpenModalDeleteEvent, setIsOpenModalDeleteEvent] = useState(false)
     const popoverRef = useRef<HTMLDivElement | null>(null);
-    
 
     const searchUtil = useSearch(schedules);
 
@@ -56,22 +57,26 @@ export function TeamSchedule() {
     }
 
     const fetchSchedules = async () => {
+        setLoading(true);
         try {
             const scheduleData = await getAllSchedules();
 
-            setSchedules(scheduleData);
-
+            setSchedules(scheduleData)
+            console.log(scheduleData)
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
                     message={message || 'Error fetching schedules '}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+        } finally { 
+            setLoading(false);
         }
     }
 
 
     const addEmpployee = async (employeeId: string) => {
+        setLoading(true);
         try {
             const response = await addEmployeeToSchedule(employeeId);
 
@@ -86,12 +91,11 @@ export function TeamSchedule() {
                     message={message || 'Error adding employee to schedule'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+        } finally {
+            setIsOpendAddEmployeeModal(false);
+            fetchSchedules();
         }
     }
-
-    const handleDeleteEventClick = () => {
-        setIsOpenModalDeleteEvent(true);
-    };
 
     const handleDeleteShift = async (shiftId: string) => {
         try {
@@ -105,7 +109,7 @@ export function TeamSchedule() {
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
-                    message={message || 'Error delete evet'}
+                    message={message || 'Error delete event'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
         } finally {
@@ -144,13 +148,17 @@ export function TeamSchedule() {
 
     useEffect(() => {
         fetchSchedules();
-    }, [isOpenEventModal, isOpenModalDeleteEvent, isOpenAddEmployeeModal, isOpenEditEventModal]);
+    }, []);
 
     useEffect(() => {
+        setLoading(true);
         fetchEmployees();
         handleUnaddedEmployees();
-        console.log(unaddedEmployees);
-    }, [isOpenAddEmployeeModal]);
+    }, []);
+
+    if (loading === true) {
+        return <LoadingScreen />
+    }
 
     return (
         <>
@@ -274,26 +282,19 @@ export function TeamSchedule() {
                                 ))}
                             </tbody>
                         </table>
-
                     </div>
-
                 </div>
-
-
-
-
-
             </div>
-            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onSelectEmployee={(employeeId: string) => addEmpployee(employeeId)} onClose={() => setIsOpendAddEmployeeModal(false)} employees={unaddedEmployees} />
+            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onClose={()=>setIsOpendAddEmployeeModal(false)} onSelectEmployee={(employeeId: string) => {addEmpployee(employeeId), fetchSchedules}}  employees={unaddedEmployees} />
             }
             {isOpenModalDeleteEvent && popoverEvent && popoverEvent.shift?._id && <ConfirmModal
                 isOpen={isOpenModalDeleteEvent}
                 onClose={() => setIsOpenModalDeleteEvent(false)}
-                onConfirm={() => handleDeleteShift(popoverEvent?.shift?._id || "")}
+                onConfirm={() => {handleDeleteShift(popoverEvent?.shift?._id || ""), fetchSchedules}}
                 message="Are you sure you want to delete this event?"
             />}
-            {isOpenEditEventModal && popoverEvent && popoverEvent.shift && <EditEventModal shift={popoverEvent?.shift} scheduleId={""} onClose={() => { setIsOpenEditEventModal(false) }} />}
-            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} initialDate={popoverEvent?.date || new Date} onSave={() => { }} onClose={() => { setIsOpenEventModal(false) }} />}
+            {isOpenEditEventModal && popoverEvent && popoverEvent.shift && <EditEventModal shift={popoverEvent?.shift} OnEdit={()=>{setIsOpenEditEventModal(false), fetchSchedules}} onClose={() => { setIsOpenEditEventModal(false) }} />}
+            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} initialDate={popoverEvent?.date || new Date} onSave={() => {setIsOpenEventModal(false), fetchSchedules}} onClose={() => { setIsOpenEventModal(false) }} />}
         </>
     )
 }

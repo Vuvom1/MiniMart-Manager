@@ -77,7 +77,7 @@ export default function DatePicker({
           id={id}
           name={name}
           type="date"
-          value={value ? value.toISOString().split('T')[0] : ''}
+          value={value instanceof Date && !isNaN(value.getTime()) ? value.toISOString().split('T')[0] : ''}
           onChange={handleChange}
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${

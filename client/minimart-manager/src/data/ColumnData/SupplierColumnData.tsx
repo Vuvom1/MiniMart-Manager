@@ -9,14 +9,14 @@ export const supplierColumnData: ColumnData[] = [
         field: "_id",
         header: "ID",
         isEditable: false,
-        isCollapsed: false,
+        isHidden: false,
         type: ColumnType.ID,
     },
     {
         field: "name",
         header: "Name",
         isEditable: true,
-        isCollapsed: false,
+        isHidden: false,
         validations: [ValidationUtil.validateRequired("Supplier name")],
         type: ColumnType.TEXT,
     },
@@ -24,7 +24,7 @@ export const supplierColumnData: ColumnData[] = [
         field: "email",
         header: "Email",
         isEditable: true,
-        isCollapsed: false,
+        isHidden: false,
         validations: [
             ValidationUtil.validateRequired("Email"),
             ValidationUtil.validateEmail
@@ -35,7 +35,7 @@ export const supplierColumnData: ColumnData[] = [
         field: "status",
         header: "Status",
         isEditable: true,
-        isCollapsed: false,
+        isHidden: false,
         options: [SupplierStatus.ACTIVE, SupplierStatus.INACTIVE],
         type: ColumnType.STATUS,
         colorMapping: supplierStatusColorMapping,
@@ -44,7 +44,7 @@ export const supplierColumnData: ColumnData[] = [
         field: "phone",
         header: "Phone number",
         isEditable: true,
-        isCollapsed: true,
+        isHidden: true,
         validations: [
             ValidationUtil.validateRequired("Phone number"),
             ValidationUtil.validatePhoneNumber
@@ -56,7 +56,7 @@ export const supplierColumnData: ColumnData[] = [
         field: "address",
         header: "Address",
         isEditable: true,
-        isCollapsed: true,
+        isHidden: true,
         validations: [
             ValidationUtil.validateRequired("Address")
         ],
@@ -65,7 +65,7 @@ export const supplierColumnData: ColumnData[] = [
     {
         field: "description",
         header: "Description",
-        isCollapsed: true,
+        isHidden: true,
         isEditable: true,
         type: ColumnType.TEXT,
     }

@@ -16,7 +16,6 @@ interface TableLayoutProps {
     seeAll?: () => void;
     addItem?: () => void;
     itemsPerPageOptions?: number[];
-    height: string;
     action?: (id: string) => void;
 }
 
@@ -27,7 +26,6 @@ const TableLayout: React.FC<TableLayoutProps> = ({
     seeAll,
     addItem,
     itemsPerPageOptions = [5, 10, 20],
-    height,
     action,
 }) => {
     const timeUtil = new TimeUtil();
@@ -140,7 +138,7 @@ const TableLayout: React.FC<TableLayoutProps> = ({
 
                                                 ) : (column.type === ColumnType.DATETIME ? (
                                                     <div className='justify-start flex'>
-                                                        <p>{timeUtil.convertIsoDateToTimeAndDate(item[column.field])}</p>
+                                                        <p>{timeUtil.convertIsoDateToTimeAndDate(NestedValueUtil.getNestedValue(item, column.field))}</p>
                                                     </div>
                                                 ) : (<div className='justify-start flex'>
                                                     {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}

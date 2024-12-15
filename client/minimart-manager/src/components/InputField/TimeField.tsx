@@ -13,6 +13,8 @@ interface TimeFieldProps {
   error?: string | null;
   validations?: Array<(value: string) => string | null>; 
   validationPassed?: (isValid: boolean) => void; 
+  min?: string; // New prop for minimum time
+  max?: string; // New prop for maximum time
 }
 
 export default function TimeField({
@@ -28,6 +30,8 @@ export default function TimeField({
   error = null,
   validations = [],
   validationPassed,
+  min,
+  max,
 }: TimeFieldProps) {
   const [internalError, setInternalError] = useState<string | null>(error);
 
@@ -38,7 +42,9 @@ export default function TimeField({
 
     for (let i = 0; i < 48; i++) {
       const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-      options.push(timeString);
+      if ((!min || timeString >= min) && (!max || timeString <= max)) {
+        options.push(timeString);
+      }
       minute += 30;
       if (minute === 60) {
         minute = 0;

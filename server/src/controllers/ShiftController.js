@@ -1,11 +1,12 @@
 const errors = require('../constant/errors');
 const Schedule = require('../models/Schedule');
 const Shift = require('../models/Shift');
-const Position = require('../models/Position')
+const Position = require('../models/Position');
+const asyncErrorHandler = require('../util/asyncErrorHandler');
 
 class ShiftController {
 
-    all_get = async (req, res) => {
+    all_get = asyncErrorHandler(async (req, res) => {
         try {
             const shifts = await Shift.find()
                 .populate('position')
@@ -15,10 +16,9 @@ class ShiftController {
         } catch (error) {
             throw error
         }
-    }
+    });
 
-    add_post = async (req, res) => {
-        try {
+    add_post = asyncErrorHandler(async (req, res) => {
             const {
                 title,
                 date,
@@ -57,12 +57,9 @@ class ShiftController {
     
             await shift.save();
             res.status(201).json('Shift created successfully');
-        } catch (error) {
-            throw error
-        }
-    }
-    edit_put = async (req, res) => {
-        try {
+    });
+
+    edit_put = asyncErrorHandler(async (req, res) => {
             const shiftId = req.params.id;
             const {
                 title,
@@ -98,12 +95,9 @@ class ShiftController {
 
             await shift.save();
             res.status(200).json('Shift updated successfully');
-        } catch (error) {
-            throw error;
-        }
-    }
+    }) 
 
-    delete = async (req, res) => {
+    delete = asyncErrorHandler(async (req, res) => {
         const {id} = req.params;
     
         try {
@@ -117,7 +111,7 @@ class ShiftController {
         } catch (error) {
             throw error;
         }
-    };
+    });
 }
 
 

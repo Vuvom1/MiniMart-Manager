@@ -4,7 +4,7 @@ import RoundedButton from '../../components/Button/RoundedButton';
 import { CartContext } from '../../contexts/CartContext';
 import { CheckoutItemCard } from '../../components/Card/CheckoutItemCard';
 import { useState, useEffect } from 'react';
-import {  OrderStatus, PaymentMethod, ReceiptStatus, TransactionType } from '../../constant/enum';
+import { OrderStatus, PaymentMethod, ReceiptStatus, TransactionType } from '../../constant/enum';
 import { useAuth } from '../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import { Receipt } from '../../data/Entities/Receipt';
@@ -14,6 +14,7 @@ import { Order } from '../../data/Entities/Order';
 import { useNavigate } from 'react-router-dom';
 import Urls from '../../constant/urls';
 import { createOrderWithUser } from '../../services/api/OrderApi';
+import { MAP_PIN_IMAGE } from '../../constant/strings';
 
 const CustomerCheckout: React.FC = () => {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ const CustomerCheckout: React.FC = () => {
         { label: 'Online Payment', value: PaymentMethod.ONLINE },
     ];
     const [paymentMethod, setPaymentMethod] = useState(PaymentMethod.CASH);
-    const { cartItems, totalPrice, changeQuantity, removeFromCart, clearCart } = useContext(CartContext)!;
+    const { cartItems, totalPrice, totalItems, changeQuantity, removeFromCart, clearCart } = useContext(CartContext)!;
     const [receipt, setReceipt] = useState<Receipt>({
         paymentMethod: paymentMethod,
         time: new Date(),
@@ -35,7 +36,7 @@ const CustomerCheckout: React.FC = () => {
     const [order, setOrder] = useState<Order>();
     const [couponDiscount, setCoupondiscount] = useState(0);
     const [totalNetPrice, setTotalNetPrice] = useState(0);
-    
+
 
     const handleCheckOut = async () => {
         try {
@@ -98,11 +99,11 @@ const CustomerCheckout: React.FC = () => {
                 <div className='rounded-lg flex p-6 gap-y-6 flex-col shadow-md bg-white'>
                     <p className='text-2xl font-medium'>Delivery information</p>
                     <div className='flex gap-x-4'>
-                        <div className='h-40 w-40'>
-
-                        </div>
+                        <img src={MAP_PIN_IMAGE} alt='map pin' className='w-40 h-40 rounded-lg object-cover' />
                         <div className='flex flex-col'>
-                            <p className='text-xl'>Deliver to</p>
+                            <p className='text-xl'>Receipient</p>
+                            <p className='font-light text-gray-800'>Name: {user?.firstname + " " + user?.lastname}</p>
+                            <p className='text-xl mt-4'>Deliver to</p>
                             <p className='font-light text-gray-800'>Phone number: {user?.phone}</p>
                             <p className='font-light text-gray-800'>Address: {user?.address}</p>
                         </div>
@@ -152,7 +153,7 @@ const CustomerCheckout: React.FC = () => {
 
                 </div>
                 <div className='flex flex-col'>
-                    <RoundedButton onClick={handleCheckOut} label="Confirm order" rounded='rounded-full' textColor='text-white' color='bg-cyan-600/60' />
+                    <RoundedButton disable={totalItems <= 0} onClick={handleCheckOut} label="Confirm order" rounded='rounded-full' textColor='text-white' color='bg-cyan-600/60' />
                 </div>
             </div>
 

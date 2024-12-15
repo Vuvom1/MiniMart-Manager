@@ -1,7 +1,5 @@
 import axios from 'axios'
-import { Import } from '../../data/Entities/Import';
-import { ImportStatus } from '../../constant/enum';
-import { ImportDetail } from '../../data/Entities/ImportDetail';
+import { Import } from '../../data/Entities/Import'
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/imports'
@@ -18,7 +16,7 @@ export const getAllImports = async () => {
 
 export const getImportById = async (id: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}/${id}/detail`); 
+        const response = await axios.get(`${BASE_URL}/getById/${id}`); 
         
         return response.data;
     } catch (error: any) {
@@ -28,13 +26,15 @@ export const getImportById = async (id: string) => {
 
 
 
-export const addImport = async (importData: any) => {
+export const addImport = async (importData: Import) => {
     try {
-        const response = await axios.post(`${BASE_URL}/add`, {
-            importData
+        const response = await axios.post(`${BASE_URL}`, {
+            importData: importData
         }, {
             withCredentials: true,
         });
+
+        console.log(importData);
 
         return response.data;
     } catch(error: any) {
@@ -42,10 +42,10 @@ export const addImport = async (importData: any) => {
     }
 }
 
-export const updateImport = async (id: string, supplierId: string, invoiceNumber: string, deliveryMan: string, status: ImportStatus, description: string, importDetails: ImportDetail[]) => {
+export const updateImport = async (id: string ,importData: Import) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${id}/edit`, {
-            supplierId, invoiceNumber, deliveryMan, status, description, importDetails
+        const response = await axios.put(`${BASE_URL}/${id}`, {
+           importData: importData
         }, {
             withCredentials: true,
         });

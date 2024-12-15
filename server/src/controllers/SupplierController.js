@@ -2,10 +2,11 @@ const User = require('../models/User')
 const errors = require('../constant/errors');
 const Supplier = require('../models/Supplier');
 const DateUtil = require('../util/DateUtil');
+const asyncErrorHandler = require('../util/asyncErrorHandler');
 
 class SupplierController {
 
-    all_get = async (req, res) => {
+    all_get = asyncErrorHandler( async (req, res) => {
         try {
             const suppliers = await Supplier.find();
 
@@ -13,78 +14,78 @@ class SupplierController {
         } catch (error) {
             throw error
         }
-    };
+    });
 
-    add_post = async (req, res) => {
-        try {
-            const { name, email, status, phone, address, description } = req.body;
+    add_post = asyncErrorHandler(async (req, res, next) => {
 
-            const existingName = await Supplier.findOne({ name });
-            const existingEmail = await Supplier.findOne({ email });
+        const { supplier } = req.body;
 
-            if (existingEmail) {
-                const error = new Error(errors.alreadyExistEmail.message);
-                error.code = 'alreadyExistEmail';
-                throw error;
-            }
-
-            if (existingName) {
-                const error = new Error(errors.alreadyExistName.message);
-                error.code = 'alreadyExistName';
-                throw error;
-            }
-
-            const supplier = await Supplier.create({ name, email, status, phone, address, description });
-            res.status(201).json('New supplier added');
-        } catch (error) {
-            throw error;
+        if (!supplier.name || !supplier.email || !supplier.phone || !supplier.address) {
+            const error = new Error(errors.requiredFieldMissing.code);
+            return next(error);
         }
-    };
 
-    edit_put = async (req, res) => {
-        try {
+        const existingName = await Supplier.findOne({ name: supplier.name });
+        if (existingName) {
+            const error = new Error(errors.alreadyExistName.code);
+            return next(error);
+        }
+
+        const existingEmail = await Supplier.findOne({ email: supplier.email });
+        if (existingEmail) {
+            const error = new Error(errors.alreadyExistEmail.code);
+            return next(error);
+        }
+
+        const existingPhone = await Supplier.findOne({ phone: supplier.phone });
+        if (existingPhone) {
+            const error = new Error(errors.alreadyExistPhone.code);
+            return next(error);
+        }
+
+        await Supplier.create(supplier);
+
+        res.status(201).json('New supplier added');
+    });
+
+    edit_put = asyncErrorHandler(async (req, res, next) => {
             const { id } = req.params;
-            const { name, email, status, phone, address, description } = req.body.supplierData;
+            const { supplier } = req.body;
 
-            const supplier = await Supplier.findById(id);
-            if (!supplier) {
-                return res.status(404).json({ message: 'Supplier not found' });
-            }
-
-            const existingName = await Supplier.findOne({ name, _id: { $ne: id } });
-            const existingEmail = await Supplier.findOne({ email, _id: { $ne: id } });
-
-            if (existingEmail) {
-                const error = new Error(errors.alreadyExistEmail.message);
-                error.code = 'alreadyExistEmail';
-                throw error;
-            }
+            const existingName = await Supplier.findOne({ name: supplier.name, _id: { $ne: id } });
+            const existingEmail = await Supplier.findOne({ email: supplier.email, _id: { $ne: id } });
+            const existingPhone = await Supplier.findOne({ phone: supplier.phone, _id: { $ne: id } });
 
             if (existingName) {
-                const error = new Error(errors.alreadyExistName.message);
-                error.code = 'alreadyExistName';
-                throw error;
+                const error = new Error(errors.alreadyExistName.code);
+                return next(error);
             }
 
-            supplier.name = name;
-            supplier.email = email;
-            supplier.status = status;
-            supplier.phone = phone;
-            supplier.address = address;
-            supplier.description = description;
+            if (existingEmail) {
+                const error = new Error(errors.alreadyExistEmail.code);
+                return next(error);
+            }
 
-            await supplier.save();
-            res.status(200).json('Supplier updated successfully');
-        } catch (error) {
-            res.status(400).json({ message: error.message, code: error.code });
-        }
-    };
+            if (existingPhone) {
+                const error = new Error(errors.alreadyExistEmail.phone);
+                return next(error);
+            }
 
-    statistic_get = async (req, res) => {
+            const updatedSupplier = await Supplier.findByIdAndUpdate(id, supplier, { new: true });
+
+            if (!updatedSupplier) {
+                const error = new Error(errors.requiredFieldMissing.code);
+                return next(error);
+            }
+           
+            return res.status(200).json('Supplier updated successfully');
+    });
+
+    statistic_get = asyncErrorHandler(async (req, res, next) => {
         try {
-            
+
             const totalSuppliers = await Supplier.countDocuments();
-            
+
             const statisticByDate = await this.statisticByDate();
 
             const statisticByMonth = await this.statisticByMonth();
@@ -100,21 +101,21 @@ class SupplierController {
         } catch (error) {
             res.status(500).json({ message: "An error occurred while counting suppliers.", error: error.message });
         }
-    };
+    });
 
     statisticByDate = async () => {
         try {
             const todaySuppliers = await Supplier.countDocuments({
-                createdAt: { $gte: DateUtil.getStartOfToday(), $lt: DateUtil.getEndOfToday()}
+                createdAt: { $gte: DateUtil.getStartOfToday(), $lt: DateUtil.getEndOfToday() }
             });
-    
+
             const yesterdaySuppliers = await Supplier.countDocuments({
                 createdAt: { $gte: DateUtil.getStartOfYesterday(), $lt: DateUtil.getEndOfYesterday() }
             });
-    
+
             const comparison = yesterdaySuppliers === 0 ? todaySuppliers : (todaySuppliers / yesterdaySuppliers);
             const percentageCompareYesterday = comparison * 100;
-    
+
             return {
                 todaySuppliers,
                 yesterdaySuppliers,
@@ -131,14 +132,14 @@ class SupplierController {
             const thisMonthSuppliers = await Supplier.countDocuments({
                 createdAt: { $gte: DateUtil.getStartOfCurrentMonth(), $lt: DateUtil.getCurrentDate() }
             });
-    
+
             const lastMonthSuppliers = await Supplier.countDocuments({
                 createdAt: { $gte: DateUtil.getStartOfLastMonth(), $lt: DateUtil.getEndOfLastMonth() }
             });
-    
+
             const comparison = lastMonthSuppliers === 0 ? thisMonthSuppliers : (thisMonthSuppliers / lastMonthSuppliers);
             const percentageCompareLastMonth = comparison * 100;
-    
+
             return {
                 thisMonthSuppliers,
                 lastMonthSuppliers,
@@ -155,14 +156,14 @@ class SupplierController {
             const thisYearSuppliers = await Supplier.countDocuments({
                 createdAt: { $gte: DateUtil.getStartOfCurrentYear(), $lt: DateUtil.getCurrentDate() }
             });
-    
+
             const lastYearSuppliers = await Supplier.countDocuments({
                 createdAt: { $gte: DateUtil.getStartOfLastYear(), $lt: DateUtil.getEndOfLastYear() }
             });
-    
+
             const comparison = lastYearSuppliers === 0 ? thisYearSuppliers : (thisYearSuppliers / lastYearSuppliers);
             const percentageCompareLastYear = comparison * 100;
-    
+
             return {
                 thisYearSuppliers,
                 lastYearSuppliers,
@@ -173,7 +174,7 @@ class SupplierController {
             console.error('Error fetching yearly statistics:', error);
         }
     };
-    
+
 
 }
 

@@ -1,67 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import IncrementalInput from '../InputField/IncrementalInput';
 import MoneyField from '../InputField/MoneyField';
-import { Product } from '../../data/Entities/Product';
+import { ImportDetail } from '../../data/Entities/ImportDetail';
 
 interface ImportProductHorizontalCardProps {
-    product: Product;
+    importDetail: ImportDetail;
     showImage?: Boolean;
-    initialPrice?: number,
     initialQuantity?: number,
+    onPriceChange?: (newPrice: number) => void;
+    onQuantityChange?: (newQuantity: number) => void;
     onDeleteClick?: () => void;
-    onTotalQuantityChange: (quantity: number) => void;
-    onTotalPriceChange: (price: number) => void;
-    onPriceChange: (price: number) => void;
 }
 
 const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = ({
-    product,
+    importDetail,
     showImage = false,
-    initialPrice = 0,
-    initialQuantity = 1,
-    onTotalQuantityChange,
-    onTotalPriceChange,
     onPriceChange,
+    onQuantityChange,
+    onDeleteClick,
 }) => {
-    const [importPrice, setImportPrice] = useState(initialPrice);
-    const [totalPrice, setTotalPrice] = useState(initialQuantity *  initialPrice);
-    const [totalQuantity, setTotalQuantity] = useState(initialQuantity);
 
-    useEffect(() => {
-        calculateTotalPrice(totalQuantity, importPrice);
-    }, [totalQuantity, importPrice]);
-
-    const handleQuantityChange = (value: number) => {
-        if (!isNaN(value) && value >= 0) {
-            setTotalQuantity(value);
-            onTotalQuantityChange(value);
-        }
+    const handlePriceChange = (newPrice: number) => {
+        onPriceChange?.(newPrice);
+        importDetail.importPrice = newPrice;
     };
 
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setImportPrice(parseFloat(value));
-    };
-
-    
-
-    const calculateTotalPrice = (quantity: number, price: number) => {
-        const numericPrice = parseFloat(price.toString().replace(/[^0-9.]/g, ''));
-        const newTotalPrice = numericPrice ? quantity * numericPrice : 0;
-        onPriceChange(numericPrice)
-        onTotalPriceChange(newTotalPrice);
-        setTotalPrice(newTotalPrice)
+    const handleQuantityChange = (newQuantity: number) => {
+        onQuantityChange?.(newQuantity);
+        importDetail.quantity = newQuantity;
     };
 
     return (
         <div className="border rounded-lg gap-x-4 p-4 flex">
             {showImage && <div className='h-full flex justify-center'>
-                <img src={product.image} alt={product.name} className="w-24 h-24 object-cover rounded-md" />
+                <img src={importDetail.product.image} alt={importDetail.product.name} className="w-24 h-24 object-cover rounded-md" />
             </div>}
 
             <div className='flex flex-col flex-1'>
-                <h2 className="text-xl font-bold">{product.name}</h2>
-                <p>{product.barcode}</p>
+                <h2 className="text-xl font-bold">{importDetail.product.name}</h2>
+                <p>{importDetail.product.barcode}</p>
             </div>
 
             <div className='flex flex-col justify-between gap-y-4'>
@@ -72,7 +49,7 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
                     <div className='flex gap-x-1'>
                         <MoneyField
                             height='25px'
-                            value={importPrice}
+                            value={importDetail.importPrice}
                             onChange={handlePriceChange}
                             placeholder="$0.00"
                         />
@@ -80,14 +57,12 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
                     </div>
                 </div>
 
-
                 <div className='flex gap-x-7'>
                     <label htmlFor="quantity-input" className="block mb-2 text-sm font-medium">
                         Choose quantity:
                     </label>
-                    <IncrementalInput initialValue={initialQuantity} onQuantityChange={handleQuantityChange} />
+                    <IncrementalInput initialValue={importDetail.quantity} onQuantityChange={handleQuantityChange} />
                 </div>
-
             </div>
         </div>
     );

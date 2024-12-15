@@ -125,7 +125,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                 <thead className="table-header">
                     <tr className="rounded-md">
                         {columnData.map((column, index) => (
-                            !column.isCollapsed &&
+                            !column.isHidden &&
                             <th key={index} className={`px-4 py-2 text-gray-500 font-semibold ${(column.type === ColumnType.STATUS || column.type === ColumnType.CHECK) ? 'text-center' : 'text-start'} bg-gray-100`}>
                                 {column.header}
                             </th>
@@ -142,7 +142,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
 
                             >
                                 {columnData.map((column, columnIndex) => (
-                                    !column.isCollapsed &&
+                                    !column.isHidden &&
                                     <td key={columnIndex} className="px-4 py-4 border-b border-gray-200">
                                         {column.type === ColumnType.ID ? (
                                             <span className="relative group flex gap-x-2 items-center">
@@ -220,7 +220,7 @@ const CollapsedRowTable: React.FC<ItemsProps> = ({
                                     <td key={`${index}-expanded-td`} colSpan={columnData.length + 1} className="px-4 py-4 bg-gray-50 text-left border border-t border-gray-200">
                                         <div className="grid grid-cols-1 gap-2">
                                             {columnData.map((col) => (
-                                                col.isCollapsed &&
+                                                col.isHidden &&
                                                 <div className="flex justify-between px-16">
                                                     <span className="font-semibold tex">{col.header}:</span>
                                                     <span><EditableInfo editable={col.isEditable} validations={col.validations} onValueChange={(newValue) => handleValueChange(startIndex + index, col.field, newValue)} initialValue={item[col.field]} /></span>
