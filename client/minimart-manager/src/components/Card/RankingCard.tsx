@@ -18,7 +18,7 @@ const RankingCard: React.FC<RankingCardProps> = ({ customers }) => {
               <span className="mr-2">{index + 1}.</span>
               <span className="text-gray-700 font-medium">{customer.name}</span>
             </div>
-            <span className="text-cyan-700 font-medium">{customer.point} points</span>
+            <span className="text-cyan-700 font-medium">{customer.point.toFixed(2)} points</span>
           </li>
         ))}
       </ul>

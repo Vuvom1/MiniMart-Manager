@@ -13,7 +13,8 @@ interface RoundedButtonProps {
   suffixIcon?: JSX.Element;
   disable?: boolean;
   rounded?: string;
-  textColor?: string; // Add this line
+  textColor?: string;
+  type?: 'button' | 'submit' | 'reset'; // Add this line
 }
 
 const RoundedButton: React.FC<RoundedButtonProps> = ({
@@ -29,7 +30,8 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
   suffixIcon,
   disable = false,
   rounded = 'rounded-md',
-  textColor = 'text-black'
+  textColor = 'text-black',
+  type = 'button' // Add this line
 }) => {
  
   const sizeClasses = {
@@ -40,6 +42,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
 
   return (
     <button
+      type={type} // Add this line
       disabled={disable}
       onClick={onClick}
       style={{ height, width }}

@@ -3,7 +3,7 @@ import { ImportDetail } from "./ImportDetail";
 import { Supplier } from "./Supplier";
 
 export interface Import {
-    id?: string;
+    _id?: string;
     supplier: Supplier;
     invoiceNumber: string;
     deliveryMan: string;
@@ -14,3 +14,15 @@ export interface Import {
     status: ImportStatus;
     importDetails: ImportDetail[];
 }
+
+export const entityImport = {
+    supplier: {} as Supplier,
+    invoiceNumber: '',
+    deliveryMan: '',
+    description: '',
+    staff: '',
+    totalQuantity: 0,
+    totalImportPrice: 0,
+    status: ImportStatus.PENDING,
+    importDetails: [] as ImportDetail[],
+};

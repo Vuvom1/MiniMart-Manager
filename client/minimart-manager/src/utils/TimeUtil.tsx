@@ -119,12 +119,12 @@ export class TimeUtil {
         const currentDate = this.getCurrentDate();
         const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
 
-        // Calculate the start of the week (Monday)
+    
         const diff = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
         const startOfWeek = new Date(currentDate);
         startOfWeek.setDate(currentDate.getDate() + diff);
 
-        // Get all 7 days of the week
+
         const week = [];
         for (let i = 0; i < 7; i++) {
             const day = new Date(startOfWeek);
@@ -136,7 +136,6 @@ export class TimeUtil {
     }
 
     convertIsoDateToTimeAndDate(isoDate: string | Date): string {
-        console.log(isoDate);
         const date = new Date(isoDate);
 
         const day = date.getDate().toString().padStart(2, '0');
@@ -151,6 +150,10 @@ export class TimeUtil {
     timeDifference(startTime: string, endTime: string): string {
         const [startHours, startMinutes] = startTime.split(":").map(Number);
         const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+        if (isNaN(startHours) || isNaN(startMinutes) || isNaN(endHours) || isNaN(endMinutes)) {
+            return "0";
+        }
 
         const adjustedStartHours = (startHours + this.timezoneOffset + 24) % 24;
         const adjustedEndHours = (endHours + this.timezoneOffset + 24) % 24;
@@ -171,7 +174,6 @@ export class TimeUtil {
             : minutes === 0
                 ? `${hours}h`
                 : `${hours}h ${minutes}m`;
-
     }
 
     updateTime(date: Date, timeString: string): Date {

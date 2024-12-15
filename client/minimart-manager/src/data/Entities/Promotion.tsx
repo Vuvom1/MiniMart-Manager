@@ -1,20 +1,25 @@
+import { DiscountType, PromotionStatus, PromotionType } from "../../constant/enum";
+import { Product } from "./Product";
+
 export interface Promotion {
-    _id: string;
+    _id?: string;
     name: string;
     code: string;
-    type: 'Order-Based' | 'Product-Based';
-    discountType: 'Percentage' | 'Fixed';
+    type: PromotionType;
+    discountType: DiscountType;
     discountPercentage: number;
-    startTime: string;
-    endTime: string;
+    startTime: Date;
+    endTime: Date;
     description?: string;
-    applicableProducts?: string[];
+    applicableProducts?: Product[];
     applicableOrderAmount?: number;
     buySomeDetails?: {
         quantityToBuy: number;
         quantityToGet: number;
     };
-    giftItem?: string;
+    giftItem?: Product[];
+    maxDiscountAmount?: number;
+    status: PromotionStatus;
     maxUsage?: number;
     createdAt?: string;
     updatedAt?: string;

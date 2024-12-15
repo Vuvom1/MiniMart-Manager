@@ -32,8 +32,6 @@ export default function SelectField({
     initialValue || null
   );
 
-  console.log(selectedValue)
-
   useEffect(() => {
     if (value !== undefined) {
       setSelectedValue(value);

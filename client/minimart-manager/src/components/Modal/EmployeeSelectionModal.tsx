@@ -7,7 +7,7 @@ import RoundedButton from '../Button/RoundedButton';
 interface EmployeeSelectionModalProps {
     employees: Employee[];
     onSelectEmployee: (employeeId: any) => void;
-    onClose: () => void;
+    onClose?: () => void;
 }
 
 const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({ employees, onSelectEmployee, onClose }) => {
@@ -38,7 +38,7 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({ employe
                             className="flex justify-between max-h-50 px-2 py-6 border-b cursor-pointer"
                             onClick={() => {
                                 onSelectEmployee(employee._id);
-                                onClose();
+                                onClose && onClose();
                             }}
                         >
                             <div>

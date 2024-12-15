@@ -1,13 +1,12 @@
 const errors = require('../constant/errors')
 
 function ErrorHandler(error, req, res, next) {
-    try {
-        const objError = errors[error];
-        res.statusCode = objError.statusCode;
-        res.send(objError);
+    try { 
+        const objError = errors[error.message];
+        res.status(objError.statusCode).send(objError);
     } catch {
-        res.statusCode = 500;
-        res.send({ error: true, message: error.message });
+        const objError = errors[errors.internalServerError];
+        res.status(500).send(objError);
     }
 
 }

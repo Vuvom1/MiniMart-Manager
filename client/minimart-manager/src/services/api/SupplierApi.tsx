@@ -1,9 +1,8 @@
 import axios from 'axios'
-import { SupplierStatus } from '../../constant/enum';
+import { Supplier } from '../../data/Entities/Supplier';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/suppliers'
-const DEFAULT_STAUS = SupplierStatus.ACTIVE;
 
 export const getAllSuppliers = async () => {
     try {
@@ -15,10 +14,10 @@ export const getAllSuppliers = async () => {
     }
 }
 
-export const addSupplier = async (name:string, email:string, phone:string, address:string, description:string) => {
+export const addSupplier = async (supplier: Supplier) => {
     try {
-        const response = await axios.post(`${BASE_URL}/add`, {
-            name, email, status: DEFAULT_STAUS, phone, address, description
+        const response = await axios.post(`${BASE_URL}`, {
+            supplier: supplier
         }, {
             withCredentials: true,
         });
@@ -29,10 +28,10 @@ export const addSupplier = async (name:string, email:string, phone:string, addre
     }
 }
 
-export const updateSupplier = async (id: string, supplierData: {name:string, email:string, status: String, phone:string, address:string, description:string}) => {
+export const updateSupplier = async (id: string, supplier: Supplier) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${id}/edit`, {
-            supplierData
+        const response = await axios.put(`${BASE_URL}/${id}`, {
+            supplier: supplier
         }, {
             withCredentials: true,
         });

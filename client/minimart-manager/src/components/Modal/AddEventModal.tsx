@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import TextField from '../InputField/TextField';
-import { Shift } from '../../data/Entities/Shift';
-import { Employee } from '../../data/Entities/Employee';
 import SelectField from '../InputField/SelectField';
 import { BreakDuration, Time } from '../../constant/enum';
 import TimeField from '../InputField/TimeField';
@@ -20,14 +18,14 @@ import DatePicker from '../Picker/DatePicker';
 import SuccessToast from '../Toast/SuccessToast';
 
 interface AddEventModalProps {
-    employee?: Employee;
     scheduleId: string;
     initialDate: Date,
+    onSave: () => void;
     onClose: () => void;
-    onSave: (shift: Shift) => void;
+
 }
 
-const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, initialDate, onClose, onSave }) => {
+const AddEventModal: React.FC<AddEventModalProps> = ({ scheduleId, initialDate, onClose, onSave }) => {
     const [positions, setPositions] = useState<Position[]>([]);
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(initialDate);
@@ -47,8 +45,6 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, ini
             const data = await getAllPositions();
 
             setPositions(data)
-
-            console.log(positions);
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
@@ -66,7 +62,7 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, ini
                         message='Please select position'
                         onDismiss={() => toast.dismiss(t.id)}
                     />))
-                return
+                return;
             } else {
                 const response = await addshift(
                     title,
@@ -77,9 +73,7 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, ini
                     position._id,
                     breakDuration?.value || "",
                     notes
-                )
-
-                console.log(scheduleId)
+                );
 
                 toast.custom((t) => (
                     <SuccessToast
@@ -87,14 +81,13 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, ini
                         onDismiss={() => toast.dismiss(t.id)}
                     />))
 
-                onClose();
+                onSave();
             }
-
 
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
-                    message={message || 'Error fetching schedules '}
+                    message={message || 'Error fetching positions'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
         }
@@ -135,13 +128,14 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ employee, scheduleId, ini
                                 onChange={setDate}
                                 value={date}
                             />
-                            <TimeField value={startTime}
+                            <TimeField max={endTime} value={startTime}
                                 onChange={(e) => setStartTime(e.target.value)} width='20%' />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
                             </svg>
 
                             <TimeField
+                                min={startTime}
                                 value={endTime}
                                 onChange={(e) => setEndTime(e.target.value)}
                                 width='20%' />

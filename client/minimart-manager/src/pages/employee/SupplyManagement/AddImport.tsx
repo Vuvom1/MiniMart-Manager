@@ -11,33 +11,27 @@ import SuccessToast from "../../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../../components/Toast/ErrorToast";
 import { ImportStatus, SupplierStatus } from "../../../constant/enum";
 import { useNavigate } from "react-router-dom";
-import { Product } from "../../../data/Entities/Product";
 import DraggableFloatComponent from "../../../components/Dragable/DragableComponent";
 import ProductScannerComponent from "../../../components/Scanner/ProductScanner";
 import ValidationUtil from "../../../utils/ValidationUtil";
-import { ImportDetail } from "../../../data/Entities/ImportDetail";
-import { ImportFormData } from "../../../data/FormData/ImportFormData";
 import StatusPickerPopover from "../../../components/Picker/StatusPicker";
 import { importStatusColorMapping } from "../../../constant/mapping";
 import Urls from "../../../constant/urls";
+import { entityImport, Import } from "../../../data/Entities/Import";
+import { Product } from "../../../data/Entities/Product";
+import { useAuth } from "../../../providers/AuthProvider";
+import { ImportDetail } from "../../../data/Entities/ImportDetail";
 
 
 function AddImport() {
+    const auth = useAuth();
+    const user = auth?.user;
     const navigate = useNavigate();
-    const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
-    const [totalQuantity, setTotalQuantity] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [showModal, setShowModal] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true)
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
-
-    const [selectedSupplierId, setSelectedSupplierId] = useState<string>("");
-    const [invoiceNumber, setInvoiceNumber] = useState<string>("");
-    const [deliveryMan, setDeliveryMan] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [importData, setImportData] = useState<Import>(entityImport);
+    const [loading, setLoading] = useState(true);
+    const [supplierOptions, setSupplierOptions] = useState<any[]>([]);
     const [isScannerOpened, setIsScannerOpened] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [isValidForm, setIsValidForm] = useState(false);
 
 
@@ -65,151 +59,75 @@ function AddImport() {
         fetchSuppliers();
     }, []);
 
-    useEffect(() => {
-        const newTotalQuantity = importDetails.reduce((acc, product) => acc + product.quantity, 0);
-        const newTotalPrice = importDetails.reduce((acc, product) => acc + product.importPrice * product.quantity, 0);
-        setTotalQuantity(newTotalQuantity);
-        setTotalPrice(newTotalPrice);
-    }, [importDetails]);
-
-    const handleTotalQuantityChange = (id?: string, quantity?: number) => {
-        if (id !== undefined && quantity !== undefined)
-            setImportDetails(prev => {
-                const updatedDetails = prev.map(detail =>
-                    detail.product._id === id ? { ...detail, quantity } : detail
-                );
-
-                return updatedDetails.filter(product => product.quantity > 0);
-            });
-    };
-
-    const handleRemoveDetail = (product: Product) => {
-        setImportDetails((prevDetails) =>
-            prevDetails.filter((selected) => selected.product._id !== product._id)
-        );
-    };
-
-
-    const handleAddDetail = (product: Product) => {
-        setImportDetails((prev) => {
-            const exists = prev.some((p) => p.product._id === product._id);
-
-            if (exists) return prev;
-
-            return [...prev, { product, quantity: 1, importPrice: 0 }];
-        });
-    }
-
-    const handleUpdateDetail = (products: Product[]) => {
-        products.forEach((product) => {
-            if (!importDetails.some((selected) => selected.product._id === product._id)) {
-                handleAddDetail(product);
-            }
-        });
-
-        importDetails.forEach((detail) => {
-            if (!products.some((product) => product._id === detail.product._id)) {
-                handleRemoveDetail(detail.product);
-            }
-        });
-    };
-
-    const handleProductScanned = (product: Product) => {
-        handleAddDetail(product);
-        toast.custom((t) => (
-            <SuccessToast
-                message="Product added by barcode!"
-                onDismiss={() => toast.dismiss(t.id)}
-            />
-        ));
-    };
-
-    const handleTotalPriceChange = (id?: string, totalPrice?: number) => {
-        if (id && totalPrice)
-            setImportDetails(prev =>
-                prev.map(detail =>
-                    detail.product._id === id ? { ...detail, totalImportPrice: totalPrice } : detail
-                )
-            );
-    };
-
-    const handlePriceChange = (addedProduct?: Product, importPrice?: number) => {
-
-        if (addedProduct && importPrice !== undefined) {
-
-            setImportDetails(prevDetails =>
-                prevDetails.map(detail =>
-                    detail.product._id === addedProduct._id
-                        ? { ...detail, importPrice, totalImportPrice: importPrice * detail.quantity }
-                        : detail
-                )
-            );
-        }
-
-    };
-
 
     const handleSaveImport = async () => {
-        const userData = localStorage.getItem('user');
-        let staffId = null;
-
-        if (userData) {
-            const user = JSON.parse(userData);
-            staffId = user._id;
-        }
-
-        if (importDetails.length == 0) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message="Please add products to current import!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
-            return;
-        }
-
-
-        const importData: ImportFormData = {
-            supplier: selectedSupplierId,
-            invoiceNumber,
-            deliveryMan,
-            description,
-            staff: staffId,
-            status: status,
-            importDetails: importDetails.map(detail => ({
-                ...detail,
-                product: detail.product?._id || '',
-            }))
-
-        };
-
         try {
-            await addImport(importData);
+            setImportData({
+                ...importData,
+                staff: user?._id || '',
+            });
+
+            const message = await addImport(importData);
 
             toast.custom((t) => (
                 <SuccessToast
-                    message="Add import success!"
+                    message={message}
                     onDismiss={() => toast.dismiss(t.id)}
                 />
             ));
-
-
-        } catch (error) {
+            navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
+        } catch (error: any) {
             toast.custom((t) => (
                 <CustomErrorToast
-                    message="Error adding new import!"
+                    message={error || 'Add import failed'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />
             ));
         } finally {
             setLoading(false);
-            navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
+            
         }
     };
 
     const handleValidationChange = (isValid: boolean) => {
         setIsValidForm(isValid);
     };
+
+    const handleAddDetail = (selectedProducts: Product[]) => {
+        const updatedImportDetails = selectedProducts.map(product => ({
+            product,
+            quantity: 1, 
+            importPrice: 0,
+        }));
+
+        setImportData({
+            ...importData,
+            importDetails: updatedImportDetails,
+            totalQuantity: updatedImportDetails.reduce((sum, detail) => sum + detail.quantity, 0),
+            totalImportPrice: updatedImportDetails.reduce((sum, detail) => sum + detail.importPrice * detail.quantity, 0),
+        });
+    };
+
+    function handleProductScanned(product: Product): void {
+        handleAddDetail([product]);
+    }
+
+    const handleUpdateDetail = (updatedDetail: ImportDetail) => {
+        const updatedDetails = importData.importDetails.map(detail => {
+            if (detail.product._id === updatedDetail.product._id) {
+                return updatedDetail;
+            }
+
+            return detail;
+        });
+
+        setImportData({
+            ...importData,
+            importDetails: updatedDetails,
+            totalQuantity: updatedDetails.reduce((sum, detail) => sum + detail.quantity, 0),
+            totalImportPrice: updatedDetails.reduce((sum, detail) => sum + detail.importPrice * detail.quantity, 0),    
+        });
+    }
 
     return (
         <>
@@ -227,8 +145,11 @@ function AddImport() {
                         <SelectField
                             placeholder="Choose supplier..."
                             options={supplierOptions}
-                            onChange={value => {
-                                setSelectedSupplierId(value ? value.value : '');
+                            onChange={(selectedOption) => {
+                                setImportData({
+                                    ...importData,
+                                    supplier: supplierOptions.find(option => option.value === selectedOption?.value).value || null,
+                                }); 
                             }} />
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -237,9 +158,9 @@ function AddImport() {
                         </svg>  <TextField
                             validationPassed={handleValidationChange}
                             validations={[ValidationUtil.validateRequired("Invoice number")]}
-                            value={invoiceNumber}
+                            value={importData.invoiceNumber}
                             placeholder="Enter invoice number..."
-                            onChange={(e) => setInvoiceNumber(e.target.value)} />
+                            onChange={(e) => setImportData({ ...importData, invoiceNumber: e.target.value })} />
 
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -248,16 +169,26 @@ function AddImport() {
                         </svg>
 
                         <TextField
-                            value={deliveryMan}
+                            value={importData.deliveryMan}
                             validations={[ValidationUtil.validateRequired("Delivery man")]}
                             placeholder="Enter delivery man name..."
-                            onChange={(e) => setDeliveryMan(e.target.value)} />
+                            onChange={(e)=>setImportData(
+                                {
+                                    ...importData,
+                                    deliveryMan: e.target.value
+                                }
+                            )} />
                     </div>
                     <div className="flex items-center gap-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                         </svg>
-                        <StatusPickerPopover statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={(status) => setStatus(status)} />
+                        <StatusPickerPopover statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={
+                            (status) => setImportData({
+                                ...importData,
+                                status: status
+                            })
+                        } />
 
                     </div>
                     <div className="flex gap-x-4">
@@ -266,15 +197,12 @@ function AddImport() {
                         </svg>
                         <TextField
                             multiline={true}
-                            value={description}
+                            value={importData.description}
                             placeholder="Enter import description"
                             height="150px"
-                            onChange={(e) => setDescription(e.target.value)} />
+                            onChange={(e) => setImportData({ ...importData, description: e.target.value })}
+                            />
                     </div>
-
-
-
-
                 </div>
 
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-y-4 w-2/3 rounded-lg divide-y">
@@ -301,28 +229,27 @@ function AddImport() {
                     </div>
 
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
-                        {importDetails.map(detail => (
+                        {importData.importDetails.map(detail => (
                             <ImportProductHorizontalCard
                                 showImage={true}
                                 key={detail.product._id}
-                                product={detail.product}
-                                onPriceChange={(price) => handlePriceChange(detail.product, price)}
-                                onTotalQuantityChange={(quantity) => handleTotalQuantityChange(detail.product._id, quantity)}
-                                onTotalPriceChange={(totalPrice) => handleTotalPriceChange(detail.product._id, totalPrice)}
+                                importDetail={detail}
+                                onPriceChange={(newPrice) => handleUpdateDetail({ ...detail, importPrice: newPrice })}
+                                onQuantityChange={(newQuantity) => handleUpdateDetail({ ...detail, quantity: newQuantity })}    
                             />
                         ))}
-                        {importDetails.length == 0 && <p className="text-center text-gray-400">There is no product, please add products for adding new import!</p>}
+                        {importData.importDetails.length == 0 && <p className="text-center text-gray-400">There is no product, please add products for adding new import!</p>}
                     </div>
 
                     <div className="flex flex-col px-8 mt-4">
                         <div className="flex justify-between mt-4">
                             <p className="text-gray-600">Total product quantity:</p>
-                            <p className="font-medium">{totalQuantity}</p>
+                            <p className="font-medium">{importData.totalQuantity}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="text-gray-600">Total import price:</p>
                             <p className="font-medium">
-                                ${isNaN(totalPrice) || !Number.isFinite(totalPrice) ? 0 : totalPrice.toLocaleString()}
+                                ${importData.totalImportPrice?.toFixed(2) || '0.00'}
                             </p>
                         </div>
                     </div>
@@ -354,8 +281,8 @@ function AddImport() {
 
             {showModal && (
                 <ProductSelectionModal
-                    selectedProducts={importDetails.map((detail) => detail.product)}
-                    onSelectProducts={handleUpdateDetail}
+                    selectedProducts={importData.importDetails.map((detail) => detail.product)}
+                    onSelectProducts={handleAddDetail}
                     onClose={() => setShowModal(false)}
                 />
             )}
