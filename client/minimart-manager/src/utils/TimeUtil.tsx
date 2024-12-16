@@ -176,6 +176,27 @@ export class TimeUtil {
                 : `${hours}h ${minutes}m`;
     }
 
+    sumTimeDifferences(timeStrings: string[]): string {
+        let totalMinutes = 0;
+        if (!Array.isArray(timeStrings)) {
+            return "0";
+        }
+
+        for (const timeString of timeStrings) {
+            if (typeof timeString === 'string' && timeString) {
+                const [hours, minutes] = timeString.split(":").map(Number);
+                if (!isNaN(hours) && !isNaN(minutes)) {
+                    totalMinutes += hours * 60 + minutes;
+                }
+            }
+        }
+
+        const totalHours = Math.floor(totalMinutes / 60);
+        const remainingMinutes = totalMinutes % 60;
+
+        return `${totalHours}h ${remainingMinutes}m`;
+    }
+
     updateTime(date: Date, timeString: string): Date {
         const [hours, minutes] = timeString.split(':').map(Number);
         const newDate = new Date(date);

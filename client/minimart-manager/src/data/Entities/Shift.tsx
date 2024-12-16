@@ -12,3 +12,4 @@ export interface Shift {
     breakDuration: string,
     notes: string,
 }
+

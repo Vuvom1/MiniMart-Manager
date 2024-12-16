@@ -79,7 +79,22 @@ const errors = {
         statusCode: 400,
         message: "User not found",
         code: "userNotFound",
-    }
+    },
+    positionNotFound: {
+        statusCode: 400,
+        message: "Position not found",
+        code: "positionNotFound",
+    },
+    scheduleNotFound: {
+        statusCode: 400,
+        message: "Schedule not found",
+        code: "scheduleNotFound",
+    },
+    shiftNotFound: {
+        statusCode: 400,
+        message: "Shift not found",
+        code: "shiftNotFound",
+    },
 }
 
 module.exports = errors;

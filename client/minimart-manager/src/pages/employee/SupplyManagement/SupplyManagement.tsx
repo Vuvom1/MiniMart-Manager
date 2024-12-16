@@ -19,6 +19,7 @@ import { Supplier} from "../../../data/Entities/Supplier";
 import AddSupplier from "./AddSupplier";
 import Urls from "../../../constant/urls";
 import ErrorToast from "../../../components/Toast/ErrorToast";
+import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
 
 
 function SupplyManagement() {
@@ -29,9 +30,11 @@ function SupplyManagement() {
     const [suppliersStatistic, setSupplierStatistic] = useState<SuppliersStatistic | null>(null);
     const [importsStatistic, setImportsStatistic] = useState<ImportsStatistic | null>(null);
     const [period, setPeriod] = useState<Period>(Period.YEARLY);
-    const [loading, setLoading] = useState(true);
+    const [importLoading, setImportLoading] = useState(true);
+    const [supplierLoading, setSupplierLoading] = useState(true);
 
     const fetchSuppliers = async () => {
+        setSupplierLoading(true);
         try {
             const data = await getAllSuppliers();
             const statisticData = await getSuppliersStatistic();
@@ -41,11 +44,12 @@ function SupplyManagement() {
         } catch (error) {
             console.error('Error fetching suppliers:', error);
         } finally {
-            setLoading(false);
+            setSupplierLoading(false);
         }
     };
 
     const fetchImports = async () => {
+        setImportLoading(true);
         try {
             const data = await getAllImports();
             const statisticData = await getImportStatistic();
@@ -56,12 +60,10 @@ function SupplyManagement() {
         } catch (error) {
             console.error('Error fetching suppliers:', error);
         } finally {
-            setLoading(false);
+            setImportLoading(false);
         }
     }
-
-   
-
+    
     const doughnutChartData = {
         labels: importsStatistic?.statisticByCategory.map(category => category._id) || [],
         values: importsStatistic?.statisticByCategory.map(category => category.totalImportedProduct) || [],
@@ -80,7 +82,6 @@ function SupplyManagement() {
     };
 
     const handleUpdateSupplier = async (updatedData: any) => {
-        setLoading(true);
         try {
             const response = await updateSupplier(updatedData._id, updatedData);
             toast.custom((t) => (
@@ -98,7 +99,6 @@ function SupplyManagement() {
 
         } finally {
             fetchSuppliers();
-            setLoading(false);
         }
     };
 
@@ -107,7 +107,9 @@ function SupplyManagement() {
         fetchImports();
     }, []);
 
-   
+   if (importLoading || supplierLoading) {   
+    return <LoadingScreen/>
+   }
 
     return <>
         <div className="flex justify-between">

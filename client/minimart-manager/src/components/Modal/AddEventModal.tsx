@@ -16,6 +16,7 @@ import AddPositionModal from './AddPositionModal';
 import { addshift } from '../../services/api/ShiftApi';
 import DatePicker from '../Picker/DatePicker';
 import SuccessToast from '../Toast/SuccessToast';
+import { Schedule } from '../../data/Entities/Schedule';
 
 interface AddEventModalProps {
     scheduleId: string;
@@ -64,15 +65,16 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ scheduleId, initialDate, 
                     />))
                 return;
             } else {
-                const response = await addshift(
-                    title,
-                    date,
-                    startTime,
-                    endTime,
-                    scheduleId,
-                    position._id,
-                    breakDuration?.value || "",
-                    notes
+                const response = await addshift({
+                    title: title,
+                    date: date.toISOString(),
+                    startTime: startTime,
+                    endTime: endTime,
+                    schedule: { _id: scheduleId } as Schedule,
+                    position:{_id: position._id} as Position,
+                    breakDuration: breakDuration?.value || "",
+                    notes: notes
+                }  
                 );
 
                 toast.custom((t) => (

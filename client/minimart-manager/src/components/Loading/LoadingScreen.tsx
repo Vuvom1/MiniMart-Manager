@@ -1,16 +1,15 @@
-export const LoadingScreen = () => {
+interface LoadingScreenProps {
+    message?: string;
+}
+
+export const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = 'Fetching data' }) => {
     return (
-        <div className="flex items-center justify-center w-full h-full">
-            <div className="flex justify-center items-center space-x-1 text-sm text-gray-700">
-
-                <svg fill='none' className="w-10 h-10 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
-                    <path clip-rule='evenodd'
-                        d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
-                        fill='currentColor' fill-rule='evenodd' />
+        <div className="flex items-center justify-center w-full h-full animate-pulse">
+            <div className="flex flex-col justify-center items-center space-x-1 text-sm text-cyan-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-16 animate-bounce">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
-
-
-                <div className="text-2xl text-gray-600">Loading ...</div>
+                <p className="text-xl">{message}</p>
             </div>
         </div>
     );

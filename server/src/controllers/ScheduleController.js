@@ -4,10 +4,12 @@ const {DaysOfWeek} = require('../constant/DayOfWeek')
 const Shift = require('../models/Shift')
 const Employee = require('../models/Employee');
 const User = require('../models/User');
+const asynceErrorHandler = require('../util/asyncErrorHandler');
+const DateUtil = require('../util/DateUtil');
 
 class ScheduleController {
 
-    all_get = async (req, res) => {
+    all_get = asynceErrorHandler(async (req, res) => {
         try {
             const schedules = await Schedule.find()
                 .populate('employee')
@@ -25,12 +27,11 @@ class ScheduleController {
         } catch (error) {
             throw error
         }
-    }
+    }); 
 
-    allWithShift_get = async (req, res) => {
-        try {
+    allWithShiftAndSalary_get = asynceErrorHandler(async (req, res) => {
+       
             const schedules = await Schedule.aggregate([
-              
                 {
                     $lookup: {
                         from: 'shifts', 
@@ -39,7 +40,6 @@ class ScheduleController {
                         as: 'shifts',
                     },
                 },
-              
                 {
                     $lookup: {
                         from: 'employees', 
@@ -62,7 +62,17 @@ class ScheduleController {
                 {
                     $unwind: { path: '$employee.user', preserveNullAndEmptyArrays: true },
                 },
-              
+                {
+                    $lookup: {
+                        from: 'salaries',
+                        localField: 'employee._id',
+                        foreignField: 'employee',
+                        as: 'employee.salary',
+                    },
+                },
+                {
+                    $unwind: { path: '$employee.salary', preserveNullAndEmptyArrays: true },
+                },
                 {
                     $unwind: { path: '$shifts', preserveNullAndEmptyArrays: true },
                 },
@@ -90,31 +100,28 @@ class ScheduleController {
             ]);
     
             res.status(200).json(schedules);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    };
-    
+    });
 
-    add_post = async (req, res) => {
-        try {
+    add_post = asynceErrorHandler(async (req, res, next) => {
             const { employeeId } = req.body;
 
-            const existingSchedule = await Schedule.findOne({ employee: employeeId});
+            const existingEmployee = await Employee.findById(employeeId);
+            if (!existingEmployee) {
+                const error = new Error(errors.employeeNotFound.code);
+                next(error);
+            }
+
+            const existingSchedule = await Schedule.findOne({ employee: employeeId });
 
             if (existingSchedule) {
-                const error = new Error(errors.alreadyExistSchedule.message)
-                error.code = errors.alreadyExistSchedule;
-                throw error;
+                const error = new Error(errors.alreadyExistSchedule.code);
+                next(error);
             }
 
             const schedule = new Schedule({ employee: employeeId });
             schedule.save();
             res.status(201).json("New employee has been added to schedule");
-        } catch (error) {
-            throw error;
-        }
-    }
+    });
 
     edit_put = async (req, res) => {
 

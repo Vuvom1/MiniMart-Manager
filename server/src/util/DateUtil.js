@@ -71,6 +71,11 @@ class DateUtil {
         date.setHours(23, 59, 59, 999); 
         return date;
     }
+
+    static getWeek(date) {
+        const onejan = new Date(date.getFullYear(), 0, 1);
+        return Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    }
 }
 
 module.exports = DateUtil;

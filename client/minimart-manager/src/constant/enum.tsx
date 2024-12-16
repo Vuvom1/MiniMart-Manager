@@ -174,3 +174,9 @@ export enum OrderStatus {
     DELIVERED= 'Delivered',
     CANCELLED= 'Cancelled',
 }
+
+export enum EmployeeStatus {
+    ACTIVE = 'Active',
+    INACTIVE = 'Inactive',
+    ON_LEAVE = 'On Leave',
+}
