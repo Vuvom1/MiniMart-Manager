@@ -9,7 +9,6 @@ import Signup from '../pages/employee/Authientication/Signup';
 import SupplyManagement from '../pages/employee/SupplyManagement/SupplyManagement';
 import ImportList from '../pages/employee/SupplyManagement/ImportList';
 import AddImport from '../pages/employee/SupplyManagement/AddImport';
-import EditImport from '../pages/employee/SupplyManagement/EditImport';
 import PromotionManagement from '../pages/employee/PromotionManagement/PromotionManagement';
 import AddPromotion from '../pages/employee/PromotionManagement/AddPromotion';
 import EditPromotion from '../pages/employee/PromotionManagement/EditPromotion';
@@ -18,6 +17,8 @@ import CustomerManagement from '../pages/employee/CustomerManagement/CustomerMan
 import Urls from '../constant/urls';
 import OrderManagement from '../pages/employee/Order/OrderManagement';
 import ManageProduct from '../pages/employee/ProductManagement/ManageProduct';
+import OrderDetail from '../pages/employee/Order/OrderDetail';
+import EditImport from '../pages/employee/SupplyManagement/EditImport';
 
 const AppRouter = () => {
     const { user, loading } = useAuth();
@@ -40,7 +41,7 @@ const AppRouter = () => {
                     <Route path="" element={<SupplyManagement />} />
                     <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Route} element={<ImportList />} />
                     <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.ADD.Route} element={<AddImport />} />
-                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.EDIT.Route} element={<EditImport />} />
+                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.EDIT.Route} element={<EditImport/>} />
                 </Route>
 
                 <Route path={Urls.ADMIN.PROMOTIONS.BASE.Route} >
@@ -49,7 +50,9 @@ const AppRouter = () => {
                     <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
                 </Route>
 
-                <Route path={Urls.ADMIN.ORDER.BASE.Route} element={<OrderManagement />} >
+                <Route path={Urls.ADMIN.ORDER.BASE.Route} >
+                    <Route path="" element={<OrderManagement />} />
+                    <Route path={Urls.ADMIN.ORDER.DETAIL.Route} element={<OrderDetail />} />
                 </Route>
             </Route>
 

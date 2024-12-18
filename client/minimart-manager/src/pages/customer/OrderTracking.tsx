@@ -6,9 +6,11 @@ import RoundedButton from '../../components/Button/RoundedButton';
 import { useAuth } from '../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import SuccessToast from '../../components/Toast/SuccessToast';
+import { TimeUtil } from '../../utils/TimeUtil';
 
 const OrderTracking: React.FC = () => {
     const auth = useAuth();
+    const timeUtil = new TimeUtil();
     const [currentTab, setCurrentTab] = React.useState(0);
     const orderStatuses = Object.values(OrderStatus);
     const [sortedOrders, setSortedOrders] = React.useState<{ [key: string]: Order[] }>();
@@ -101,7 +103,8 @@ const OrderTracking: React.FC = () => {
                 {
                     displayedOrders && displayedOrders?.length !== 0 ? displayedOrders.map((order) => (
                         <div key={`${order._id}-displayOrder`} className='flex flex-col  h-fit bg-white rounded-lg p-4'>
-                            <div className='flex justify-end'>
+                            <div className='flex justify-between py-2'>
+                                <p className='text-gray-600'>{timeUtil.convertIsoDateToTimeAndDate(order.receipt.time)}</p>
                                 <p className='font-medium text-cyan-600'>{order.status.toUpperCase()}</p>
                             </div>
                             <div className='flex flex-col py-1'>
@@ -126,11 +129,19 @@ const OrderTracking: React.FC = () => {
                             </div>
                             <div className='border-t border-gray-200 my-2'></div>
                             <div className='flex gap-x-2 justify-end items-center'>
+                                <p className='text-gray-500'>Delivery Fee:</p>
+                                <p className='text-cyan-700'>${order.deliveryFee}</p>
+                            </div>
+                            <div className='flex gap-x-2 justify-end items-center'>
+                                <p className='text-gray-500'>Total product price:</p>
+                                <p className='text-cyan-700'>${(order.receipt.totalNetPrice ?? 0) - (order.deliveryFee ?? 0)}</p>
+                            </div>
+                            <div className='flex gap-x-2 justify-end items-center'>
                                 <p className='text-gray-500'>Total:</p>
-                                <p className='text-cyan-700 text-2xl'>${order.receipt.totalNetPrice}</p>
+                                <p className='text-cyan-700 text-2xl'>${(order.receipt.totalNetPrice ?? 0) + (order.deliveryFee ?? 0)}</p>
                             </div>
                             {
-                                order.status === (OrderStatus.PENDING || OrderStatus.WAIT_FOR_PAYMENT) && <div className='flex justify-end mt-2'>
+                                (order.status === OrderStatus.PENDING || order.status ===  OrderStatus.WAIT_FOR_PAYMENT || order.status === OrderStatus.CONFIRM) && <div className='flex justify-end mt-2'>
                                     {order._id && <RoundedButton label='Cancel' onClick={() => handelUpdateStatus(order._id, OrderStatus.CANCELLED)} />}
                                 </div>
                                 

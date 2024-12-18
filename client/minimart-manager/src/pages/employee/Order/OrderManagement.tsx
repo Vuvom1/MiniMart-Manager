@@ -69,9 +69,8 @@ function OrderManagement() {
                 addItem={() => { navigate('add') }}
                 title="Order List"
                 data={orders}
-                columns={orderColumnData}
-                height="100%" />
-
+                columns={orderColumnData} />
+                
         </div>
 
     </div>

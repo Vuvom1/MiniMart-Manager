@@ -1,6 +1,7 @@
-const UserRole = {
-  Manager: "MANAGER",
-  Staff: "STAFF",
-  Customer: "CUSTOMER",
-};
+const UserRole = Object.freeze({
+    Manager: "MANAGER",
+    Staff: "STAFF",
+    Customer: "CUSTOMER"
+})
+
 module.exports = UserRole;

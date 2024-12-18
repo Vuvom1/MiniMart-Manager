@@ -21,3 +21,13 @@ export const getCustomers = async () => {
     throw error.response?.data?.message || "Fetch data failed";
   }
 };
+
+export const getUnscheduledEmployees = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/unscheduled`);
+       
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch data failed'; 
+    }
+}

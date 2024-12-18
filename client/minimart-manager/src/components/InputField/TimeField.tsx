@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface TimeFieldProps {
   id?: string;
@@ -13,6 +13,9 @@ interface TimeFieldProps {
   error?: string | null;
   validations?: Array<(value: string) => string | null>; 
   validationPassed?: (isValid: boolean) => void; 
+  min?: string; 
+  max?: string; 
+  initialValue?: string;
 }
 
 export default function TimeField({
@@ -28,8 +31,18 @@ export default function TimeField({
   error = null,
   validations = [],
   validationPassed,
+  min,
+  max,
+  initialValue = '',
 }: TimeFieldProps) {
   const [internalError, setInternalError] = useState<string | null>(error);
+  const [internalValue, setInternalValue] = useState<string>(initialValue);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value);
+    }
+  }, [value]);
 
   const generateTimeOptions = () => {
     const options = [];
@@ -38,7 +51,9 @@ export default function TimeField({
 
     for (let i = 0; i < 48; i++) {
       const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-      options.push(timeString);
+      if ((!min || timeString >= min) && (!max || timeString <= max)) {
+        options.push(timeString);
+      }
       minute += 30;
       if (minute === 60) {
         minute = 0;
@@ -51,6 +66,7 @@ export default function TimeField({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const inputValue = e.target.value;
+    setInternalValue(inputValue);
 
     if (onChange) {
       onChange(e);
@@ -92,11 +108,11 @@ export default function TimeField({
         <select
           id={id}
           name={name}
-          value={value}
+          value={internalValue}
           onChange={handleChange}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-500 sm:text-sm sm:leading-6`}
           style={{ height }}
         >
           <option value="" disabled>{placeholder || "Select time"}</option>

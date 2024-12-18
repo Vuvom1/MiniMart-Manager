@@ -3,12 +3,13 @@ import { PaymentMethod, ReceiptStatus, TransactionType } from '../../constant/en
 import { Employee } from './Employee';
 import { Promotion } from './Promotion';
 import { Customer } from './Customer';
+import { GiftItem } from './GiftItem';
 
 export interface Receipt {
     receiptNumbe?: string;
-    employee?: Employee | String;
-    promotion?: Promotion | String;
-    customer?: Customer | String;
+    employee?: Employee;
+    promotion?: Promotion;
+    customer?: Customer;
     paymentMethod: PaymentMethod;
     time: Date;
     transactionType: TransactionType;
@@ -17,6 +18,7 @@ export interface Receipt {
         quantity: number;
         netPrice: number;
     }[];
+    giftItems?: GiftItem[];
     totalPrice?: number;
     totalNetPrice?: number;
     status: ReceiptStatus;

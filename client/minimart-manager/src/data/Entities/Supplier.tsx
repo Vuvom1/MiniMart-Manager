@@ -1,3 +1,5 @@
+import { SupplierStatus } from "../../constant/enum";
+
 export interface Supplier {
     _id?: string;
     name: string;
@@ -24,6 +26,6 @@ export class SupplierEntity implements Supplier {
         this.phone = data.phone ?? '';
         this.address = data.address ?? '';
         this.description = data.description ?? '';
-        this.status = data.status ?? '';
+        this.status = data.status ?? SupplierStatus.ACTIVE;
     }
 }

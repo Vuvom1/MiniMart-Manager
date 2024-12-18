@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Shift } from '../../data/Entities/Shift';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/shifts'
@@ -14,10 +15,10 @@ export const getAllShift = async () => {
 }
 
 
-export const addshift = async (title: string, date: Date, startTime: string, endTime: string, scheduleId: string, positionId: string, breakDuration: string, notes: string) => {
+export const addshift = async (shift: Shift) => {
     try {
         const response = await axios.post(`${BASE_URL}/add`, {
-            title, date, startTime, endTime, scheduleId, positionId, breakDuration, notes
+            shift: shift
         }, {
             withCredentials: true,
         });
@@ -28,10 +29,10 @@ export const addshift = async (title: string, date: Date, startTime: string, end
     }
 }
 
-export const editShift = async (shiftId: string, title: string, date: string, startTime: string, endTime: string, scheduleId: string, positionId: string, breakDuration: string, notes: string) => {
+export const editShift = async (id: string ,shift: Shift) => {
     try {
-        const response = await axios.put(`${BASE_URL}/${shiftId}`, {
-            title, date, startTime, endTime, scheduleId, positionId, breakDuration, notes
+        const response = await axios.put(`${BASE_URL}/${id}`, {
+            shift: shift
         }, {
             withCredentials: true,
         });

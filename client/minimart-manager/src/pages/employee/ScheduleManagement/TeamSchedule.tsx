@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { WorkShiftBadge } from "../../../components/Badge/WorkShiftBadge";
 import RoundedButton from "../../../components/Button/RoundedButton";
-import { getAllEmployees } from "../../../services/api/EmployeeApi";
+import { getUnscheduledEmployees } from "../../../services/api/EmployeeApi";
 import { addEmployeeToSchedule, getAllSchedules } from "../../../services/api/ScheduleApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../../components/Toast/SuccessToast";
@@ -18,11 +18,12 @@ import { deleteShift } from "../../../services/api/ShiftApi";
 import { Employee } from "../../../data/Entities/Employee";
 import TextField from "../../../components/InputField/TextField";
 import useSearch from "../../../utils/SearchUtil";
+import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
+import { min } from "date-fns";
 
 export function TeamSchedule() {
     const [loading, setLoading] = useState(true);
-    const [employees, setEmployees] = useState<Employee[]>([]);
-    const [unaddedEmployees, setUnaddedEmployees] = useState<Employee[]>([])
+    const [unscheduledEmployees, setUnscheduledEmployees ] = useState<Employee[]>([]);
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [isOpenAddEmployeeModal, setIsOpendAddEmployeeModal] = useState(false);
     const timeUtil = new TimeUtil();
@@ -39,39 +40,39 @@ export function TeamSchedule() {
     const [isOpenEditEventModal, setIsOpenEditEventModal] = useState(false);
     const [isOpenModalDeleteEvent, setIsOpenModalDeleteEvent] = useState(false)
     const popoverRef = useRef<HTMLDivElement | null>(null);
-    
 
     const searchUtil = useSearch(schedules);
 
-    const fetchEmployees = async () => {
+    const fetchUnscheduledEmployees = async () => {
         try {
-            const data = await getAllEmployees();
+            const data = await getUnscheduledEmployees();
 
-            setEmployees(data);
+            setUnscheduledEmployees(data);
         } catch (error) {
             console.error('Error fetching employees:', error);
-        } finally {
-            setLoading(false);
         }
     }
 
     const fetchSchedules = async () => {
+        setLoading(true);
         try {
             const scheduleData = await getAllSchedules();
 
-            setSchedules(scheduleData);
-
+            setSchedules(scheduleData)
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
                     message={message || 'Error fetching schedules '}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+        } finally { 
+            setLoading(false);
         }
     }
 
 
     const addEmpployee = async (employeeId: string) => {
+        setLoading(true);
         try {
             const response = await addEmployeeToSchedule(employeeId);
 
@@ -86,12 +87,11 @@ export function TeamSchedule() {
                     message={message || 'Error adding employee to schedule'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+        } finally {
+            setIsOpendAddEmployeeModal(false);
+            fetchSchedules();
         }
     }
-
-    const handleDeleteEventClick = () => {
-        setIsOpenModalDeleteEvent(true);
-    };
 
     const handleDeleteShift = async (shiftId: string) => {
         try {
@@ -102,13 +102,15 @@ export function TeamSchedule() {
                     message={response}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+            fetchSchedules();
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast
-                    message={message || 'Error delete evet'}
+                    message={message || 'Error delete event'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
         } finally {
+           
             setIsOpenModalDeleteEvent(false);
             setPopoverEvent(null);
         }
@@ -124,13 +126,20 @@ export function TeamSchedule() {
         }
     };
 
-    const handleUnaddedEmployees = () => {
-        const unadded = employees.filter(
-            (employee) => !schedules.some((schedule) => schedule.employee._id === employee._id)
-        );
-        setUnaddedEmployees(unadded);
+    const getTotalHoursByTimeDuration = (schedule: Schedule, startTime: Date, endTime: Date ) => {
+        let hours = 0;
+        let minutes = 0;
+        schedule.shifts.forEach((shift) => {
+            const shiftDate = new Date(shift.date);
+            if (shiftDate >= startTime && shiftDate <= endTime) {
+                const diff = timeUtil.timeDifference(shift.startTime, shift.endTime);
+              
+                hours += parseInt(diff.split('h')[0]);
+                minutes += parseInt(diff.split('h')[1].split('m')[0] || '0')
+            }
+        });
+        return { hours, minutes };
     }
-
 
     useEffect(() => {
         if (isOpentEventPopover) {
@@ -144,13 +153,16 @@ export function TeamSchedule() {
 
     useEffect(() => {
         fetchSchedules();
-    }, [isOpenEventModal, isOpenModalDeleteEvent, isOpenAddEmployeeModal, isOpenEditEventModal]);
+    }, []);
 
     useEffect(() => {
-        fetchEmployees();
-        handleUnaddedEmployees();
-        console.log(unaddedEmployees);
-    }, [isOpenAddEmployeeModal]);
+        setLoading(true);
+        fetchUnscheduledEmployees();
+    }, []);
+
+    if (loading === true) {
+        return <LoadingScreen />
+    }
 
     return (
         <>
@@ -204,96 +216,95 @@ export function TeamSchedule() {
                                 </tr>
                             </thead>
                             <tbody className="table-body font-normal pt-4">
-                                {searchUtil.filteredData.map((schedule, index) => (
-                                    <tr key={index}>
-                                        <td className="border border-gray-200 px-4 py-2 w-2/12 text-start min-h-30">
-                                            <div className="flex gap-x-4">
-                                                <Avatar src={schedule.employee.user.image} />
-                                                <div className="flex flex-col">
-                                                    <p className="font-semibold text-gray-600">{schedule.employee.user.firstname} {schedule.employee.user.lastname}</p>
-                                                    <p className="text-gray-400">00:00</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        {weekDays.map((day) => {
-                                            const shiftForDay = schedule.shifts.find(
-                                                (shift: Shift) => timeUtil.formatDate(shift.date) == timeUtil.formatDate(day.date)
-                                            );
+                                {searchUtil.filteredData
+                                    .sort((a, b) => a.employee.user.firstname.localeCompare(b.employee.user.firstname))
+                                    .map((schedule, index) => {
+                                        const totalHours = getTotalHoursByTimeDuration(schedule, new Date(weekDays[0].date), new Date(weekDays[weekDays.length - 1].date));
 
-                                            return (
-                                                <td
-                                                    key={day.date}
-                                                    className="border border-gray-200 p-1 w-1/12 h-16 cursor-pointer group"
-                                                    onClick={(e) => {
-                                                        const target = e.target as HTMLElement;
-
-                                                        setPopoverEvent({
-                                                            hasEvent: (shiftForDay) ? true : false,
-                                                            scheduleId: schedule._id || "",
-                                                            date: new Date(day.date),
-                                                            shift: (shiftForDay) ? shiftForDay : null,
-                                                            position: {
-                                                                top: target.getBoundingClientRect().top + 20 + window.scrollY,
-                                                                left: target.getBoundingClientRect().left + window.scrollX,
-                                                            }
-                                                        });
-
-                                                        setIsOpenEventPopover(true);
-
-                                                    }}
-                                                >
-                                                    <div className="h-24">
-                                                        {shiftForDay ? (
-                                                            <WorkShiftBadge
-                                                                openDeleteEvent={() => setIsOpenModalDeleteEvent(true)}
-                                                                openEditEvent={() => setIsOpenEditEventModal(true)}
-                                                                color={shiftForDay.position.color}
-                                                                title={shiftForDay.title || ""}
-                                                                startTime={shiftForDay.startTime}
-                                                                endTime={shiftForDay.endTime}
-                                                            />
-                                                        ) : (
-
-                                                            <button
-                                                                onClick={() => { setIsOpenEventPopover(false), setIsOpenEventModal(true) }}
-                                                                className="hover:text-green-300 hidden rounded-lg group-hover:flex justify-center items-center w-full h-full border border-green-300"
-                                                            >
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                                </svg>
-
-                                                            </button>
-
-                                                        )}
+                                        return (
+                                            <tr key={index}>
+                                                <td className="border border-gray-200 px-4 py-2 w-2/12 text-start min-h-30">
+                                                    <div className="flex gap-x-4">
+                                                        <Avatar src={schedule.employee.user.image} />
+                                                        <div className="flex flex-col">
+                                                            <p className="font-semibold text-gray-600">{schedule.employee.user.firstname} {schedule.employee.user.lastname}</p>
+                                                            <p className="text-gray-400">{totalHours.hours}h{totalHours.minutes}m / this week</p>
+                                                        </div>
                                                     </div>
-
                                                 </td>
-                                            );
-                                        })}
-                                    </tr>
-                                ))}
+                                                {weekDays.map((day) => {
+                                                    const shiftForDay = schedule.shifts.find(
+                                                        (shift: Shift) => timeUtil.formatDate(shift.date) == timeUtil.formatDate(day.date)
+                                                    );
+
+                                                    return (
+                                                        <td
+                                                            key={day.date}
+                                                            className="border border-gray-200 p-1 w-1/12 h-16 cursor-pointer group"
+                                                            onClick={(e) => {
+                                                                const target = e.target as HTMLElement;
+
+                                                                setPopoverEvent({
+                                                                    hasEvent: (shiftForDay) ? true : false,
+                                                                    scheduleId: schedule._id || "",
+                                                                    date: new Date(day.date),
+                                                                    shift: (shiftForDay) ? shiftForDay : null,
+                                                                    position: {
+                                                                        top: target.getBoundingClientRect().top + 20 + window.scrollY,
+                                                                        left: target.getBoundingClientRect().left + window.scrollX,
+                                                                    }
+                                                                });
+
+                                                                setIsOpenEventPopover(true);
+
+                                                            }}
+                                                        >
+                                                            <div className="h-24">
+                                                                {shiftForDay ? (
+                                                                    <WorkShiftBadge
+                                                                        openDeleteEvent={() => setIsOpenModalDeleteEvent(true)}
+                                                                        openEditEvent={() => setIsOpenEditEventModal(true)}
+                                                                        color={shiftForDay.position.color}
+                                                                        title={shiftForDay.title || ""}
+                                                                        startTime={shiftForDay.startTime}
+                                                                        endTime={shiftForDay.endTime}
+                                                                    />
+                                                                ) : (
+
+                                                                    <button
+                                                                        onClick={() => { setIsOpenEventPopover(false), setIsOpenEventModal(true) }}
+                                                                        className="hover:text-green-300 hidden rounded-lg group-hover:flex justify-center items-center w-full h-full border border-green-300"
+                                                                    >
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                        </svg>
+
+                                                                    </button>
+
+                                                                )}
+                                                            </div>
+
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        )
+                                    })}
                             </tbody>
                         </table>
-
                     </div>
-
                 </div>
-
-
-
-
-
             </div>
-            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onSelectEmployee={(employeeId: string) => addEmpployee(employeeId)} onClose={() => setIsOpendAddEmployeeModal(false)} employees={unaddedEmployees} />
+            {isOpenAddEmployeeModal == true && <EmployeeSelectionModal onClose={()=>setIsOpendAddEmployeeModal(false)} onSelectEmployee={(employeeId: string) => {addEmpployee(employeeId)}}  employees={unscheduledEmployees} />
             }
             {isOpenModalDeleteEvent && popoverEvent && popoverEvent.shift?._id && <ConfirmModal
                 isOpen={isOpenModalDeleteEvent}
                 onClose={() => setIsOpenModalDeleteEvent(false)}
-                onConfirm={() => handleDeleteShift(popoverEvent?.shift?._id || "")}
+                onConfirm={() => {handleDeleteShift(popoverEvent?.shift?._id || ""), fetchSchedules}}
                 message="Are you sure you want to delete this event?"
             />}
-            {isOpenEditEventModal && popoverEvent && popoverEvent.shift && <EditEventModal shift={popoverEvent?.shift} scheduleId={""} onClose={() => { setIsOpenEditEventModal(false) }} />}
-            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} initialDate={popoverEvent?.date || new Date} onSave={() => { }} onClose={() => { setIsOpenEventModal(false) }} />}
+            {isOpenEditEventModal && popoverEvent && popoverEvent.shift && <EditEventModal shift={popoverEvent?.shift} OnEdit={()=>{setIsOpenEditEventModal(false), fetchSchedules()}} onClose={() => { setIsOpenEditEventModal(false) }} />}
+            {isOpenEventModal && <AddEventModal scheduleId={popoverEvent?.scheduleId || ""} initialDate={popoverEvent?.date || new Date} onSave={() => {setIsOpenEventModal(false), fetchSchedules()}} onClose={() => { setIsOpenEventModal(false) }} />}
         </>
     )
 }

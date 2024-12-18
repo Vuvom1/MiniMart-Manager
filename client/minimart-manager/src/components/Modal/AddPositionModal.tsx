@@ -10,10 +10,11 @@ import toast from 'react-hot-toast';
 import ErrorToast from '../Toast/ErrorToast';
 
 interface AddPositionModalProps {
+    onAdd?: () => void;
     onClose: () => void;
 }
 
-const AddPositionModal: React.FC<AddPositionModalProps> = ({ onClose }) => {
+const AddPositionModal: React.FC<AddPositionModalProps> = ({onAdd, onClose }) => {
     const [color, setColor] = useState("white");
     const [name, setName] = useState("");
     const [isValid, setIsValid] = useState(false);
@@ -32,6 +33,7 @@ const AddPositionModal: React.FC<AddPositionModalProps> = ({ onClose }) => {
                     onDismiss={() => toast.dismiss(t.id)}
                 />
             ));
+            onAdd?.();
         } catch (error: any) {
             toast.custom((t) => (
                 <ErrorToast

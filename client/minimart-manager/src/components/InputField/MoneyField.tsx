@@ -8,7 +8,7 @@ interface MoneyFieldProps {
   prefix?: JSX.Element;
   suffixIcon?: JSX.Element;
   value?: number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (value: number) => void;
   placeholder?: string;
   height?: string;
   width?: string;
@@ -24,19 +24,24 @@ const MoneyField: React.FC<MoneyFieldProps> = ({
   value = 0.00,
   onChange,
   placeholder,
-  height = '50px',
+  height = '40px',
   width = '100%',
   error = null,
 }) => {
-  const [currentValue, setCurrentValue] = useState<string>(FormatUtil.moneyFormat(value.toString()));
 
-  const handleMoneyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const formattedValue = FormatUtil.moneyFormat(inputValue);
-    setCurrentValue(formattedValue);
-    const decimalValue = parseFloat(inputValue.replace(/,/g, ''));
-    if (!isNaN(decimalValue)) {
-      onChange?.({ target: { value: decimalValue.toFixed(2) } } as React.ChangeEvent<HTMLInputElement>);
+  const [currentValue, setCurrenValue] = useState(value);
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentValue = e.target.value;
+
+    if (currentValue === '' || currentValue === '.') {
+      return;
+    }
+
+    const numberValue = parseFloat(currentValue);
+    setCurrenValue(numberValue);
+    if (onChange) {
+      onChange(numberValue);
     }
   };
 
@@ -47,19 +52,20 @@ const MoneyField: React.FC<MoneyFieldProps> = ({
           {label}
         </label>
       )}
-      <div className={`relative rounded-md border ${error ? 'border-red-500' : 'border-gray-300'}`} style={{ height }}>
+      <div className={`relative rounded-lg h-fit border ${error ? 'border-red-500' : 'border-gray-300'}`}>
         {prefix && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             {prefix}
           </div>
         )}
         <input
-          type="text"
+          type="number"
           id={id}
           name={name}
           value={currentValue}
-          onChange={handleMoneyChange}
+          onChange={handleValueChange}
           placeholder={placeholder}
+          min={0}
           className={`block w-full pl-7 pr-12 pb-1 sm:text-sm`}
           style={{ height }}
         />

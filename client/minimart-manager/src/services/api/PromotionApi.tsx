@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Promotion } from '../../data/Entities/Promotion';
 
 const API_URL = 'http://localhost:8000';
 const BASE_URL = API_URL + '/api/promotions'
@@ -6,6 +7,16 @@ const BASE_URL = API_URL + '/api/promotions'
 export const getAllPromotions = async () => {
     try {
         const response = await axios.get(`${BASE_URL}`);
+       
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch data failed'; 
+    }
+}
+
+export const getUsablePromotionsByUserId = async (id: string) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/usableByUserId/${id}`);
        
         return response.data;
     } catch(error: any) {
@@ -23,58 +34,25 @@ export const getPromotionById = async (id: string) => {
     }
 }
 
-export const addPromotion = async (promotion: any) => {
+export const createPromotion = async (promotion: Promotion) => {
     try {
         const response = await axios.post(`${BASE_URL}/add`, {
-            name: promotion.name, 
-            code: promotion.code,
-            startTime: promotion.startTime,
-            endTime: promotion.endTime,
-            status: promotion.status,
-            maxUsage: promotion.maxUsage,
-            description: promotion.description,
-            type: promotion.promotionType,
-            discountType: promotion.discountType,
-            discountPercentage: promotion.discountPercentage,
-            maxDiscountAmount: promotion.maxDiscountAmount,
-            applpiedProducts: promotion.products,
-            applicableOrderAmount: promotion.requireOrderAmount,
-            giftItems: promotion.gifts,
-            requiredQuantity: promotion.requireQuantity,
-            rewardQuantity: promotion.rewardQuantity,
-            requireCustomerPoint: promotion.requireCustomerPoint, 
+            promotion: promotion,
         }, {
             withCredentials: true,
         });
-        
-        
+
         return response.data;
     } catch(error: any) {
         throw error.response?.data?.message || 'Add promotion failed'; 
     }
 }
 
-export const editPromotion = async (promotion: any) => {
+export const updatePromotion = async (id: string ,promotion: Promotion) => {
+    
     try {
-        const response = await axios.put(`${BASE_URL}/${promotion.id}/edit`, {
-            name: promotion.name, 
-            code: promotion.code,
-            startTime: promotion.startTime,
-            endTime: promotion.endTime,
-            status: promotion.status,
-            maxUsage: promotion.maxUsage,
-            description: promotion.description,
-            type: promotion.promotionType,
-            discountType: promotion.discountType,
-            discountPercentage: promotion.discountPercentage,
-            maxDiscountAmount: promotion.maxDiscountAmount,
-            fixedAmount: promotion.fixedAmount,
-            applpiedProducts: promotion.products,
-            applicableOrderAmount: promotion.requireOrderAmount,
-            giftItems: promotion.gifts,
-            requiredQuantity: promotion.requireQuantity,
-            rewardQuantity: promotion.rewardQuantity,
-            requireCustomerPoint: promotion.requireCustomerPoint, 
+        const response = await axios.put(`${BASE_URL}/${id}`, {
+           promotion: promotion, 
         }, {
             withCredentials: true,
         });

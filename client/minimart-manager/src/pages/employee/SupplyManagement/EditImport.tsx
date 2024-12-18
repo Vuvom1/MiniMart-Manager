@@ -5,48 +5,64 @@ import SelectField from "../../../components/InputField/SelectField";
 import TextField from "../../../components/InputField/TextField";
 import ProductSelectionModal from "../../../components/Modal/ProductSelectionModal";
 import { getAllSuppliers } from "../../../services/api/SupplierApi";
-import { getImportById, updateImport } from "../../../services/api/ImportApi";
+import { addImport, getImportById, updateImport } from "../../../services/api/ImportApi";
 import toast from "react-hot-toast";
 import SuccessToast from "../../../components/Toast/SuccessToast";
 import CustomErrorToast from "../../../components/Toast/ErrorToast";
-import { ImportStatus } from "../../../constant/enum";
+import { ImportStatus, SupplierStatus } from "../../../constant/enum";
 import { useNavigate, useParams } from "react-router-dom";
-import { Product } from "../../../data/Entities/Product";
 import DraggableFloatComponent from "../../../components/Dragable/DragableComponent";
 import ProductScannerComponent from "../../../components/Scanner/ProductScanner";
 import ValidationUtil from "../../../utils/ValidationUtil";
 import StatusPickerPopover from "../../../components/Picker/StatusPicker";
 import { importStatusColorMapping } from "../../../constant/mapping";
-import { ImportDetail } from "../../../data/Entities/ImportDetail";
-import { Import } from "../../../data/Entities/Import";
 import Urls from "../../../constant/urls";
+import { entityImport, Import } from "../../../data/Entities/Import";
+import { Product } from "../../../data/Entities/Product";
+import { useAuth } from "../../../providers/AuthProvider";
+import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
+import { set } from "date-fns";
+import { ImportDetail } from "../../../data/Entities/ImportDetail";
+
 
 function EditImport() {
+    const { id } = useParams();
+    const auth = useAuth();
+    const user = auth?.user;
     const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>(); 
-
-    const [importData, setImportData] = useState<Import>();
-   
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [status, setStatus] = useState<ImportStatus>(ImportStatus.PENDING);
-    const [importDetails, setImportDetails] = useState<ImportDetail[]>([]);
-    const [totalQuantity, setTotalQuantity] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [invoiceNumber, setInvoiceNumber] = useState<string>("");
-    const [deliveryMan, setDeliveryMan] = useState<string>("");
-    const [supplier, setSupplier] = useState<{value: string, label: string}>()
-    const [description, setDescription] = useState<string>("");
-   
-    const [loading, setLoading] = useState(true)
-    const [showModal, setShowModal] = useState(false);
+    const [importData, setImportData] = useState<Import>(entityImport);
+    const [loading, setLoading] = useState(true);
+    const [supplierOptions, setSupplierOptions] = useState<any[]>([]);
     const [isScannerOpened, setIsScannerOpened] = useState(false);
-    const [isValidForm, setIsValidForm] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [isValidForm, setIsValidForm] = useState(false);
+  
+    const fetchImport = async () => {
+        setLoading(true);
+        try {
+            if (id) {
+                const data = await getImportById(id);
+                setImportData(data);
+            }
+        } catch (error: any) {
+            toast.custom((t) => (
+                <CustomErrorToast
+                    message={error || 'Add import failed'}
+                    onDismiss={() => toast.dismiss(t.id)}
+                />
+            ));
+        } finally {
+            setLoading(false);
+    }
+}
 
     const fetchSuppliers = async () => {
         try {
             const data = await getAllSuppliers();
 
-            const newSupplierOptions = data.map((supplier: any) => ({
+            const activeSuppliers = data.filter((supplier: any) => supplier.status === SupplierStatus.ACTIVE);
+
+            const newSupplierOptions = activeSuppliers.map((supplier: any) => ({
                 value: supplier._id,
                 label: supplier.name,
             }));
@@ -55,166 +71,93 @@ function EditImport() {
 
         } catch (error) {
             console.error('Error fetching suppliers:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
-    const fetchImportById = async (id: string) => {
-    
-        if (!id) {
-            console.error('No ID provided');
-            return;
-        }
-    
+    const handleUpdateImport = async () => {
+        setLoading(true);
         try {
-            const data = await getImportById(id); 
+            setImportData({
+                ...importData,
+                staff: user?._id || '',
+            });
 
-            setImportData(data);
-
-            console.log(importData)
-        } catch (error) {
-            console.error('Error fetching import', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleEditImport = async (id: string) => {
-    
-        if (!id) {
-            console.error('No ID provided');
-            return;
-        }
-    
-        try {
-            const response = await updateImport(id, supplier?.value || "", invoiceNumber, deliveryMan, status, description, importDetails);
-
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            if (id) {
+                const message = await updateImport(id, importData);
+                toast.custom((t) => (
+                    <SuccessToast
+                        message={message}
+                        onDismiss={() => toast.dismiss(t.id)}
+                    />
+                ));
+                // navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
+            }
+            
         } catch (error: any) {
             toast.custom((t) => (
                 <CustomErrorToast
-                    message={error}
+                    message={error || 'Add import failed'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />
             ));
         } finally {
             setLoading(false);
-            navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
         }
     };
-
-    useEffect(() => {
-        fetchImportById(id || "");
-        fetchSuppliers();
-    }, []);
-
-    useEffect(() => {
-            setSupplier({label: importData?.supplier.name || "", value: importData?.supplier._id || ""})
-            setInvoiceNumber(importData?.invoiceNumber||"")
-            setDeliveryMan(importData?.deliveryMan||"")
-            setStatus(importData?.status||ImportStatus.PENDING)
-            setDescription( importData?.description||"")
-            setImportDetails(importData?.importDetails||[])
-    }, [importData]);
-
-    useEffect(() => {
-        const newTotalQuantity = importDetails.reduce((acc, product) => acc + product.quantity, 0);
-        const newTotalPrice = importDetails.reduce((acc, product) => acc + product.importPrice * product.quantity, 0);
-        setTotalQuantity(newTotalQuantity);
-        setTotalPrice(newTotalPrice);
-    }, [importDetails]);
-
-    const handleTotalQuantityChange = (id?: string, quantity?: number) => {
-        if (id !== undefined && quantity !== undefined)
-            setImportDetails(prev => {
-                const updatedDetails = prev.map(detail =>
-                    detail.product._id === id ? { ...detail, quantity } : detail
-                );
-
-                return updatedDetails.filter(product => product.quantity > 0);
-            });
-    };
-
-    const handleRemoveDetail = (product: Product) => {
-        setImportDetails((prevDetails) =>
-            prevDetails.filter((selected) => selected.product._id !== product._id)
-        );
-    };
-
-
-    const handleAddDetail = (product: Product) => {
-        setImportDetails((prev) => {
-            const exists = prev.some((p) => p.product._id === product._id);
-
-            if (exists) return prev;
-
-            return [...prev, { product, quantity: 1, importPrice: 0 }];
-        });
-    }
-
-    const handleUpdateDetail = (products: Product[]) => {
-        products.forEach((product) => {
-            if (!importDetails.some((selected) => selected.product._id === product._id)) {
-                handleAddDetail(product);
-            }
-        });
-
-        importDetails.forEach((detail) => {
-            if (!products.some((product) => product._id === detail.product._id)) {
-                handleRemoveDetail(detail.product);
-            }
-        });
-    };
-
-    const handleProductScanned = (product: Product) => {
-        handleAddDetail(product);
-        toast.custom((t) => (
-            <SuccessToast
-                message="Product added by barcode!"
-                onDismiss={() => toast.dismiss(t.id)}
-            />
-        ));
-    };
-
-    const handleTotalPriceChange = (id?: string, totalPrice?: number) => {
-        if (id && totalPrice)
-            setImportDetails(prev =>
-                prev.map(detail =>
-                    detail.product._id === id ? { ...detail, totalImportPrice: totalPrice } : detail
-                )
-            );
-    };
-
-    const handlePriceChange = (addedProduct?: Product, importPrice?: number) => {
-
-        if (addedProduct && importPrice !== undefined) {
-
-            setImportDetails(prevDetails =>
-                prevDetails.map(detail =>
-                    detail.product._id === addedProduct._id
-                        ? { ...detail, importPrice, totalImportPrice: importPrice * detail.quantity }
-                        : detail
-                )
-            );
-        }
-
-    };
-
 
     const handleValidationChange = (isValid: boolean) => {
         setIsValidForm(isValid);
     };
 
+    const handleAddDetail = (selectedProducts: Product[]) => {
+        const updatedImportDetails = selectedProducts.map(product => ({
+            product,
+            quantity: 1, 
+            importPrice: 0,
+        }));
+
+        setImportData({
+            ...importData,
+            importDetails: updatedImportDetails,
+            totalQuantity: updatedImportDetails.reduce((sum, detail) => sum + detail.quantity, 0),
+            totalImportPrice: updatedImportDetails.reduce((sum, detail) => sum + detail.importPrice * detail.quantity, 0),
+        });
+    };
+
+    const handleUpdateDetail = (updatedDetail: ImportDetail) => {
+        const updatedDetails = importData.importDetails.map(detail => {
+            if (detail.product._id === updatedDetail.product._id) {
+                return updatedDetail;
+            }
+
+            return detail;
+        });
+
+        setImportData({
+            ...importData,
+            importDetails: updatedDetails,
+            totalQuantity: updatedDetails.reduce((sum, detail) => sum + detail.quantity, 0),
+            totalImportPrice: updatedDetails.reduce((sum, detail) => sum + detail.importPrice * detail.quantity, 0),    
+        });
+    }
+    const handleProductScanned = (product: Product): void => {
+        handleAddDetail([product]);
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        fetchImport();
+        fetchSuppliers();
+    }, []);
+
+    if (loading === true) {
+        return <LoadingScreen />
+    }
+
     return (
         <>
             <h1 className="text-2xl font-bold flex-auto text-gray-800 mb-8">
-                Edit detail
+                Add new import
             </h1>
             <div className="h-[calc(100vh-180px)] w-full flex gap-x-4">
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-6 w-1/2 rounded-lg">
@@ -225,11 +168,14 @@ function EditImport() {
                         </svg>
 
                         <SelectField
-                            initialValue={supplier}
+                            initialValue={{label: importData.supplier?.name || 'Choose supplier...', value: importData.supplier?._id || ''}}  
                             placeholder="Choose supplier..."
                             options={supplierOptions}
                             onChange={(selectedOption) => {
-                                setSupplier(selectedOption|| {label: importData?.supplier.name || "", value: importData?.supplier._id || ""});
+                                setImportData({
+                                    ...importData,
+                                    supplier: supplierOptions.find(option => option.value === selectedOption?.value).value || null,
+                                }); 
                             }} />
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -238,9 +184,9 @@ function EditImport() {
                         </svg>  <TextField
                             validationPassed={handleValidationChange}
                             validations={[ValidationUtil.validateRequired("Invoice number")]}
-                            value={invoiceNumber}
+                            value={importData.invoiceNumber}
                             placeholder="Enter invoice number..."
-                            onChange={(e) => setInvoiceNumber(e.target.value)} />
+                            onChange={(e) => setImportData({ ...importData, invoiceNumber: e.target.value })} />
 
                     </div>
                     <div className="flex gap-x-4 items-center">
@@ -249,17 +195,26 @@ function EditImport() {
                         </svg>
 
                         <TextField
-                            value={deliveryMan}
-                            validationPassed={handleValidationChange}
+                            value={importData.deliveryMan}
                             validations={[ValidationUtil.validateRequired("Delivery man")]}
                             placeholder="Enter delivery man name..."
-                            onChange={(e) => setDeliveryMan(e.target.value)} />
+                            onChange={(e)=>setImportData(
+                                {
+                                    ...importData,
+                                    deliveryMan: e.target.value
+                                }
+                            )} />
                     </div>
                     <div className="flex items-center gap-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                         </svg>
-                        <StatusPickerPopover initialValue={status} statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={(status) => setStatus(status)} />
+                        <StatusPickerPopover initialValue={importData.status} statusEnum={ImportStatus} colorMapping={importStatusColorMapping} onSelect={
+                            (status) => setImportData({
+                                ...importData,
+                                status: status
+                            })
+                        } />
 
                     </div>
                     <div className="flex gap-x-4">
@@ -267,10 +222,12 @@ function EditImport() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
                         </svg>
                         <TextField
-                            value={description}
+                            multiline={true}
+                            value={importData.description}
                             placeholder="Enter import description"
                             height="150px"
-                            onChange={(e) => setDescription(e.target.value)} />
+                            onChange={(e) => setImportData({ ...importData, description: e.target.value })}
+                            />
                     </div>
 
 
@@ -302,37 +259,34 @@ function EditImport() {
                     </div>
 
                     <div className="flex flex-col flex-auto gap-y-2 overflow-y-auto max-h-full py-4">
-                        {importDetails.map(detail => (
+                        {importData.importDetails.map(detail => (
                             <ImportProductHorizontalCard
-                                initialPrice={detail.importPrice}
-                                initialQuantity={detail.quantity}
-                                key={detail.product._id}
-                                product={detail.product}
                                 showImage={true}
-                                onPriceChange={(price) => handlePriceChange(detail.product, price)}
-                                onTotalQuantityChange={(quantity) => handleTotalQuantityChange(detail.product._id, quantity)}
-                                onTotalPriceChange={(totalPrice) => handleTotalPriceChange(detail.product._id, totalPrice)}
+                                key={detail.product._id}
+                                importDetail={detail}
+                                onPriceChange={(newPrice) => handleUpdateDetail({ ...detail, importPrice: newPrice })}
+                                onQuantityChange={(newQuantity) => handleUpdateDetail({ ...detail, quantity: newQuantity })} 
                             />
                         ))}
-                        {importDetails.length == 0 && <p className="text-center text-gray-400">There is no product, please add products for adding new import!</p>}
+                        {importData.importDetails.length == 0 && <p className="text-center text-gray-400">There is no product, please add products for adding new import!</p>}
                     </div>
 
                     <div className="flex flex-col px-8 mt-4">
                         <div className="flex justify-between mt-4">
                             <p className="text-gray-600">Total product quantity:</p>
-                            <p className="font-medium">{totalQuantity}</p>
+                            <p className="font-medium">{importData.totalQuantity}</p>
                         </div>
                         <div className="flex justify-between">
                             <p className="text-gray-600">Total import price:</p>
                             <p className="font-medium">
-                                ${isNaN(totalPrice) || !Number.isFinite(totalPrice) ? 0 : totalPrice.toLocaleString()}
+                                ${importData.totalImportPrice}
                             </p>
                         </div>
                     </div>
 
                     <div className="flex gap-y-2 justify-end py-4">
                         <div className="w-20">
-                            <RoundedButton disable={!isValidForm} label="Save" onClick={() => handleEditImport(id||"")} />
+                            <RoundedButton label="Save" onClick={handleUpdateImport} />
                         </div>
                     </div>
                 </div>
@@ -343,22 +297,22 @@ function EditImport() {
                     height="350px"
                     defaultPosition={{ x: 100, y: -500 }}
                 >
-                   
-                    
-                            <ProductScannerComponent
-                                onProductScanned={handleProductScanned}
-                                width={400}
-                                height={300}
-                            />
-                       
-         
+
+                    <ProductScannerComponent
+
+                        onProductScanned={handleProductScanned}
+                        width={400}
+                        height={300}
+                    />
+
+
                 </DraggableFloatComponent>
             }
 
             {showModal && (
                 <ProductSelectionModal
-                    selectedProducts={importDetails.map((detail) => detail.product)}
-                    onSelectProducts={handleUpdateDetail}
+                    selectedProducts={importData.importDetails.map((detail) => detail.product)}
+                    onSelectProducts={handleAddDetail}
                     onClose={() => setShowModal(false)}
                 />
             )}

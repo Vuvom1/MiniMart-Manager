@@ -7,6 +7,8 @@ const Customer = require('./Customer');
 const Employee = require('./Employee');
 const Promotion = require('./Promotion');
 const Product = require('./Product');
+const DiscountType = require('../constant/DiscountType');
+const errors = require('../constant/errors');
 
 const receiptSchema = new mongoose.Schema({
     receiptNumber: {
@@ -37,7 +39,7 @@ const receiptSchema = new mongoose.Schema({
     transactionType: {
         type: String,
         required: true,
-        enum: Object.values(TransactionType),
+        enum: TransactionType,
     },
     details: [
         {
@@ -51,6 +53,19 @@ const receiptSchema = new mongoose.Schema({
                 required: true,
             },
             netPrice: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
+    giftItems: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: Product,
+                required: true,
+            },
+            quantity: {
                 type: Number,
                 required: true,
             },
@@ -80,6 +95,19 @@ const receiptSchema = new mongoose.Schema({
         enum: Object.values(ReceiptStatus),
     },
 }, { timestamps: true });
+
+receiptSchema.pre('save', async function(next) {
+    for (const detail of this.details) {
+        const product = await Product.findById(detail.product);
+        if (!product) {
+            return next(new Error(errors.productNotFound.code));
+        }
+        product.stock -= detail.quantity;
+        await product.save();
+    }
+
+    next();
+});
 
 const Receipt = mongoose.model('Receipt', receiptSchema);
 module.exports = Receipt;

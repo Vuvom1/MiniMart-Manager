@@ -73,7 +73,7 @@ const Home: React.FC = () => {
 
             <div className='flex flex-col gap-y-8'>
                 <div className='flex flex-col gap-y-4'>
-                    <p className='text-3xl'>Top trending</p>
+                    <p className='text-3xl'>Featured Products</p>
                     <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 gap-y-6'>
                         {popularProducts.map((product) => (
                             <ProductCard key={product._id} product={product} onAddToCart={() => { }} />

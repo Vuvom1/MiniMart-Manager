@@ -59,9 +59,9 @@ const CustomerProductDetail: React.FC = () => {
     return (
         <> {
             product && (
-                <div className='flex flex-col gap-y-4 bg-gray-100'>
+                <div className='flex flex-col gap-y-4 bg-gray-100 px-20 xl:px-40'>
 
-                    <div className='flex flex-col gap-x-20 m-10 bg-white rounded-lg p-10'>
+                    <div className='flex flex-col gap-x-20 m-10 bg-white rounded-lg md:p-10'>
                         <p className='text-3xl font-medium'>{product.name}</p>
 
                         <div className='flex gap-x-4 items-center divide-x font-light'>

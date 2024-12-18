@@ -13,7 +13,7 @@ export function ScheduleManagement() {
                 <div className="flex justify-between">
                     <h1 className="text-2xl font-bold text-gray-800 ">Work Schedules</h1>
                     <div className="flex bg-gray-300/50 w-fit rounded shadow">
-                    <button
+                    {/* <button
                         className={`px-4 py-2 transition-colors duration-300 ${displayedSchedule === ScheduleType.TEAM ? 'bg-cyan-500 text-white' : 'text-gray-800'} rounded`}
                         onClick={() => setDisplayedSchedule(ScheduleType.TEAM)}
                     >
@@ -24,7 +24,7 @@ export function ScheduleManagement() {
                         onClick={() => setDisplayedSchedule(ScheduleType.INDIVIDUAL)}
                     >
                         Individual
-                    </button>
+                    </button> */}
                 </div>
                 </div>
               {displayedSchedule === ScheduleType.TEAM ? <TeamSchedule/>:<IndividualSchedule/> }
