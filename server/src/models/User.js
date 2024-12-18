@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const errors = require('../constant/errors');
 
 const userSchema = new mongoose.Schema({
     firstname: {
@@ -67,9 +68,9 @@ userSchema.statics.login = async function(email, password) {
         if (auth) {
             return user;
         } 
-        throw Error('Incorrect password');
+        throw Error(errors.incorrectEmailOrPassword.code);
     } 
-    throw Error('Incorrect email');
+    throw Error(errors.incorrectEmailOrPassword.code);
 }
 
 const User = mongoose.model('User', userSchema);

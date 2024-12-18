@@ -5,6 +5,7 @@ import { CalculateUtil } from '../../utils/CalculateUtil';
 import { CartContext } from '../../contexts/CartContext';
 import { useContext } from 'react'
 import CircleButton from '../Button/CircleButton';
+import { DiscountType, PromotionType } from '../../constant/enum';
 
 
 interface ProductCardProps {
@@ -36,39 +37,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             <div key={product._id} className='flex flex-col text-start gap-y-1 text-cyan-900'>
                 <div className="relative rounded-lg">
                     <img src={product.image} alt={product.name} className='w-60 h-48 object-cover mx-auto rounded-lg' />
-                    {(product.promotion?.discountPercentage ?? 0) > 0 && <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg rounded-tl-lg">{product.promotion?.discountPercentage}% OFF</span>}
+                    {product.promotion?.type === PromotionType.PRODUCT_BASED
+                        && product.promotion.discountType === DiscountType.GET_MORE
+                        && <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg rounded-tl-lg">{
+                            `Buy ${product.promotion.requiredQuantity} get ${product.promotion.rewardQuantity} free`
+                        }</span>}
+                    { product.promotion?.type === PromotionType.PRODUCT_BASED &&
+                    (product.promotion?.discountPercentage ?? 0) > 0 && <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg rounded-tl-lg">{product.promotion?.discountPercentage}% OFF</span>}
+                    { product.promotion?.type === PromotionType.PRODUCT_BASED &&
+                    (product.promotion?.discountType === DiscountType.FREE_GIFT) && <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg rounded-tl-lg">Free Gift</span>}
                 </div>
                 <p className='text-gray-500'>{product.subCategory.name}</p>
                 <p className='text-xl font-semibold line-clamp-2'>{product.name}</p>
 
-                <p className='text-lg font-semibold text-yellow-500'>
+                <p className='text-lg font-semibold text-red-800'>
                     ${CalculateUtil.calculateDiscountPrice(product.price || 0, product.promotion?.discountPercentage ?? 0)}
                     {product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-2'>${product.price}</span>}
                 </p>
 
                 <div className='flex gap-x-2 justify-between' onClick={(e) => e.stopPropagation()}>
                     {product._id && itemQuantity && itemQuantity(product._id) > 0 ? (<div className='flex gap-x-4 items-center text-gray-800'>
-                                        <CircleButton
-                                        size='30px'
-                                         onClick={() => product._id && changeQuantity && changeQuantity(product._id, quantity - 1)}
-                                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-                                        </svg>
+                        <CircleButton
+                            size='30px'
+                            onClick={() => product._id && changeQuantity && changeQuantity(product._id, quantity - 1)}
+                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+                            </svg>
 
-                                        }/>
-                                        <p className='text-2xl'>{quantity}</p>
-                                        <CircleButton
-                                        size='30px'
-                                         icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        } onClick={
-                                            () => product._id && changeQuantity && changeQuantity(product._id, quantity + 1)
-                                        } />
-                                    </div>) : (
+                            } />
+                        <p className='text-2xl'>{quantity}</p>
+                        <CircleButton
+                            size='30px'
+                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            } onClick={
+                                () => product._id && changeQuantity && changeQuantity(product._id, quantity + 1)
+                            } />
+                    </div>) : (
                         <button
-                            onClick={() => {handleAddToCart(); }}
-                            className="bottom-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            onClick={() => { handleAddToCart(); }}
+                            className="bottom-4 right-4 bg-cyan-800/80 text-white px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         >
                             Add to Cart
                         </button>

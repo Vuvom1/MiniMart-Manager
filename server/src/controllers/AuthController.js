@@ -5,6 +5,7 @@ const errors = require('../constant/errors')
 const UserStatus = require('../constant/UserStatus');
 const { UserRole } = require('../constant/UserRole');
 const CustomerController = require('./CustomerController');
+const asyncErrorHandler = require('../util/asyncErrorHandler');
 
 
 class AuthController {
@@ -53,18 +54,19 @@ class AuthController {
     }
 
 
-    login_post = async (req, res, next) => {
+    login_post = asyncErrorHandler( async (req, res, next) => {
         const {email, password} = req.body;
-        
-        try {
             const user = await User.login(email, password)
+
+            console.log("user", user)
+            if (!user) {
+                const error = new Error(errors.incorrectEmailOrPassword.code);
+                return next(error);
+            }
             const token = createToken(user)
             res.cookie('jwt', token, {httpOnly: true, maxAge: 3600000})
-            res.status(200).json(user) 
-        } catch(error) {
-            next(error);
-        } 
-    }
+            return res.status(200).json(user) 
+    })
 
     logout_get = (req, res) => {
         res.cookie('jwt', '', {maxAge: 1});

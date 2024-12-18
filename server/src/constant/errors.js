@@ -4,6 +4,16 @@ const errors = {
         message: "Internal server error",
         code: "internalServerError",
     },
+    invalidCredentials: {
+        statusCode: 400,
+        message: "Invalid credentials",
+        code: "invalidCredentials",
+    },
+    incorrectEmailOrPassword: {
+        statusCode: 400,
+        message: "Incorrect email or password",
+        code: "incorrectEmailOrPassword",
+    },
     resourceDoesNotExist: {
         statusCode: 400,
         message: "Resource does not exist",
@@ -39,6 +49,18 @@ const errors = {
         message: "Phone number already exists. Please use a different phone number.",
         code: "alreadyExistPhone",
     },
+    alreadyExistSchedule: {
+        statusCode: 400,
+        message: "Schedule already exist",
+        code: "alreadyExistSchedule",
+    },
+    
+    alreadyExistPromotionCode: {
+        statusCode: 400,
+        message: "Promotion code already exists. Please use a different code.",
+        code: "alreadyExistPromotionCode",
+    },
+
     incorrectEmailOrPassword: {
         statusCode: 400,
         message: "Incorrect email or password.",
@@ -49,15 +71,17 @@ const errors = {
         message: "Schedule does not exist",
         code: "doesNotExistSchedule",
     },
-    alreadyExistSchedule: {
-        statusCode: 400,
-        message: "Schedule already exist",
-        code: "alreadyExistSchedule",
-    },
+    
     requiredFieldMissing: {
         statusCode: 400,
         message: "Required fields missing",
         code: "requiredFieldMissing",
+    },
+
+    productNotFound: {
+        statusCode: 400,
+        message: "Product not found",
+        code: "productNotFound",
     },
 
     promotionNotFound: {
@@ -94,6 +118,62 @@ const errors = {
         statusCode: 400,
         message: "Shift not found",
         code: "shiftNotFound",
+    },
+    customerNotFound: {
+        statusCode: 400,
+        message: "Customer not found",
+        code: "customerNotFound",
+    },
+
+    noAppllicableProduct: {
+        statusCode: 400,
+        message: "No applicable product",
+        code: "noAppllicableProduct",
+    },
+    noGiftItems: {
+        statusCode: 400,
+        message: "No gift items",
+        code: "noGiftItems",
+    },
+    promotionTime: {
+        statusCode: 400,
+        message: "Start time must be before end time",
+        code: "promotionTime",
+    },
+    highDiscountPercentage: {   
+        statusCode: 400,
+        message: "Discount percentage must be less than 100",
+        code: "highDiscountPercentage",
+    },
+    lowDiscountPercentage: {
+        statusCode: 400,
+        message: "Discount percentage must be greater than 0",
+        code: "lowDiscountPercentage",
+    },  
+    lowMaxUsage:{
+        statusCode: 400,
+        message: "Max usage must be greater than 0",
+        code: "lowMaxUsage",
+    },
+    lowMaxDiscountAmount: {
+        statusCode: 400,
+        message: "Max discount amount must be greater than 0",
+        code: "lowMaxDiscountAmount",
+    },
+    lowRequiredQuantity: {
+        statusCode: 400,
+        message: "Required quantity must be greater than 0",
+        code: "lowRequiredQuantity",
+    },
+    lowRewardQuantity: {
+        statusCode: 400,
+        message: "Reward quantity must be greater than 0",
+        code: "lowRewardQuantity",
+    },
+    invalidPromotionStatus: {
+        statusCode: 400,
+        message: "Invalid promotion status",
+        code: "invalidPromotionStatus",
     },
 }
 

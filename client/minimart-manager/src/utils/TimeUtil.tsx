@@ -5,6 +5,13 @@ export class TimeUtil {
         this.timezoneOffset = timezoneOffset;
     }
 
+    getTimeFromDate(date: Date): string {
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        
+        return `${hours}:${minutes}`;
+    }
+
     getCurrentDate() {
         return new Date();
     }
@@ -40,6 +47,17 @@ export class TimeUtil {
         const year = date.getFullYear();
         return { day, month, year };
     }
+
+    convertToDayMonthYearShort(timestamp: string): string {   
+        const date = new Date(timestamp);
+
+        const day = date.toLocaleString('en-US', { day: '2-digit' });
+        const month = date.toLocaleString('en-US', { month: 'long' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    }
+
+    
 
     getCurrentDayAndMonth() {
         return this.getDayAndMonth(this.getCurrentDate());
@@ -99,7 +117,7 @@ export class TimeUtil {
     formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const day = date.getDate();
-        const month = date.getMonth() // "Jul"
+        const month = date.getMonth();
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
@@ -144,7 +162,7 @@ export class TimeUtil {
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
 
-        return `${day} ${month} ${year}, ${minutes}:${hours}`;
+        return `${day} ${month} ${year}, ${hours}:${minutes}`;
     }
 
     timeDifference(startTime: string, endTime: string): string {
@@ -200,7 +218,8 @@ export class TimeUtil {
     updateTime(date: Date, timeString: string): Date {
         const [hours, minutes] = timeString.split(':').map(Number);
         const newDate = new Date(date);
-        newDate.setHours(hours, minutes);
+        newDate.setHours(hours, minutes, 0, 0);
+        console.log(newDate);
         return newDate;
     }
 }

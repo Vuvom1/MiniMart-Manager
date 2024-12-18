@@ -32,17 +32,31 @@ export const promotionColumnData: ColumnData[] = [
         isHidden: true,
     },
     {
+        field: "startDate",
+        header: "Start Date",
+        isEditable: false,
+        type: ColumnType.DATE,
+        isHidden: true,
+    },
+    {
         field: "startTime",
         header: "Start Time",
         isEditable: false,
-        type: ColumnType.DATETIME,
+        type: ColumnType.TIME,
+        isHidden: true,
+    },
+    {
+        field: "endDate",
+        header: "End Date",
+        isEditable: false,
+        type: ColumnType.DATE,
         isHidden: true,
     },
     {
         field: "endTime",
         header: "End Time",
         isEditable: false,
-        type: ColumnType.DATETIME,
+        type: ColumnType.TIME,
         isHidden: true,
     },
     {

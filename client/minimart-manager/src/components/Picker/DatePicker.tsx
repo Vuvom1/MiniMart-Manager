@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface DatePickerProps {
   id?: string;
@@ -30,12 +30,22 @@ export default function DatePicker({
   validationPassed,
 }: DatePickerProps) {
   const [internalError, setInternalError] = useState<string | null>(error);
+  const [dateValue, setDateValue] = useState<Date | null>(value || null);
+
+  useEffect(() => {
+    if (value) {
+      setDateValue(value);
+    }
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.valueAsDate;
 
-    if (inputValue && onChange) {
-      onChange(inputValue);
+    if (inputValue) {
+      setDateValue(inputValue);
+      if (onChange) {
+        onChange(inputValue);
+      }
     }
 
     let isValid = true;
@@ -77,7 +87,7 @@ export default function DatePicker({
           id={id}
           name={name}
           type="date"
-          value={value instanceof Date && !isNaN(value.getTime()) ? value.toISOString().split('T')[0] : ''}
+          value={dateValue instanceof Date && !isNaN(dateValue.getTime()) ? dateValue.toISOString().split('T')[0] : ''}
           onChange={handleChange}
           placeholder={placeholder}
           className={`block w-full rounded-md border-0 py-1.5 ${

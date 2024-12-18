@@ -35,5 +35,7 @@ app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`App is running in port ${port}`); 
+    console.log(`Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
+    console.log(`Current time: ${new Date().toLocaleString()}`);
 })
 
