@@ -7,20 +7,19 @@ export interface Promotion {
     code: string;
     type: PromotionType;
     discountType: DiscountType;
-    discountPercentage: number;
-    startTime: Date;
-    endTime: Date;
+    discountPercentage?: number;
+    startDate: Date;
+    startTime: string;
+    endDate: Date;
+    endTime: string;
     description?: string;
     applicableProducts?: Product[];
-    applicableOrderAmount?: number;
-    buySomeDetails?: {
-        quantityToBuy: number;
-        quantityToGet: number;
-    };
-    giftItem?: Product[];
+    requireOrderAmount?: number;
+    requiredQuantity?: number;
+    rewardQuantity?: number;
+    applicableCustomerPoint?: number;
+    giftItems?: Product[];
     maxDiscountAmount?: number;
     status: PromotionStatus;
-    maxUsage?: number;
-    createdAt?: string;
-    updatedAt?: string;
+    maxUsage: number;
 }

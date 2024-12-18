@@ -140,9 +140,13 @@ const TableLayout: React.FC<TableLayoutProps> = ({
                                                     <div className='justify-start flex'>
                                                         <p>{timeUtil.convertIsoDateToTimeAndDate(NestedValueUtil.getNestedValue(item, column.field))}</p>
                                                     </div>
-                                                ) : (<div className='justify-start flex'>
+                                                ) : ( column.type === ColumnType.DATE ? (
+                                                    <div className='justify-start flex'>
+                                                        <p>{timeUtil.convertToDayMonthYearShort(NestedValueUtil.getNestedValue(item, column.field))}</p>
+                                                    </div>
+                                                ) : ( <div className='justify-start flex'>
                                                     {NestedValueUtil.getNestedValue(item, column.field) ?? 'N/A'}
-                                                </div>)
+                                                </div>))
 
                                                 ))}
                                         </td>

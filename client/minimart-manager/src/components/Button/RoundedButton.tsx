@@ -42,7 +42,7 @@ const RoundedButton: React.FC<RoundedButtonProps> = ({
 
   return (
     <button
-      type={type} // Add this line
+      type={type}
       disabled={disable}
       onClick={onClick}
       style={{ height, width }}

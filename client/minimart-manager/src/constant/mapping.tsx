@@ -1,4 +1,4 @@
-import { CustomerStatus, DiscountType, ImportStatus, OrderStatus, ProductStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
+import { CustomerStatus, DiscountType, EmployeeStatus, ImportStatus, OrderStatus, ProductStatus, PromotionStatus, PromotionType, SupplierStatus } from "./enum";
 
 export const statusStyleMapping: { [key: string]: string } = {
     Active: "bg-green-100 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
@@ -35,17 +35,14 @@ export const promotionStatusColorMapping: { [key in PromotionStatus]: string } =
 
   export const promotionTypeColorMapping: { [key in PromotionType]: string } = {
     [PromotionType.PRODUCT_BASED]: 'purple-500',       
-    [PromotionType.ORDER_BASED]: 'blue-500',              
-    [PromotionType.CUSTOMER_BASED]: 'orange-500',        
-    // [PromotionType.BRAND_SUPPLIER_BASED]: 'yellow-500',   
-    [PromotionType.ONLINE]: 'indigo-500',                
+    [PromotionType.ORDER_BASED]: 'blue-500',                            
 };
 
 
   export const discountTypeColorMapping: { [key in DiscountType]: string } = {
-    [DiscountType.PERCENTAGE]: 'green-500',    
-    [DiscountType.GET_MORE]: 'yellow-500',      
-    [DiscountType.FREE_GIFT]: 'purple-500',     
+    [DiscountType.PERCENTAGE]: 'green-200',    
+    [DiscountType.GET_MORE]: 'yellow-200',      
+    [DiscountType.FREE_GIFT]: 'purple-200',     
 };
 
 export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: DiscountType[] } = {
@@ -55,16 +52,6 @@ export const promotionTypeToDiscountTypeMapping: { [key in PromotionType]: Disco
       DiscountType.FREE_GIFT,
   ],
   [PromotionType.ORDER_BASED]: [
-      DiscountType.PERCENTAGE,
-  ],
-  [PromotionType.CUSTOMER_BASED]: [
-      DiscountType.PERCENTAGE,
-  ],
-  // [PromotionType.BRAND_SUPPLIER_BASED]: [
-  //     DiscountType.PERCENTAGE,
-  //     DiscountType.FIXED_AMOUNT,
-  // ],
-  [PromotionType.ONLINE]: [
       DiscountType.PERCENTAGE,
       DiscountType.FREE_GIFT,
   ],
@@ -84,6 +71,12 @@ export const orderStatusColorMapping: { [key in OrderStatus]: string } = {
   [OrderStatus.CANCELLED]: 'red-200',
   [OrderStatus.DELIVERED]: 'blue-200',
 };
+
+export const employeeStatusColorMapping: { [key: string]: string } = {
+  [EmployeeStatus.ACTIVE]: 'green-200',
+  [EmployeeStatus.INACTIVE]: 'red-200',
+  [EmployeeStatus.ON_LEAVE]: 'gray-200',
+}
   
 
 export const tailwindColorMap: { [key: string]: string } = {

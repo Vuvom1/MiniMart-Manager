@@ -129,8 +129,16 @@ const OrderTracking: React.FC = () => {
                             </div>
                             <div className='border-t border-gray-200 my-2'></div>
                             <div className='flex gap-x-2 justify-end items-center'>
+                                <p className='text-gray-500'>Delivery Fee:</p>
+                                <p className='text-cyan-700'>${order.deliveryFee}</p>
+                            </div>
+                            <div className='flex gap-x-2 justify-end items-center'>
+                                <p className='text-gray-500'>Total product price:</p>
+                                <p className='text-cyan-700'>${(order.receipt.totalNetPrice ?? 0) - (order.deliveryFee ?? 0)}</p>
+                            </div>
+                            <div className='flex gap-x-2 justify-end items-center'>
                                 <p className='text-gray-500'>Total:</p>
-                                <p className='text-cyan-700 text-2xl'>${order.receipt.totalNetPrice}</p>
+                                <p className='text-cyan-700 text-2xl'>${(order.receipt.totalNetPrice ?? 0) + (order.deliveryFee ?? 0)}</p>
                             </div>
                             {
                                 (order.status === OrderStatus.PENDING || order.status ===  OrderStatus.WAIT_FOR_PAYMENT || order.status === OrderStatus.CONFIRM) && <div className='flex justify-end mt-2'>

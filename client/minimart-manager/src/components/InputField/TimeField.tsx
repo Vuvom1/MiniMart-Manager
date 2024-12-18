@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface TimeFieldProps {
   id?: string;
@@ -13,8 +13,9 @@ interface TimeFieldProps {
   error?: string | null;
   validations?: Array<(value: string) => string | null>; 
   validationPassed?: (isValid: boolean) => void; 
-  min?: string; // New prop for minimum time
-  max?: string; // New prop for maximum time
+  min?: string; 
+  max?: string; 
+  initialValue?: string;
 }
 
 export default function TimeField({
@@ -32,8 +33,16 @@ export default function TimeField({
   validationPassed,
   min,
   max,
+  initialValue = '',
 }: TimeFieldProps) {
   const [internalError, setInternalError] = useState<string | null>(error);
+  const [internalValue, setInternalValue] = useState<string>(initialValue);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value);
+    }
+  }, [value]);
 
   const generateTimeOptions = () => {
     const options = [];
@@ -57,6 +66,7 @@ export default function TimeField({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const inputValue = e.target.value;
+    setInternalValue(inputValue);
 
     if (onChange) {
       onChange(e);
@@ -98,11 +108,11 @@ export default function TimeField({
         <select
           id={id}
           name={name}
-          value={value}
+          value={internalValue}
           onChange={handleChange}
           className={`block w-full rounded-md border-0 py-1.5 ${
             prefix ? 'pl-10' : 'pl-3'
-          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+          } pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-500 sm:text-sm sm:leading-6`}
           style={{ height }}
         >
           <option value="" disabled>{placeholder || "Select time"}</option>

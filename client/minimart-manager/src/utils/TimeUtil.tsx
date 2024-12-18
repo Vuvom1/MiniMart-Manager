@@ -5,6 +5,13 @@ export class TimeUtil {
         this.timezoneOffset = timezoneOffset;
     }
 
+    getTimeFromDate(date: Date): string {
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        
+        return `${hours}:${minutes}`;
+    }
+
     getCurrentDate() {
         return new Date();
     }
@@ -40,6 +47,17 @@ export class TimeUtil {
         const year = date.getFullYear();
         return { day, month, year };
     }
+
+    convertToDayMonthYearShort(timestamp: string): string {   
+        const date = new Date(timestamp);
+
+        const day = date.toLocaleString('en-US', { day: '2-digit' });
+        const month = date.toLocaleString('en-US', { month: 'long' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    }
+
+    
 
     getCurrentDayAndMonth() {
         return this.getDayAndMonth(this.getCurrentDate());
@@ -99,7 +117,7 @@ export class TimeUtil {
     formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const day = date.getDate();
-        const month = date.getMonth() // "Jul"
+        const month = date.getMonth();
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
@@ -144,7 +162,7 @@ export class TimeUtil {
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
 
-        return `${day} ${month} ${year}, ${minutes}:${hours}`;
+        return `${day} ${month} ${year}, ${hours}:${minutes}`;
     }
 
     timeDifference(startTime: string, endTime: string): string {
@@ -176,10 +194,32 @@ export class TimeUtil {
                 : `${hours}h ${minutes}m`;
     }
 
+    sumTimeDifferences(timeStrings: string[]): string {
+        let totalMinutes = 0;
+        if (!Array.isArray(timeStrings)) {
+            return "0";
+        }
+
+        for (const timeString of timeStrings) {
+            if (typeof timeString === 'string' && timeString) {
+                const [hours, minutes] = timeString.split(":").map(Number);
+                if (!isNaN(hours) && !isNaN(minutes)) {
+                    totalMinutes += hours * 60 + minutes;
+                }
+            }
+        }
+
+        const totalHours = Math.floor(totalMinutes / 60);
+        const remainingMinutes = totalMinutes % 60;
+
+        return `${totalHours}h ${remainingMinutes}m`;
+    }
+
     updateTime(date: Date, timeString: string): Date {
         const [hours, minutes] = timeString.split(':').map(Number);
         const newDate = new Date(date);
-        newDate.setHours(hours, minutes);
+        newDate.setHours(hours, minutes, 0, 0);
+        console.log(newDate);
         return newDate;
     }
 }

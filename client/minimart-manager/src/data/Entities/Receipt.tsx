@@ -3,6 +3,7 @@ import { PaymentMethod, ReceiptStatus, TransactionType } from '../../constant/en
 import { Employee } from './Employee';
 import { Promotion } from './Promotion';
 import { Customer } from './Customer';
+import { GiftItem } from './GiftItem';
 
 export interface Receipt {
     receiptNumbe?: string;
@@ -17,6 +18,7 @@ export interface Receipt {
         quantity: number;
         netPrice: number;
     }[];
+    giftItems?: GiftItem[];
     totalPrice?: number;
     totalNetPrice?: number;
     status: ReceiptStatus;

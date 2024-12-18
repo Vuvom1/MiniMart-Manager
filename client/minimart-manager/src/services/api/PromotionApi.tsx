@@ -14,6 +14,16 @@ export const getAllPromotions = async () => {
     }
 }
 
+export const getUsablePromotionsByUserId = async (id: string) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/usableByUserId/${id}`);
+       
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Fetch data failed'; 
+    }
+}
+
 export const getPromotionById = async (id: string) => {
     try {
         const response = await axios.get(`${BASE_URL}/${id}/detail`);
@@ -38,9 +48,10 @@ export const createPromotion = async (promotion: Promotion) => {
     }
 }
 
-export const updatePromotion = async (promotion: Promotion) => {
+export const updatePromotion = async (id: string ,promotion: Promotion) => {
+    
     try {
-        const response = await axios.put(`${BASE_URL}/${promotion._id}`, {
+        const response = await axios.put(`${BASE_URL}/${id}`, {
            promotion: promotion, 
         }, {
             withCredentials: true,

@@ -18,99 +18,117 @@ class ShiftController {
         }
     });
 
-    add_post = asyncErrorHandler(async (req, res) => {
-            const {
-                title,
-                date,
-                startTime,
-                endTime,
-                breakDuration,
-                scheduleId,
-                positionId,
-                notes,
-            } = req.body;
-    
-            if (!date || !startTime || !endTime || !scheduleId || !positionId) {
-                return res.status(400).json({ message: 'Missing required fields' });
-            }
-    
-            const existingSchedule = await Schedule.findById(scheduleId);
-            if (!existingSchedule) {
-                return res.status(404).json({ message: 'Schedule not found' });
-            }
-    
-            const existingPosition = await Position.findById(positionId);
-            if (!existingPosition) {
-                return res.status(404).json({ message: 'Position not found' });
-            }
-    
-            const shift = new Shift({
-                title,
-                date,
-                startTime,
-                endTime,
-                breakDuration,
-                schedule: scheduleId,
-                position: positionId,
-                notes,
-            });
-    
-            await shift.save();
-            res.status(201).json('Shift created successfully');
+    allGroupByScheduleAndWeek_get = asyncErrorHandler(async (req, res) => {
+            const shifts = await Shift.aggregate([
+                {
+                    $lookup: {
+                        from: 'schedules',
+                        localField: 'schedule',
+                        foreignField: '_id',
+                        as: 'schedule',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'positions',
+                        localField: 'position',
+                        foreignField: '_id',
+                        as: 'position',
+                    },
+                },
+                {
+                    $unwind: { path: '$schedule', preserveNullAndEmptyArrays: true },
+                },
+                {
+                    $unwind: { path: '$position', preserveNullAndEmptyArrays: true },
+                },
+                {
+                    $group: {
+                        _id: {
+                            schedule: '$schedule._id',
+                            week: { $week: '$date' },
+                        },
+                        shifts: { $push: '$$ROOT' },
+                    },
+                },
+            ]);
+
+            res.status(200).json(shifts);
     });
 
-    edit_put = asyncErrorHandler(async (req, res) => {
-            const shiftId = req.params.id;
-            const {
-                title,
-                date,
-                startTime,
-                endTime,
-                breakDuration,
-                positionId,
-                notes,
-            } = req.body;
+    add_post = asyncErrorHandler(async (req, res) => {
+        const {
+           shift
+        } = req.body;
 
-            const shift = await Shift.findById(shiftId);
-            if (!shift) {
-                return res.status(404).json('Shift not found' );
-            }
+        if (!shift) {
+            const error = new Error(errors.requiredFieldMissing.code);
+            next(error);
+        }
 
-            if (!date || !startTime || !endTime || !positionId) {
-                return res.status(400).json('Missing required fields' );
-            }
+        if (!shift.date || !shift.startTime || !shift.endTime || !shift.position) {
+            const error = new Error(errors.requiredFieldMissing.code);
+            next(error);
+        }
 
-            const existingPosition = await Position.findById(positionId);
-            if (!existingPosition) {
-                return res.status(404).json('Position not found');
-            }
+        const existingSchedule = await Schedule.findById(shift.schedule);
+        if (!existingSchedule) {
+            const error = new Error(errors.doesNotExistSchedule.code);
+            next(error);
+        }
 
-            shift.title = title || shift.title;
-            shift.date = date || shift.date;
-            shift.startTime = startTime || shift.startTime;
-            shift.endTime = endTime || shift.endTime;
-            shift.breakDuration = breakDuration || shift.breakDuration;
-            shift.position = positionId || shift.position;
-            shift.notes = notes || shift.notes;
+        const existingPosition = await Position.findById(shift.position);
+        if (!existingPosition) {
+            const error = new Error(errors.positionNotFound.code);
+            next(error);
+        }
 
-            await shift.save();
-            res.status(200).json('Shift updated successfully');
-    }) 
+        const createdShift = await Shift.create(shift);
+        
+        res.status(201).json('Shift created successfully');
+    });
+
+    edit_put = asyncErrorHandler(async (req, res, next) => {
+        const shiftId = req.params.id;
+        const { shift } = req.body;
+
+        const schedule = await Schedule.findById(shift.schedule);
+        if (!schedule) {
+            const error = new Error(errors.doesNotExistSchedule.code);
+            next(error);
+        }
+
+        if (!shift) {
+            const error = new Error(errors.requiredFieldMissing.code);
+            next(error);
+        }
+
+        if (!shift.date || !shift.startTime || !shift.endTime || !shift.position) {
+            const error = new Error(errors.requiredFieldMissing.code);
+            next(error);
+        }
+
+        const existingPosition = await Position.findById(shift.position);
+        if (!existingPosition) {
+            const error = new Error(errors.positionNotFound.code);
+            next(error);
+        }
+
+        const updatedShift = await Shift.findByIdAndUpdate(shiftId, shift, { new: true });
+        res.status(200).json('Shift updated successfully');
+    })
 
     delete = asyncErrorHandler(async (req, res) => {
-        const {id} = req.params;
-    
-        try {
-            const shift = await Shift.findByIdAndDelete(id);
-    
-            if (!shift) {
-                return res.status(404).json('Shift not found');
-            }
-    
-            return res.status(200).json('Shift deleted successfully' );
-        } catch (error) {
-            throw error;
+        const { id } = req.params;
+
+        const shift = await Shift.findByIdAndDelete(id);
+
+        if (!shift) {
+            const error = new Error(errors.shiftNotFound.code);
+            next(error);
         }
+
+        return res.status(200).json('Shift deleted successfully');
     });
 }
 

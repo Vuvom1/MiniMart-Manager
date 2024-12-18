@@ -16,12 +16,11 @@ import useSearch from '../../utils/SearchUtil';
 import AddPositionModal from './AddPositionModal';
 import { editShift } from '../../services/api/ShiftApi';
 import SuccessToast from '../Toast/SuccessToast';
-import DateField from '../InputField/DateField';
 import DatePicker from '../Picker/DatePicker';
 
 interface EditEventModalProps {
     shift: Shift;
-    OnEdit: () => void;
+    OnEdit?: () => void;
     onClose: () => void;
 }
 
@@ -81,17 +80,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ shift, OnEdit, onClose 
                 notes,
             };
 
-            const response = await editShift(
-                updatedShift._id || '',
-                updatedShift.title || '',
-                updatedShift.date || '',
-                updatedShift.startTime || '',
-                updatedShift.endTime || '',
-                updatedShift.schedule._id || '',
-                updatedShift.position._id || '',
-                updatedShift.breakDuration || '',
-                updatedShift.notes || '',
-            );
+            const response = await editShift(shift._id || "", updatedShift);
 
             toast.custom((t) => (
                 <SuccessToast
@@ -100,7 +89,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ shift, OnEdit, onClose 
                 />
             ));
 
-            OnEdit();
+            OnEdit && OnEdit();
         } catch (message: any) {
             toast.custom((t) => (
                 <CustomErrorToast

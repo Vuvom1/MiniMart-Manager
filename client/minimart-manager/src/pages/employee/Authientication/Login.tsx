@@ -24,8 +24,7 @@ function Login() {
     const navigate = useNavigate();
     const auth = useAuth();
 
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleLogin = async () => {
         setLoading(true);
 
         try {
@@ -100,7 +99,7 @@ function Login() {
                         <p className='text-sm'>Remember Me?</p>
                     </div>
 
-                    <RoundedButton disable={loading || !isValid} label={loading ? 'Logging in...' : 'Login'} color='bg-cyan-500 text-white' />
+                    <RoundedButton onClick={()=>handleLogin()} disable={loading || !isValid} label={loading ? 'Logging in...' : 'Login'} color='bg-cyan-500 text-white' />
 
                     <div className='text-center'>
                         {error && <p style={{ color: 'red' }}>{error}</p>} 

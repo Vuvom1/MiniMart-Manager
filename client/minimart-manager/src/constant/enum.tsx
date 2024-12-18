@@ -41,9 +41,6 @@ export enum DiscountType {
 export enum PromotionType {
     PRODUCT_BASED= 'Product-Based',
     ORDER_BASED= 'Order-Based',
-    CUSTOMER_BASED= 'Customer-Based',
-    // BRAND_SUPPLIER_BASED= 'Brand/Supplier-Based',
-    ONLINE= 'Online',
 }
 
 export enum Period {
@@ -136,6 +133,7 @@ export enum ColumnType {
     IMAGE,
     CHECK,  
     DATE,
+    TIME,
     DATETIME,
 }
 
@@ -173,4 +171,10 @@ export enum OrderStatus {
     CONFIRM = 'Confirm',
     DELIVERED= 'Delivered',
     CANCELLED= 'Cancelled',
+}
+
+export enum EmployeeStatus {
+    ACTIVE = 'Active',
+    INACTIVE = 'Inactive',
+    ON_LEAVE = 'On Leave',
 }
