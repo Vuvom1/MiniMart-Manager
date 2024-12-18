@@ -1,17 +1,16 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Checkbox } from "@headlessui/react";
-import { CheckIcon } from '@heroicons/react/16/solid';
+import { CheckIcon } from "@heroicons/react/16/solid";
 import RoundedButton from "../../../components/Button/RoundedButton";
 import PasswordField from "../../../components/InputField/PasswordField";
 import TextField from "../../../components/InputField/TextField";
 import MinimartStaffImage from "../../../assets/images/minimart_staff.png";
-import { useNavigate } from 'react-router-dom';
-import ValidationUtil from '../../../utils/ValidationUtil';
-import { useAuth } from '../../../providers/AuthProvider';
-import toast from 'react-hot-toast';
-import SuccessToast from '../../../components/Toast/SuccessToast';
-import Urls from '../../../constant/urls';
-
+import { useNavigate } from "react-router-dom";
+import ValidationUtil from "../../../utils/ValidationUtil";
+import { useAuth } from "../../../providers/AuthProvider";
+import toast from "react-hot-toast";
+import SuccessToast from "../../../components/Toast/SuccessToast";
+import Urls from "../../../constant/urls";
 
 function Login() {
     const [enabled, setEnabled] = useState(true);
