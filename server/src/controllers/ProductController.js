@@ -4,7 +4,7 @@ const ProductDTO = require("../dto/Product/ProductDTO");
 const Category = require("../models/Category");
 const Promotion = require("../models/Promotion");
 const PromotionType = require("../constant/PromotionType");
-const SubCategory = require("../models/Subcategory");
+const SubCategory = require("../models/SubCategory");
 
 class ProductController {
   all_get = async (req, res) => {
@@ -124,6 +124,7 @@ class ProductController {
         dateOfManufacture,
         expiryDate,
         subCategory,
+        promotion,
       } = req.body;
       const updatedProduct = await Product.findByIdAndUpdate(id, {
         name,
@@ -135,6 +136,7 @@ class ProductController {
         dateOfManufacture,
         expiryDate,
         subCategory,
+        promotion,
       });
       res
         .status(200)

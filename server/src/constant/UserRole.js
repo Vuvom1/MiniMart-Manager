@@ -1,5 +1,6 @@
-export const UserRole = {
-    Manager: "MANAGER",
-    Staff: "STAFF",
-    Customer: "CUSTOMER"
-}
+const UserRole = {
+  Manager: "MANAGER",
+  Staff: "STAFF",
+  Customer: "CUSTOMER",
+};
+module.exports = UserRole;

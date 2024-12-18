@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface TextFieldProps {
   id?: string;
@@ -8,7 +8,9 @@ interface TextFieldProps {
   suffix?: JSX.Element;
   value?: string;
   initialValue?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   placeholder?: string;
   height?: string;
   width?: string;
@@ -25,12 +27,12 @@ export default function TextField({
   name,
   prefix,
   suffix,
-  initialValue = '',
+  initialValue = "",
   value = initialValue,
   onChange,
   placeholder,
-  height = '40px',
-  width = '100%',
+  height = "40px",
+  width = "100%",
   error = null,
   validations = [],
   validationPassed,
@@ -39,7 +41,9 @@ export default function TextField({
 }: TextFieldProps) {
   const [internalError, setInternalError] = useState<string | null>(error);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const inputValue = e.target.value;
 
     if (onChange) {
@@ -66,7 +70,10 @@ export default function TextField({
   return (
     <div style={{ width }}>
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900 mb-1">
+        <label
+          htmlFor={id}
+          className="block text-sm font-medium leading-6 text-gray-900 mb-1"
+        >
           {label}
         </label>
       )}
@@ -84,8 +91,11 @@ export default function TextField({
             onChange={handleChange}
             placeholder={placeholder}
             rows={rows}
-            className={`block w-full rounded-md border-0 py-1.5 ${prefix ? 'pl-10' : 'pl-3'
-              } ${suffix ? 'pr-10' : 'pr-4'} text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
+            className={`block w-full rounded-md border-0 py-1.5 ${
+              prefix ? "pl-10" : "pl-3"
+            } ${
+              suffix ? "pr-10" : "pr-4"
+            } text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
             style={{ height }}
           />
         ) : (
@@ -96,8 +106,11 @@ export default function TextField({
             value={value}
             onChange={handleChange}
             placeholder={placeholder}
-            className={`block w-full rounded-md border-0 py-1.5 ${prefix ? 'pl-10' : 'pl-3'
-              } ${suffix ? 'pr-10' : 'pr-4'} text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
+            className={`block w-full rounded-md border-0 py-1.5 ${
+              prefix ? "pl-10" : "pl-3"
+            } ${
+              suffix ? "pr-10" : "pr-4"
+            } text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left`}
             style={{ height }}
           />
         )}
@@ -106,13 +119,10 @@ export default function TextField({
             {suffix}
           </div>
         )}
-       
       </div>
       {(internalError || error) && (
-          <p className="text-xs text-red-500">
-            {internalError || error}
-          </p>
-        )}
+        <p className="text-xs text-red-500">{internalError || error}</p>
+      )}
     </div>
   );
 }

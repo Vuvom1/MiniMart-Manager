@@ -67,40 +67,40 @@ const AddProduct: React.FC = () => {
     }
   };
   const handleSubmit = async () => {
-    setErrors({
-      name: null,
-      barcode: null,
-      detail: null,
-      image: null,
-      subCategory: null,
-    });
-    const nameError = ValidationUtil.validateRequired(formData.name, "name");
-    const detailError = ValidationUtil.validateRequired(
-      formData.detail,
-      "details"
-    );
-    const barcodeError = ValidationUtil.validateBarcode(formData.barcode);
-    const imageError = ValidationUtil.validateRequired(formData.image, "image");
-    const subCategoryError = ValidationUtil.validateRequired(
-      formData.subCategory,
-      "subcategory"
-    );
-    if (
-      nameError ||
-      detailError ||
-      barcodeError ||
-      imageError ||
-      subCategoryError
-    ) {
-      setErrors({
-        name: nameError,
-        barcode: barcodeError,
-        detail: detailError,
-        image: imageError,
-        subCategory: subCategoryError,
-      });
-      return;
-    }
+    // setErrors({
+    //   name: null,
+    //   barcode: null,
+    //   detail: null,
+    //   image: null,
+    //   subCategory: null,
+    // });
+    // const nameError = ValidationUtil.validateRequired(formData.name, "name");
+    // const detailError = ValidationUtil.validateRequired(
+    //   formData.detail,
+    //   "details"
+    // );
+    // const barcodeError = ValidationUtil.validateBarcode(formData.barcode);
+    // const imageError = ValidationUtil.validateRequired(formData.image, "image");
+    // const subCategoryError = ValidationUtil.validateRequired(
+    //   formData.subCategory,
+    //   "subcategory"
+    // );
+    // if (
+    //   nameError ||
+    //   detailError ||
+    //   barcodeError ||
+    //   imageError ||
+    //   subCategoryError
+    // ) {
+    //   setErrors({
+    //     name: nameError,
+    //     barcode: barcodeError,
+    //     detail: detailError,
+    //     image: imageError,
+    //     subCategory: subCategoryError,
+    //   });
+    //   return;
+    // }
     try {
       setIsLoading(true);
       const response = await addOneProduct(formData);
@@ -155,7 +155,7 @@ const AddProduct: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            error={errors.name}
+            validations={[ValidationUtil.validateRequired("Name")]}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -228,7 +228,7 @@ const AddProduct: React.FC = () => {
             />
           </div>
           <div className="col-span-1 md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
+            {/* <label className="block text-sm font-medium text-gray-700">
               Detail
             </label>
             <textarea
@@ -240,7 +240,18 @@ const AddProduct: React.FC = () => {
             />
             {errors.detail != null && (
               <p className="text-xs text-red-500">{errors.detail}</p>
-            )}{" "}
+            )}{" "} */}
+            <TextField
+              id="product_detail_txt"
+              label="Detail"
+              name="detail"
+              value={formData.detail}
+              onChange={handleChange}
+              placeholder="Write details here"
+              rows={3}
+              validations={[ValidationUtil.validateRequired("Detail")]}
+              multiline={true}
+            />
             {/* Changed to use Tailwind class for color */}
           </div>
           <div>

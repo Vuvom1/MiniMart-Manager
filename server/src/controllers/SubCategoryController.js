@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const SubCategory = require("../models/Subcategory");
+const SubCategory = require("../models/SubCategory");
 const Category = require("../models/Category");
 class SubCategoryController {
   all_get = async (req, res) => {

@@ -43,7 +43,7 @@ export const addOneProduct = async (data: Object) => {
     throw error.response?.data?.message || "Add product failed";
   }
 };
-export const updateProduct = async (data?: Product) => {
+export const updateProduct = async (data?: any) => {
   if (!data) {
     alert("No product to update");
     return;

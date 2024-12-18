@@ -37,8 +37,23 @@ const EditProduct: React.FC = () => {
     shelfId: "",
     category: "",
   };
-  const [formData, setFormData] = useState<Product>();
-  const [originalData, setOriginalData] = useState<Product>();
+  const [formData, setFormData] = useState({
+    _id: "",
+    name: "",
+    price: 0,
+    barcode: "",
+    stock: 0,
+    detail: "",
+    image: "",
+    dateOfManufacture: "",
+    expiryDate: "",
+    status: "",
+    description: "",
+    subCategory: {
+      _id: "",
+    },
+    promotion: "",
+  });
   const { id } = useParams<RouteParams>();
   const nav = useNavigate();
   useEffect(() => {
@@ -60,15 +75,21 @@ const EditProduct: React.FC = () => {
         const idProduct = await getProductById(id);
         console.log(idProduct.dateOfManufacture);
         setFormData({
-          ...idProduct,
-          dateOfManufacture: formatDateForInput(idProduct.dateOfManufacture),
-          expiryDate: formatDateForInput(idProduct.expiryDate),
+          _id: idProduct?._id,
+          name: idProduct?.name,
+          price: idProduct?.price,
+          barcode: idProduct?.barcode,
+          stock: idProduct?.stock,
+          detail: idProduct?.detail,
+          image: idProduct?.image,
+          dateOfManufacture: formatDateForInput(idProduct?.dateOfManufacture),
+          expiryDate: formatDateForInput(idProduct?.expiryDate),
+          status: idProduct.status,
+          description: idProduct.description,
+          subCategory: idProduct.subCategory,
+          promotion: idProduct?.promotion,
         });
-        setOriginalData({
-          ...idProduct,
-          dateOfManufacture: formatDateForInput(idProduct.dateOfManufacture),
-          expiryDate: formatDateForInput(idProduct.expiryDate),
-        });
+
         console.log("Name: ");
       } catch (error: any) {
         console.error(error);
@@ -107,37 +128,37 @@ const EditProduct: React.FC = () => {
     }
   };
   const handleSubmit = async () => {
-    setErrors({
-      name: null,
-      barcode: null,
-      detail: null,
-      image: null,
-    });
-    const nameError = ValidationUtil.validateRequired(
-      formData?.name ?? "",
-      "name"
-    );
-    const detailError = ValidationUtil.validateRequired(
-      formData?.detail ?? "",
-      "details"
-    );
-    const barcodeError = ValidationUtil.validateBarcode(
-      formData?.barcode ?? ""
-    );
-    const imageError = ValidationUtil.validateRequired(
-      formData?.image ?? "",
-      "image"
-    );
+    // setErrors({
+    //   name: null,
+    //   barcode: null,
+    //   detail: null,
+    //   image: null,
+    // });
+    // const nameError = ValidationUtil.validateRequired(
+    //   formData?.name ?? "",
+    //   "name"
+    // );
+    // const detailError = ValidationUtil.validateRequired(
+    //   formData?.detail ?? "",
+    //   "details"
+    // );
+    // const barcodeError = ValidationUtil.validateBarcode(
+    //   formData?.barcode ?? ""
+    // );
+    // const imageError = ValidationUtil.validateRequired(
+    //   formData?.image ?? "",
+    //   "image"
+    // );
 
-    if (nameError || detailError || barcodeError || imageError) {
-      setErrors({
-        name: nameError,
-        barcode: barcodeError,
-        detail: detailError,
-        image: imageError,
-      });
-      return;
-    }
+    // if (nameError || detailError || barcodeError || imageError) {
+    //   setErrors({
+    //     name: nameError,
+    //     barcode: barcodeError,
+    //     detail: detailError,
+    //     image: imageError,
+    //   });
+    //   return;
+    // }
     try {
       setIsLoading(true);
       const response = await updateProduct(formData);
@@ -214,7 +235,7 @@ const EditProduct: React.FC = () => {
             </label>
             <select
               name="subCategory"
-              value={formData?.subCategory?._id}
+              value={formData.subCategory?._id}
               onChange={handleChange}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
@@ -338,10 +359,10 @@ const EditProduct: React.FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => setFormData(originalData)}
+                onClick={() => nav("/products")}
                 className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
               >
-                Reset
+                Back
               </button>
               <button
                 type="button"
