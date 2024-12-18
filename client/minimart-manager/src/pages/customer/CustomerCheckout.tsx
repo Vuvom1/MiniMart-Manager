@@ -54,19 +54,19 @@ const CustomerCheckout: React.FC = () => {
         try {
             receipt.details = cartItems;
             receipt.paymentMethod = paymentMethod;
+            receipt.giftItems = giftItems;
 
             if (order && order.receipt) {
+                
                 setOrder(
                     {
                         ...order,
                         receipt: {
                             ...order.receipt,
                             promotion: promotion,
-                            giftItems: giftItems,
                         }
                     }
                 )
-
             }
 
             if (user && order) {

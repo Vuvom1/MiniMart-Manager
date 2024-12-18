@@ -29,6 +29,10 @@ class OrderController {
                     path: 'receipt',
                     populate: { path: 'details.product' }
                 })
+                .populate({
+                    path: 'receipt',
+                    populate: { path: 'giftItems.product' }
+                })
                 .exec();
 
             res.status(200).json(order);
@@ -120,7 +124,6 @@ class OrderController {
         
                 order.receipt.customer = customer._id;
                 const receipt = await Receipt.create(order.receipt);
-                console.log(order.receipt);
                 const addedPoint = receipt.totalPrice * CUSTOMER_POINT_PERCENT;
                 const updatedCustomer = await CustomerController.addPointToCustomer(customer._id, addedPoint);
         
