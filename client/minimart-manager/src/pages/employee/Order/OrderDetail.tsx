@@ -10,6 +10,7 @@ import { MAP_PIN_IMAGE } from '../../../constant/strings';
 import SuccessToast from '../../../components/Toast/SuccessToast';
 import toast from 'react-hot-toast';
 import { LoadingScreen } from '../../../components/Loading/LoadingScreen';
+import { CalculateUtil } from '../../../utils/CalculateUtil';
 
 const OrderDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -56,7 +57,7 @@ const OrderDetail: React.FC = () => {
 
                 <div className='rounded-lg flex p-6 gap-y-6 flex-col w-1/2 shadow-md bg-white'>
                     <p className='text-2xl font-medium'>Ordered items</p>
-                    <div className='flex flex-col h-96 overflow-y-scroll divide-y'>
+                    <div className='flex flex-col h-[70%] overflow-y-scroll divide-y'>
                         {order?.receipt.details.map((detail) => (
                             <div>
                                 <li key={detail.product._id} className="flex py-6 w-full">
@@ -86,7 +87,25 @@ const OrderDetail: React.FC = () => {
                                 </li>
                             </div>
                         ))}
+                        
                     </div>
+
+                    <div className='border-t border-gray-100 my-4' />
+                    {order?.receipt.giftItems && order.receipt.giftItems.length > 0 && 
+                        <div className='flex flex-col gap-y-2'>
+                            <p className='text-xl'>Gift items</p>
+                            {order?.receipt.giftItems.map((giftItem) => (
+                                <div className='flex gap-x-4'>
+                                    <img src={giftItem.product.image} alt='gift item' className='w-20 h-20 rounded-lg object-cover' />
+                                    <p className='text-xl grow'>{giftItem.product.name}</p>
+                                    <p className='text-xl'>x{giftItem.quantity}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                    }
+
+                    
 
                 </div>
 
@@ -124,7 +143,7 @@ const OrderDetail: React.FC = () => {
                         <div className='border-t border-gray-100 my-10' />
                         <div className="flex gap-x-4 items-center">
                             <p className='text-gray-500'>Promotion used:</p>
-                            {order?.receipt.promotion ? <p className='text-xl'>{order.receipt.promotion.code}</p> : <p className='text-xl'>No promotion</p>}
+                            {order?.receipt.promotion ? <p className='text-xl'>{order.receipt.promotion.code}</p> : <p className='text-xl'>No voucher</p>}
                         </div>
                         <div className='border-t border-gray-100 my-4' />
                         <div className='flex flex-col gap-y-2 grow'>
@@ -137,8 +156,8 @@ const OrderDetail: React.FC = () => {
                                 <p className='text-cyan-900 font-medium'>${order?.deliveryFee}</p>
                             </div>
                             <div className='flex justify-between'>
-                                <p className='text-gray-500'>Coupon discount</p>
-                                <p className='text-cyan-900 font-medium'>${0}</p>
+                                <p className='text-gray-500'>Coupon discount</p>    
+                                <p className='text-cyan-900 font-medium'>${CalculateUtil.calculateDiscountPriceByAmount(order?.receipt.totalPrice ?? 0, order?.receipt.totalNetPrice ?? 0)}</p>
                             </div>
                             <div className='border-t border-gray-100 my-4' />
                             <div className='flex justify-between'>
