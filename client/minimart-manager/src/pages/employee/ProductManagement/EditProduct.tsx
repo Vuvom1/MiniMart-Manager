@@ -165,12 +165,12 @@ const EditProduct: React.FC = () => {
       alert(response.message);
       nav("/products");
     } catch (error: any) {
-      console.error("Error adding product: ", error);
+      console.error("Error updating product: ", error);
       if (error.response) {
         // Server responded with a status other than 2xx
         alert(
           error.response.data.message ||
-            "Failed to add product. Please check your input."
+            "Failed to update product. Please check your input."
         );
       } else if (error.request) {
         // Request was made but no response was received

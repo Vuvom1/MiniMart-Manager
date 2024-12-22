@@ -117,14 +117,14 @@ const ManageProduct: React.FC = () => {
         /> */}
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      {/* <div className="flex justify-between items-center mt-4">
         <div>
           <RoundedButton label="Previous" color="text-white bg-cyan-500" />
         </div>
         <div>
           <RoundedButton label="Next" color="text-white bg-cyan-500" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
