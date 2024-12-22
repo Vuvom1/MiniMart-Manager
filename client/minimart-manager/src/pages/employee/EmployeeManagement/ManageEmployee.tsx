@@ -3,28 +3,31 @@ import RoundedButton from "../../../components/Button/RoundedButton";
 import { getAllProducts } from "../../../services/api/ProductApi";
 import OverviewTable from "../../../components/Table/OverviewTable";
 import { getAllEmployees } from "../../../services/api/EmployeeApi";
+import EmployeeCard from "../../../components/Card/EmployeeCard";
+import { useNavigate } from "react-router-dom";
 interface Employee {
-  _id: String;
-  firstname: String;
-  lastname: String;
-  email: String;
-  salaryPerHour: Number;
+  _id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  avatar: string;
+  salaryPerHour: number;
 }
 
 const ManageEmployee = () => {
+  const nav = useNavigate();
   const [data, setData] = useState<Employee[]>([]);
   const fetchEmployees = async () => {
     try {
       const fetchedEmployees = await getAllEmployees();
-      const extractedEmployees: Employee[] = fetchedEmployees.data.map(
-        (p: any) => ({
-          _id: p._id,
-          firstname: p.user.firstname,
-          lastname: p.user.lastname,
-          email: p.user.email,
-          salaryPerHour: p.salaryPerHour,
-        })
-      );
+      const extractedEmployees: Employee[] = fetchedEmployees.map((p: any) => ({
+        _id: p._id,
+        firstname: p.user.firstname,
+        lastname: p.user.lastname,
+        avatar: p.user.image,
+        email: p.user.email,
+        salaryPerHour: p.salaryPerHour,
+      }));
       setData(extractedEmployees);
     } catch (error: any) {
       console.log(error);
@@ -33,17 +36,10 @@ const ManageEmployee = () => {
   useEffect(() => {
     fetchEmployees();
   }, []);
-  const columnHeaders = [
-    "ID",
-    "First Name",
-    "Last Name",
-    "Email",
-    "Salary (hour)",
-  ];
-  const dataFields = ["_id", "firstname", "lastname", "email", "salaryPerHour"];
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Manage Products</h1>
+      <h1 className="text-2xl font-bold mb-4">Manage Employees</h1>
 
       <div className="flex items-center mb-4">
         <input
@@ -65,7 +61,17 @@ const ManageEmployee = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {data.map((v, i) => (
+          <EmployeeCard
+            onClick={() => {
+              nav(`${v._id}`);
+            }}
+            picture={v.avatar}
+            name={`${v.lastname} ${v.firstname}`}
+            salaryPerHour={v.salaryPerHour}
+          ></EmployeeCard>
+        ))}
         {/* <table className="w-full border-collapse bg-white rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
