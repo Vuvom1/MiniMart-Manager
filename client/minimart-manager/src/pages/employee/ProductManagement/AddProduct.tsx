@@ -3,6 +3,7 @@ import { addOneProduct } from "../../../services/api/ProductApi";
 import { getAllSubcategories } from "../../../services/api/SubCategoryApi";
 import TextField from "../../../components/InputField/TextField";
 import ValidationUtil from "../../../utils/ValidationUtil";
+import { useNavigate } from "react-router-dom";
 interface SubCategory {
   _id: string;
   name: string;
@@ -10,8 +11,12 @@ interface SubCategory {
   category: string;
 }
 const AddProduct: React.FC = () => {
+  const nav = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [subCate, setSubcate] = useState<SubCategory[]>([]);
+  const [isValid, setIsValid] = useState(false);
+  const [isBarcodeValid, setIsBarcodeValid] = useState(false);
+  const [isDetailsValid, setIsDetailsValid] = useState(false);
   const [errors, setErrors] = useState<{
     name: string | null;
     barcode: string | null;
@@ -31,7 +36,7 @@ const AddProduct: React.FC = () => {
     barcode: "",
     detail: "",
     image: "",
-    stock: "",
+    stock: "In Stock",
     dateOfManufacture: "",
     expiryDate: "",
     status: "Available",
@@ -65,6 +70,15 @@ const AddProduct: React.FC = () => {
       };
       reader.readAsDataURL(e.target.files[0]);
     }
+  };
+  const handleValidationChange = (isValid: boolean) => {
+    setIsValid(isValid);
+  };
+  const handleBarcodeValidationChange = (isValid: boolean) => {
+    setIsBarcodeValid(isValid);
+  };
+  const handleDetailsValidationChange = (isValid: boolean) => {
+    setIsDetailsValid(isValid);
   };
   const handleSubmit = async () => {
     // setErrors({
@@ -101,10 +115,15 @@ const AddProduct: React.FC = () => {
     //   });
     //   return;
     // }
+    if (!(isValid && isBarcodeValid && isDetailsValid)) {
+      console.log(isValid, isBarcodeValid, isDetailsValid);
+      return;
+    }
     try {
       setIsLoading(true);
       const response = await addOneProduct(formData);
       alert(response.message);
+      nav("/products");
     } catch (error: any) {
       console.error("Error adding product: ", error);
       if (error.response) {
@@ -156,6 +175,7 @@ const AddProduct: React.FC = () => {
             value={formData.name}
             onChange={handleChange}
             validations={[ValidationUtil.validateRequired("Name")]}
+            validationPassed={handleValidationChange}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -212,7 +232,11 @@ const AddProduct: React.FC = () => {
             name="barcode"
             value={formData.barcode}
             onChange={handleChange}
-            error={errors.barcode}
+            validations={[
+              ValidationUtil.validateBarcode,
+              ValidationUtil.validateRequired("barcode"),
+            ]}
+            validationPassed={handleBarcodeValidationChange}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -250,6 +274,7 @@ const AddProduct: React.FC = () => {
               placeholder="Write details here"
               rows={3}
               validations={[ValidationUtil.validateRequired("Detail")]}
+              validationPassed={handleDetailsValidationChange}
               multiline={true}
             />
             {/* Changed to use Tailwind class for color */}
@@ -278,7 +303,7 @@ const AddProduct: React.FC = () => {
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Status
             </label>
@@ -291,7 +316,7 @@ const AddProduct: React.FC = () => {
               <option value="Available">Available</option>
               <option value="Unavailable">Unavailable</option>
             </select>
-          </div>
+          </div> */}
           <div className="col-span-1 md:col-span-2">
             <label className="block text-sm font-medium text-gray-700">
               Image

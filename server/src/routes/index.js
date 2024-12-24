@@ -5,6 +5,7 @@ const supplierRoutes = require("./SupplierRoutes");
 const productRoutes = require("./ProductRoutes");
 const importRoutes = require("./ImportRoutes");
 const employeeRoutes = require("./EmployeeRoutes");
+const subCategoryRoutes = require("./SubCategoryRoutes");
 const scheduleRoutes = require("./ScheduleRoutes");
 const shiftRoutes = require("./ShiftRoutes");
 const positionRoutes = require("./PositionRoutes");
