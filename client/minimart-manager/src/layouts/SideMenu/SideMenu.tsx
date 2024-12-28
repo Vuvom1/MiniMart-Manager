@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Urls from "../../constant/urls";
+import { Label } from "@headlessui/react";
 
 function SideMenu() {
   const location = useLocation();
@@ -43,6 +44,11 @@ function SideMenu() {
       path: Urls.ADMIN.PROMOTIONS.BASE.Path,
     },
     { label: "Order", icon: <TruckIcon />, path: Urls.ADMIN.ORDER.BASE.Path },
+    {
+      label: "Receipt",
+      icon: <ReceiptIcon />,
+      path: Urls.ADMIN.RECEIPT.BASE.Path,
+    },
   ];
 
   useEffect(() => {
@@ -210,7 +216,47 @@ const PromotionIcon = () => (
     />
   </svg>
 );
+const ReceiptIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="size-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4 3h16a1 1 0 011 1v16a1 1 0 0 1-1 1c-.667 0-1.333-.333-2-1s-1.333 0-2 1-1.333.333-2 1-1.333 0-2-1-1.333-.333-2 0-1.333 0-2 1c-.667.667-1.333 1-2 1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"
+    />
 
+    <line
+      x1="6"
+      y1="7"
+      x2="18"
+      y2="7"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    />
+    <line
+      x1="6"
+      y1="11"
+      x2="18"
+      y2="11"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    />
+    <line
+      x1="6"
+      y1="15"
+      x2="12"
+      y2="15"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    />
+  </svg>
+);
 const TruckIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
