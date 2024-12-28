@@ -1,0 +1,1 @@
+import JsBarcode from "jsbarcode";

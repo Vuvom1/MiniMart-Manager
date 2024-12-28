@@ -23,6 +23,7 @@ import AddProduct from "../pages/employee/ProductManagement/AddProduct";
 import EditProduct from "../pages/employee/ProductManagement/EditProduct";
 import ManageEmployee from "../pages/employee/EmployeeManagement/ManageEmployee";
 import EmployeeDetails from "../pages/employee/EmployeeManagement/EmployeeDetails";
+import ManageReceipt from "../pages/employee/ReceiptManagement/ManageReceipt";
 
 const AppRouter = () => {
   const { user, loading } = useAuth();
@@ -121,6 +122,9 @@ const AppRouter = () => {
             path={Urls.ADMIN.EMPLOYEE.DETAILS.Route}
             element={<EmployeeDetails />}
           />
+        </Route>
+        <Route path={Urls.ADMIN.RECEIPT.BASE.Route}>
+          <Route path="" element={<ManageReceipt />} />
         </Route>
       </Route>
 

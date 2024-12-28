@@ -13,7 +13,6 @@ const promotionRoutes = require("./PromotionRoutes");
 const categoryRoutes = require("./CategoryRoutes");
 const receiptRoutes = require("./ReceiptRoutes");
 const orderRoutes = require("./OrderRoutes");
-
 function route(app) {
   app.use("/api/auth", authRoutes);
   app.use("/api/customers", customerRoutes);

@@ -52,6 +52,9 @@ const Urls = Object.freeze({
       ADD: createUrl(baseAdminUrl, "employees/add"),
       DETAILS: createUrl(baseAdminUrl, "employees/:id"),
     },
+    RECEIPT: {
+      BASE: createUrl(baseAdminUrl, "receipts"),
+    },
   },
 });
 
