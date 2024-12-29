@@ -46,8 +46,11 @@ const Urls = Object.freeze({
             BASE: createUrl(baseAdminUrl, 'products'),
             ADD: createUrl(baseAdminUrl, 'products/add'),
             EDIT: createUrl(baseAdminUrl, 'products/:id')
-        }
-    }
+        },
+        USER_PROFILE: createUrl(baseAdminUrl, 'user-profile'),
+        UNAUTHORIZED: createUrl(baseAdminUrl, 'unauthorized')
+    },
+   
 });
 
 

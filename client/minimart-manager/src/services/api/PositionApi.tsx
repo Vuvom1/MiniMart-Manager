@@ -1,28 +1,16 @@
-import axios from 'axios'
+import {api} from './Api';
 
-const API_URL = 'http://localhost:8000';
-const BASE_URL = API_URL + '/api/positions'
+const BASE_URL = '/api/positions'
 
 export const getAllPositions = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}`);
-       
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Fetch data failed'; 
-    }
+    const response = await api.get(BASE_URL);   
+    return response.data;
 }
 
 export const addPosition = async (name: string, color: string) => {
-    try {
-        const response = await axios.post(`${BASE_URL}/add`, {
-            name, color
-        }, {
-            withCredentials: true,
-        });
-
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Add data failed'; 
-    }
+    const response = await api.post(BASE_URL, {
+        name: name,
+        color: color
+    });
+    return response.data;
 }

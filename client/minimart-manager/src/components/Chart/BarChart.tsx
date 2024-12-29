@@ -1,13 +1,13 @@
 import React from 'react';
 import { Chart, registerables } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 Chart.register(...registerables);
 
 interface BarChartDataset {
   label: string;
   data: number[];
-  backgroundColor: string;
+  backgroundColor?: string;
 }
 
 interface BarChartProps {
@@ -19,18 +19,33 @@ interface BarChartProps {
   width?: string,
 }
 
-const BarChart: React.FC<BarChartProps> = ({height = '300px', width = '500px', data }) => {
+const BarChart: React.FC<BarChartProps> = ({ data }) => {
   const { barDatasets, labels } = data;
+
+  const defaultBackgroundColor = '#FCC737';
+
+  const datasetsWithDefaultColor = barDatasets.map(dataset => ({
+    ...dataset,
+    backgroundColor: dataset.backgroundColor || defaultBackgroundColor,
+  }));
 
   const options = {
     responsive: true,
     scales: {
       x: {
         stacked: true,
+        title: {
+          display: true,
+          text: 'Categories',
+        },
+
       },
       y: {
         beginAtZero: true,
-        stacked: true,
+        title: {
+          display: true,
+          text: 'Stock Level',
+        },
       },
     },
     plugins: {
@@ -38,19 +53,22 @@ const BarChart: React.FC<BarChartProps> = ({height = '300px', width = '500px', d
         position: 'bottom' as const,
       },
     },
+    barThickness: 20,
+    elements: {
+      bar: {
+        borderRadius: 4,
+      },
+    },
   };
 
   return (
-    <div  style={{ width: width, height: height }} className='p-4 '>
-      <Bar 
-        data={{
-          labels: labels,
-          datasets: barDatasets,
-        }}
-        
-        options={options}
-      />
-    </div>
+    <Bar
+      data={{
+        labels: labels,
+        datasets: datasetsWithDefaultColor,
+      }}
+      options={options}
+    />
   );
 };
 

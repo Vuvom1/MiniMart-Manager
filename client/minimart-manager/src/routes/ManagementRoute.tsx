@@ -19,55 +19,56 @@ import OrderManagement from '../pages/employee/Order/OrderManagement';
 import ManageProduct from '../pages/employee/ProductManagement/ManageProduct';
 import OrderDetail from '../pages/employee/Order/OrderDetail';
 import EditImport from '../pages/employee/SupplyManagement/EditImport';
+import { LoadingScreen } from '../components/Loading/LoadingScreen';
+import UserProfile from '../pages/personalization/UserProfile';
 
 const AppRouter = () => {
     const { user, loading } = useAuth();
     const userRole: Role = (user?.role as Role) ?? Role.STAFF;
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingScreen />;
     }
 
     return (
         <Routes>
             <Route path={Urls.ADMIN.LOGIN.Route} element={<Login />} />
+
             <Route path={Urls.ADMIN.SIGNUP.Route} element={<Signup />} />
 
-            <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN]} />}>
+            <Route path={Urls.ADMIN.DASHBOARD.Route} element={<Dashboard />} />
+
+            <Route path={Urls.ADMIN.SUPPLIES.BASE.Route} >
+                <Route path="" element={<SupplyManagement />} />
+                <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Route} element={<ImportList />} />
+                <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.ADD.Route} element={<AddImport />} />
+                <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.EDIT.Route} element={<EditImport />} />
             </Route>
 
-            <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER]} />}>
-                <Route path={Urls.ADMIN.SUPPLIES.BASE.Route} >
-                    <Route path="" element={<SupplyManagement />} />
-                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Route} element={<ImportList />} />
-                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.ADD.Route} element={<AddImport />} />
-                    <Route path={Urls.ADMIN.SUPPLIES.IMPORTS.EDIT.Route} element={<EditImport/>} />
-                </Route>
-
-                <Route path={Urls.ADMIN.PROMOTIONS.BASE.Route} >
-                    <Route path="" element={<PromotionManagement />} />
-                    <Route path={Urls.ADMIN.PROMOTIONS.ADD.Route} element={<AddPromotion />} />
-                    <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
-                </Route>
-
-                <Route path={Urls.ADMIN.ORDER.BASE.Route} >
-                    <Route path="" element={<OrderManagement />} />
-                    <Route path={Urls.ADMIN.ORDER.DETAIL.Route} element={<OrderDetail />} />
-                </Route>
+            <Route path={Urls.ADMIN.PROMOTIONS.BASE.Route} >
+                <Route path="" element={<PromotionManagement />} />
+                <Route path={Urls.ADMIN.PROMOTIONS.ADD.Route} element={<AddPromotion />} />
+                <Route path={Urls.ADMIN.PROMOTIONS.EDIT.Route} element={<EditPromotion />} />
             </Route>
 
-            <Route element={<PrivateRoute userRole={userRole} allowedRoles={[Role.ADMIN, Role.MANAGER, Role.STAFF]} />}>
-                <Route path={Urls.ADMIN.DASHBOARD.Route} element={<Dashboard />} />
-                <Route path={Urls.ADMIN.CUSTOMERS.Route} element={<CustomerManagement />} />
-                <Route path={Urls.ADMIN.SCHEDULE.Route}>
-                    <Route path="" element={<ScheduleManagement />} />
-                </Route>
-                <Route path={Urls.ADMIN.PRODUCT.BASE.Route} >
-                    <Route path="" element={<ManageProduct />} />
-                </Route>
+            <Route path={Urls.ADMIN.ORDER.BASE.Route} >
+                <Route path="" element={<OrderManagement />} />
+                <Route path={Urls.ADMIN.ORDER.DETAIL.Route} element={<OrderDetail />} />
             </Route>
 
-            <Route path='/unauthorized' element={<Unauthorized />} />
+            <Route path={Urls.ADMIN.CUSTOMERS.Route} element={<CustomerManagement />} />
+
+            <Route path={Urls.ADMIN.SCHEDULE.Route}>
+                <Route path="" element={<ScheduleManagement />} />
+            </Route>
+
+            <Route path={Urls.ADMIN.PRODUCT.BASE.Route} >
+                <Route path="" element={<ManageProduct />} />
+            </Route>
+
+            <Route path={Urls.ADMIN.USER_PROFILE.Route} element={<UserProfile />} />
+
+            <Route path={Urls.ADMIN.UNAUTHORIZED.Route} element={<Unauthorized />} />
         </Routes>
     );
 };

@@ -73,6 +73,21 @@ userSchema.statics.login = async function(email, password) {
     throw Error(errors.incorrectEmailOrPassword.code);
 }
 
+userSchema.statics.updatePassword = async function(id, currentPassword, newPassword) {
+    const user = await this.findById(id);
+    if (!user) {
+        throw Error(errors.userNotFound.code);
+    } 
+    const auth = await bcrypt.compare(currentPassword, user.password);
+    if (auth) {
+        const salt = await bcrypt.genSalt();
+        user.password = await bcrypt.hash(newPassword, salt);
+        await User.findByIdAndUpdate(id, user);
+        return user;
+    }
+    throw Error(errors.incorrectPassword.code);
+}
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User; 

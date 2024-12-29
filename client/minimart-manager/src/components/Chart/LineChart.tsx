@@ -8,6 +8,7 @@ interface LineChartDataset {
   label: string;
   data: number[];
   backgroundColor: string;
+  borderColor: string;
 }
 
 interface LineChartProps {
@@ -36,6 +37,10 @@ const LineChart: React.FC<LineChartProps> = ({height = '100%', width = '100%', d
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+        },
       },
     },
   };

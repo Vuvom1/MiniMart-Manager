@@ -47,3 +47,16 @@ export  const logoutUser = async () => {
       console.error('Logout error:', err);
     }
   };
+
+export const updatePassword = async (id: string, currentPassword: string, newPassword: string) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/${id}/update-password`, {
+            id, currentPassword, newPassword
+        }, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch(error: any) {
+        throw error.response?.data?.message || 'Update password failed'; 
+    }
+}

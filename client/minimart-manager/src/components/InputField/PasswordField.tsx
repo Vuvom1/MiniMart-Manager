@@ -23,7 +23,7 @@ export default function PasswordField({
     label,
     name,
     prefix,
-    value = '',
+    value,
     onChange,
     placeholder,
     height = '40px',
@@ -93,7 +93,7 @@ export default function PasswordField({
                     id={id}
                     name={name}
                     type={showPassword ? 'text' : 'password'}
-                    value={value}
+                    value={value && value}
                     onChange={handleChange}
                     placeholder={placeholder}
                     className={`block w-full rounded-md border-0 py-1.5 ${prefix ? 'pl-10' : 'pl-3'

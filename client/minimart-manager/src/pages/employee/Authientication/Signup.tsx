@@ -326,8 +326,9 @@ function Signup() {
           </div>
 
           <RoundedButton
-            onClick={() => handleSingup}
-            disable={loading || !isValid}
+            type="submit"
+            disable={!isValid}
+            loading={loading}
             label={loading ? "Signing Up..." : "Sign Up"}
             color="bg-cyan-500 text-white"
           />

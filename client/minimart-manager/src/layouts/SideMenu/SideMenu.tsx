@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Urls from "../../constant/urls";
+import { useAuth } from "../../providers/AuthProvider";
 
 function SideMenu() {
     const location = useLocation();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const auth = useAuth();
+    const navigate = useNavigate();
 
     const menuItems = [
         { label: 'Dashboard', icon: <DashboardIcon />, path: Urls.ADMIN.DASHBOARD.Path },
@@ -47,6 +50,22 @@ function SideMenu() {
                     </Link>
                 ))}
             </nav>
+            <button
+                onClick={() => {
+                    auth.logout();
+                    navigate(Urls.ADMIN.LOGIN.Path);
+                }}
+                className="flex items-center px-6 py-2 mt-4 transition duration-200 text-gray-600 hover:bg-blue-50"
+            >
+                <span className="material-icons mr-2 flex gap-x-2 transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M9 12h12m0 0-3-3m3 3-3 3" />
+                    </svg>
+                </span>
+                <p className="text-lg font-light transition duration-200">
+                    Logout
+                </p>
+            </button>
         </div>
     );
 }

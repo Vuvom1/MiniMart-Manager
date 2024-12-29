@@ -1,67 +1,30 @@
 import axios from 'axios'
 import { Import } from '../../data/Entities/Import'
+import { api } from './Api';
 
-const API_URL = 'http://localhost:8000';
-const BASE_URL = API_URL + '/api/imports'
+const BASE_URL = '/api/imports'
 
 export const getAllImports = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}`);
-       
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Fetch data failed'; 
-    }
+    const response = await api.get(BASE_URL);
+    return response.data;   
 }
 
 export const getImportById = async (id: string) => {
-    try {
-        const response = await axios.get(`${BASE_URL}/getById/${id}`); 
-        
-        return response.data;
-    } catch (error: any) {
-        throw error.response?.data?.message || 'Fetch data failed';
-    }
+    const response = await api.get(`${BASE_URL}/getById/${id}`);
+    return response.data;
 };
 
-
-
 export const addImport = async (importData: Import) => {
-    try {
-        const response = await axios.post(`${BASE_URL}`, {
-            importData: importData
-        }, {
-            withCredentials: true,
-        });
-
-        console.log(importData);
-
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Add data failed'; 
-    }
+    const response = await api.post(`${BASE_URL}/add`, {  importData: importData });
+    return response.data;
 }
 
 export const updateImport = async (id: string ,importData: Import) => {
-    try {
-        const response = await axios.put(`${BASE_URL}/${id}`, {
-           importData: importData
-        }, {
-            withCredentials: true,
-        });
-
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Update import data failed'; 
-    }
+    const response = await api.put(`${BASE_URL}/${id}`, {  importData: importData });
+    return response.data;
 }
 
 export const getImportStatistic = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}/statistic`);
-
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Fecth import statistic data failed'; 
-    }
+    const response = await api.get(`${BASE_URL}/statistic`);
+    return response.data;
 }
