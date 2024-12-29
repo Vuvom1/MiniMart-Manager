@@ -1,11 +1,11 @@
-const baseCustomerUrl = '/minimartonline';
-const baseAdminUrl = '/admin'
+const baseCustomerUrl = "/minimartonline";
+const baseAdminUrl = "/admin";
 
 function createUrl(base: string, path: string) {
-    return {
-        Route: `/${path}`,
-        Path: `${base}/${path}`
-    };
+  return {
+    Route: `/${path}`,
+    Path: `${base}/${path}`,
+  };
 }
 
 const Urls = Object.freeze({
@@ -46,6 +46,14 @@ const Urls = Object.freeze({
             BASE: createUrl(baseAdminUrl, 'products'),
             ADD: createUrl(baseAdminUrl, 'products/add'),
             EDIT: createUrl(baseAdminUrl, 'products/:id')
+        },
+        EMPLOYEE: {
+          BASE: createUrl(baseAdminUrl, "employees"),
+          ADD: createUrl(baseAdminUrl, "employees/add"),
+          DETAILS: createUrl(baseAdminUrl, "employees/:id"),
+        },
+        RECEIPT: {
+          BASE: createUrl(baseAdminUrl, "receipts"),
         },
         USER_PROFILE: createUrl(baseAdminUrl, 'user-profile'),
         UNAUTHORIZED: createUrl(baseAdminUrl, 'unauthorized')
