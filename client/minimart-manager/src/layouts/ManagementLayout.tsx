@@ -1,33 +1,39 @@
 import { useEffect, useState } from 'react';
-import { Role } from '../constant/enum';
-
 import { ReactNode } from 'react';
-import { useAuth } from '../providers/AuthProvider';
 import AppHeader from './Header/AppHeader';
 import SideMenu from './SideMenu/SideMenu';
+import { useLocation } from 'react-router-dom';
 
 const CustomerLayout = ({ children }: { children: ReactNode }) => {
-    const { user, loading } = useAuth();
-    const userRole = user?.role;
     const [sideLayoutVisible, setSideLayoutVisible] = useState(false);
+    const [sideMenuInvisible, setSideMenuInvisible] = useState(false);
+    const location = useLocation();
 
-    useEffect(() => {
-        if (userRole === Role.ADMIN || userRole === Role.MANAGER || userRole === Role.STAFF) {
+    const handleRouteChange = () => {
+        const path = window.location.pathname;
+        if (path.includes('login') || path.includes('signup')) {
+            setSideLayoutVisible(false);
+        } else {
             setSideLayoutVisible(true);
         }
-    }, [user]);
+        if (path.includes('user-profile')) {
+            setSideMenuInvisible(true);
+        } else {
+            setSideMenuInvisible(false);
+        }
+    };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    useEffect(() => {
+        handleRouteChange();
+    }, [location.pathname]);
 
     return (
         <>
             <div className={`flex w-screen h-screen overflow-y-hidden`}>
-                {sideLayoutVisible && <SideMenu />}
+                {sideLayoutVisible && !sideMenuInvisible && <SideMenu />}
                 <div className='flex flex-col h-full w-full'>
                     {sideLayoutVisible && <AppHeader />}
-                    <div className={`h-full overflow-y-auto ${userRole && 'ml-4 mr-4 mt-4'}`}>
+                    <div className={`h-full overflow-y-auto ${sideLayoutVisible && 'ml-4 mr-4 mt-4'}`}>
                         {children}
                     </div>
                 </div>

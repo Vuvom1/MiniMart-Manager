@@ -1,4 +1,20 @@
 const errors = {
+    unauthorized: {
+        statusCode: 401,
+        message: "Unauthorized",
+        code: "unauthorized",
+    },
+    invalidToken: {
+        statusCode: 401,
+        message: "Invalid token",
+        code: "invalidToken",
+    },
+    forbidden: {
+        statusCode: 403,
+        message: "Forbidden",
+        code: "forbidden",
+    },
+
     internalServerError: {
         statusCode: 500,
         message: "Internal server error",
@@ -13,6 +29,11 @@ const errors = {
         statusCode: 400,
         message: "Incorrect email or password",
         code: "incorrectEmailOrPassword",
+    },
+    incorrectPassword: {
+        statusCode: 400,
+        message: "Incorrect password",
+        code: "incorrectPassword",
     },
     resourceDoesNotExist: {
         statusCode: 400,
@@ -78,6 +99,11 @@ const errors = {
         code: "requiredFieldMissing",
     },
 
+    userNotFound: {   
+        statusCode: 400,
+        message: "User not found",
+        code: "userNotFound",
+    },
     productNotFound: {
         statusCode: 400,
         message: "Product not found",

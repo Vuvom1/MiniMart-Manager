@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface TextFieldProps {
   id?: string;
@@ -28,7 +28,7 @@ export default function TextField({
   prefix,
   suffix,
   initialValue = "",
-  value = initialValue,
+  value,
   onChange,
   placeholder,
   height = "40px",
@@ -39,7 +39,14 @@ export default function TextField({
   multiline = false,
   rows = 1,
 }: TextFieldProps) {
+  const [internalValue, setInternalValue] = useState<string>(initialValue);
   const [internalError, setInternalError] = useState<string | null>(error);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value);
+    }
+  }, [value]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -48,6 +55,10 @@ export default function TextField({
 
     if (onChange) {
       onChange(e);
+    }
+
+    if (value === undefined) {
+      setInternalValue(inputValue);
     }
 
     let isValid = true;
@@ -87,7 +98,7 @@ export default function TextField({
           <textarea
             id={id}
             name={name}
-            value={value}
+            value={internalValue}
             onChange={handleChange}
             placeholder={placeholder}
             rows={rows}
@@ -103,7 +114,7 @@ export default function TextField({
             id={id}
             name={name}
             type="text"
-            value={value}
+            value={internalValue}
             onChange={handleChange}
             placeholder={placeholder}
             className={`block w-full rounded-md border-0 py-1.5 ${
