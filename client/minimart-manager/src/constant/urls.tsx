@@ -54,6 +54,7 @@ const Urls = Object.freeze({
     },
     RECEIPT: {
       BASE: createUrl(baseAdminUrl, "receipts"),
+      ADD: createUrl(baseAdminUrl, "receipts/add"),
     },
   },
 });

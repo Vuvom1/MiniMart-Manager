@@ -13,7 +13,37 @@ class ReceiptController {
       .exec();
     res.status(200).json(receipts);
   });
-
+  add_post = async (req, res) => {
+    const {
+      customer,
+      paymentMethod,
+      time,
+      transactionType,
+      details,
+      giftItems,
+      status,
+      receiptNumber,
+    } = req.body;
+    try {
+      const receipt = Receipt.create({
+        customer,
+        paymentMethod,
+        time,
+        transactionType,
+        details,
+        giftItems,
+        status,
+        receiptNumber,
+      });
+      res.status(200).json({
+        message: "New receipt created!",
+        data: receipt,
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
   createWithUser_post = async (req, res) => {
     try {
       // const { receipt, user } = req.body;

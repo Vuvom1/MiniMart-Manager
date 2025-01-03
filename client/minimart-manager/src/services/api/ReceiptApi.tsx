@@ -13,7 +13,13 @@ export const getAllReceipts = async () => {
     console.error(error || "Can't get receipts");
   }
 };
-
+export const createReceipts = async () => {
+  try {
+    const response = await axios.post(`${BASE_URL}/post`);
+  } catch (error: any) {
+    console.error(error || "Can't add receipts");
+  }
+};
 export const createReceiptWithUser = async (receipt: Receipt, user: User) => {
   try {
     const response = await axios.post(
