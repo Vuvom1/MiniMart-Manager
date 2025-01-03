@@ -5,6 +5,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import TextField from '../../components/InputField/TextField';
 import CircleButton from '../../components/Button/CircleButton';
 import Avatar from '../../components/Avatar';
+import Urls from '../../constant/urls';
 
 
 function AppHeader() {
@@ -44,37 +45,10 @@ function AppHeader() {
 
             <Avatar size="50px" src={auth?.user?.image} />
 
-            <Popover className="relative align-middle">
-                <Popover.Button className="flex items-center gap-x-2 bg-white rounded-md text-black">
-                    <div className="text-start">
-                        <p className="font-semibold">{auth?.user?.username}</p>
-                        <p className="text-slate-500">{auth?.user?.email}</p>
-                    </div>
-                    <div className="h-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                    </div>
-
-                   
-
-                </Popover.Button>
-
-                <Popover.Panel className="absolute z-10 bg-white border border-gray-200 rounded-lg mt-2 shadow-lg">
-                    <div className="flex flex-col space-y-2">
-                        <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Profile
-                        </button>
-                        <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Settings
-                        </button>
-                        <button onClick={handleLogout} className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Logout
-                        </button>
-                    </div>
-                </Popover.Panel>
-            </Popover>
-
+            <div onClick={() => navigate(Urls.ADMIN.USER_PROFILE.Path)} className="text-start mr-4 cursor-pointer hover:underline">
+                <p className="font-semibold">{auth?.user?.username}</p>
+                <p className="text-slate-500">{auth?.user?.email}</p>
+            </div>
         </div>
 
     </div>

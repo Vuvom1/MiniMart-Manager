@@ -15,11 +15,12 @@ import { supplierColumnData } from "../../../data/ColumnData/SupplierColumnData"
 import { importsColumnData } from "../../../data/ColumnData/ImportColumnData";
 import { SuppliersStatistic } from "../../../data/StatisticData/SupplierStatistic";
 import { ImportsStatistic } from "../../../data/StatisticData/ImportStatistic";
-import { Supplier} from "../../../data/Entities/Supplier";
+import { Supplier } from "../../../data/Entities/Supplier";
 import AddSupplier from "./AddSupplier";
 import Urls from "../../../constant/urls";
 import ErrorToast from "../../../components/Toast/ErrorToast";
 import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
+import DoughnutChart from "../../../components/Chart/DoughnutChart";
 
 
 function SupplyManagement() {
@@ -63,7 +64,7 @@ function SupplyManagement() {
             setImportLoading(false);
         }
     }
-    
+
     const doughnutChartData = {
         labels: importsStatistic?.statisticByCategory.map(category => category._id) || [],
         values: importsStatistic?.statisticByCategory.map(category => category.totalImportedProduct) || [],
@@ -107,9 +108,9 @@ function SupplyManagement() {
         fetchImports();
     }, []);
 
-   if (importLoading || supplierLoading) {   
-    return <LoadingScreen/>
-   }
+    if (importLoading || supplierLoading) {
+        return <LoadingScreen />
+    }
 
     return <>
         <div className="flex justify-between">
@@ -151,10 +152,20 @@ function SupplyManagement() {
             </div>
 
             <div className="flex gap-x-6">
-                <div className="grow">
+                <div className="w-2/3">
                     <OverviewTable columnData={importsColumnData} seeAll={handleSeeAllImport} title="Imports Overview" itemData={imports} />
                 </div>
-                <DoughnutChartCard title="Import Distribution" data={doughnutChartData} />
+                <div className="flex flex-col w-1/3 bg-white p-4 items-center rounded-lg gap-y-4">
+                    <h2 className="text-xl font-medium">Import Distribution</h2>
+                    <div className="justify-center">
+                        <DoughnutChart data={{
+                            labels: doughnutChartData.labels,
+                            values: doughnutChartData.values,
+                        }} />
+                    </div>
+                </div>
+
+
             </div>
 
             <div className="grow">
@@ -163,7 +174,7 @@ function SupplyManagement() {
         </div>
 
         {
-            isModalOpen && <AddSupplier isOpen={isModalOpen} onClose={()=>setModalOpen(false)}/>
+            isModalOpen && <AddSupplier isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
         }
     </>
 }

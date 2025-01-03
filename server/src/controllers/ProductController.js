@@ -159,6 +159,7 @@ class ProductController {
       res.status(400).json({ message: error.message, code: error.code });
     }
   };
+  
   allByCategory_get = async (req, res) => {
     try {
       const categoriesWithProducts = await Category.aggregate([

@@ -1,66 +1,26 @@
 import axios from 'axios'
+import { api } from './Api';
 
-const API_URL = 'http://localhost:8000';
-const BASE_URL = API_URL + '/api/customers'
+const BASE_URL = '/api/customers';
 
 export const getAllCustomers = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}`);
-       
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Fetch data failed'; 
-    }
+    const response = await api.get(BASE_URL);
+
+    return response.data;
+
 }
 
 export const updateCustomerStatus = async (id: string, status: string) => {
-    try {
-        const response = await axios.put(`${BASE_URL}/${id}/updateStatus`, {
-            status
-        }, {
-            withCredentials: true,
-        });
 
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Update customer status failed'; 
-    }
+    const response = await api.put(`${BASE_URL}/${id}/status`, {
+        status
+    });
+
+    return response.data;
 }
 
-// export const addImport = async (importData: any) => {
-//     try {
-//         const response = await axios.post(`${BASE_URL}/add`, {
-//             importData
-//         }, {
-//             withCredentials: true,
-//         });
-
-//         return response.data;
-//     } catch(error: any) {
-//         throw error.response?.data?.message || 'Add data failed'; 
-//     }
-// }
-
-// export const updateImport = async (id: string, importData: Import) => {
-//     try {
-//         const response = await axios.put(`${BASE_URL}/${id}/edit`, {
-//             importData
-//         }, {
-//             withCredentials: true,
-//         });
-
-//         return response.data;
-//     } catch(error: any) {
-//         throw error.response?.data?.message || 'Update import data failed'; 
-//     }
-// }
-
 export const getCustomerStatistic = async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}/statistic`);
+    const response = await api.get(`${BASE_URL}/statistic`);
 
-        return response.data;
-    } catch(error: any) {
-        throw error.response?.data?.message || 'Fecth import statistic data failed'; 
-    }
+    return response.data;
 }

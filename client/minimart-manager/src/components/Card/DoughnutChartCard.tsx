@@ -17,13 +17,6 @@ const DoughnutChartCard: React.FC<DoughnutChartCardProps> = ({ title, data }) =>
         <div className="flex-1 text-center">
           <h2 className="text-xl font-bold">{title}</h2>
         </div>
-        {/* <div className="w-20">
-          <ComboBox
-            options={['Daily', 'Monthly', 'Yearly']}
-            placeholder="Choose a period..."
-            onSelect={handleSelect}
-          />
-        </div> */}
       </div>
       {data.labels && data.values ? (
         <PieChart data={{ labels: data.labels ?? [], values: data.values ?? [] }} />

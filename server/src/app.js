@@ -5,6 +5,7 @@ const route = require('./routes/index');
 const errorHandler = require('./middlewares/ErrorHandler')
 const mongodbConfig = require('./config/MongodbConfig')
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const allowedOrigins = [
     process.env.ALLOW_ORIGIN,
@@ -23,6 +24,7 @@ const corsOptions = {
 
 const port = process.env.port || 8000; 
 
+app.use(cookieParser());    
 app.use(cors(corsOptions));
 app.use(express.urlencoded({limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
