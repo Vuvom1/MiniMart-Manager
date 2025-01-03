@@ -15,9 +15,7 @@ class ReceiptController {
   });
   add_post = async (req, res) => {
     const {
-      customer,
       paymentMethod,
-      time,
       transactionType,
       details,
       giftItems,
@@ -26,9 +24,9 @@ class ReceiptController {
     } = req.body;
     try {
       const receipt = Receipt.create({
-        customer,
+        customer: "677783c1d25a9f9bfe49e644",
         paymentMethod,
-        time,
+        time: new Date(),
         transactionType,
         details,
         giftItems,

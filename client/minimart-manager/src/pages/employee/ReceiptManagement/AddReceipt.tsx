@@ -7,9 +7,16 @@ import {
 import { Receipt } from "../../../data/Entities/Receipt";
 import { Product } from "../../../data/Entities/Product"; // Replace with actual Product fetching logic
 import { getAllProducts } from "../../../services/api/ProductApi";
+import axios from "axios";
+import { createReceipts } from "../../../services/api/ReceiptApi";
+import { useNavigate } from "react-router-dom";
 
 const AddReceipt: React.FC = () => {
+  const [errors, setErrors] = useState<{ productName: string | null }>({
+    productName: null,
+  });
   const [products, setProducts] = useState<Product[]>([]);
+  const nav = useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -35,19 +42,26 @@ const AddReceipt: React.FC = () => {
       ...prevReceipt,
       details: [
         ...prevReceipt.details,
-        { product: {} as Product, quantity: 1, netPrice: 0 },
+        {
+          product: products[0],
+          quantity: 1,
+          netPrice: (products[0].price || 0) * 1,
+        },
       ],
     }));
   };
 
-  const handleProductChange = (
-    index: number,
-    key: keyof Product,
-    value: any
-  ) => {
+  const handleProductChange = (index: number, productId: string) => {
+    const selectedProduct = products.find(
+      (product) => product._id === productId
+    );
     const updatedDetails = receipt.details.map((detail, idx) =>
       idx === index
-        ? { ...detail, product: { ...detail.product, [key]: value } }
+        ? {
+            ...detail,
+            product: selectedProduct || ({} as Product),
+            netPrice: (selectedProduct?.price || 0) * detail.quantity,
+          }
         : detail
     );
     setReceipt({ ...receipt, details: updatedDetails });
@@ -67,9 +81,18 @@ const AddReceipt: React.FC = () => {
     setReceipt({ ...receipt, details: updatedDetails });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle submission logic here (e.g., API call)
-    console.log(receipt);
+    try {
+      const response = await createReceipts(receipt);
+      console.log(response.message);
+
+      return response;
+    } catch (error) {
+      alert("Can't add receipt");
+    } finally {
+      nav(-1);
+    }
   };
 
   return (
@@ -108,7 +131,7 @@ const AddReceipt: React.FC = () => {
       </div>
 
       {/* Transaction Type */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <label className="block font-semibold mb-2">Transaction Type</label>
         <select
           value={receipt.transactionType}
@@ -123,7 +146,7 @@ const AddReceipt: React.FC = () => {
           <option value={TransactionType.IN_STORE}>In Store</option>
           <option value={TransactionType.DELIVERY}>Delivery</option>
         </select>
-      </div>
+      </div> */}
 
       {/* Products */}
       <h2 className="text-lg font-semibold mb-4">Products</h2>
@@ -140,21 +163,17 @@ const AddReceipt: React.FC = () => {
           {receipt.details.map((detail, index) => (
             <tr key={index}>
               <td className="border p-2">
-                <input
-                  list="productOptions"
-                  type="text"
-                  placeholder="Product Name"
-                  value={detail.product?.name || ""}
-                  onChange={(e) =>
-                    handleProductChange(index, "name", e.target.value)
-                  }
+                <select
+                  value={detail.product?._id || ""}
+                  onChange={(e) => handleProductChange(index, e.target.value)}
                   className="w-full p-2 border rounded"
-                />
-                <datalist id="productOptions">
-                  {products.map((v, i) => (
-                    <option id={v?._id}>{v.name}</option>
+                >
+                  {products.map((product) => (
+                    <option key={product._id} value={product._id}>
+                      {product.name}
+                    </option>
                   ))}
-                </datalist>
+                </select>
               </td>
               <td className="border p-2">
                 <input
@@ -164,14 +183,7 @@ const AddReceipt: React.FC = () => {
                   className="w-full p-2 border rounded"
                 />
               </td>
-              <td className="border p-2">
-                <input
-                  type="number"
-                  value={detail.netPrice}
-                  onChange={(e) => handleNetPriceChange(index, +e.target.value)}
-                  className="w-full p-2 border rounded"
-                />
-              </td>
+              <td className="border p-2">{detail.netPrice.toFixed(2)}</td>
               <td className="border p-2">
                 <button
                   onClick={() =>
