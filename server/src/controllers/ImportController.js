@@ -168,7 +168,7 @@ class ImportController {
 
         yesterdayImportedProducts = yesterdayImportedProducts[0]?.totalQuantity || 0;
 
-        const comparison = yesterdayImports === 0 ? todayImports : (todayImports / yesterdayImports);
+        const comparison = yesterdayImports === 0 ? todayImports : ((todayImports - yesterdayImports) / yesterdayImports);
         const percentageCompareYesterday = comparison * 100;
 
         return {
@@ -209,7 +209,7 @@ class ImportController {
 
         lastMonthImportedProducts = lastMonthImportedProducts[0]?.totalQuantity || 0;
 
-        const comparison = lastMonthImports === 0 ? thisMonthImports : (thisMonthImports / lastMonthImports);
+        const comparison = lastMonthImports === 0 ? thisMonthImports : ((thisMonthImports - lastMonthImports) / lastMonthImports);
         const percentageCompareLastMonth = comparison * 100;
 
         return {
@@ -249,7 +249,7 @@ class ImportController {
 
         lastYearImportedProducts = lastYearImportedProducts[0]?.totalQuantity || 0;
 
-        const comparison = lastYearImports === 0 ? thisYearImports : (thisYearImports / lastYearImports);
+        const comparison = lastYearImports === 0 ? thisYearImports : ((thisYearImports - lastYearImports) / lastYearImports);
         const percentageCompareLastYear = comparison * 100;
 
         return {

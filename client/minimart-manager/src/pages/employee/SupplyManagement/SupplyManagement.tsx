@@ -40,6 +40,7 @@ function SupplyManagement() {
             const data = await getAllSuppliers();
             const statisticData = await getSuppliersStatistic();
             setSupplierStatistic(statisticData);
+            console.log(statisticData)
             setSuppliers(data);
 
         } catch (error) {

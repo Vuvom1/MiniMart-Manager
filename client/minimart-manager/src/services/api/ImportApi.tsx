@@ -15,7 +15,7 @@ export const getImportById = async (id: string) => {
 };
 
 export const addImport = async (importData: Import) => {
-    const response = await api.post(`${BASE_URL}/add`, {  importData: importData });
+    const response = await api.post(`${BASE_URL}`, {  importData: importData });
     return response.data;
 }
 
