@@ -5,6 +5,7 @@ import {
   getEmployeeById,
 } from "../../../services/api/EmployeeApi";
 import defaultPic from "../../../assets/images/default_avatar.jpg";
+import RoundedButton from "../../../components/Button/RoundedButton";
 
 interface Employee {
   id: string;
@@ -137,7 +138,7 @@ const EmployeeDetails: React.FC = () => {
                 <p>{employee.salaryPerHour}VND/hour</p>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="text-blue-500 hover:underline"
+                  className="text-cyan-500 hover:underline"
                 >
                   Edit
                 </button>
@@ -150,12 +151,7 @@ const EmployeeDetails: React.FC = () => {
                   onChange={handleSalaryChange}
                   className="border p-2 rounded-md"
                 />
-                <button
-                  onClick={handleSaveSalary}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                  Save
-                </button>
+                <RoundedButton label="Save" onClick={handleSaveSalary} />
                 <button
                   onClick={() => setIsEditing(false)}
                   className="text-red-500 hover:underline"

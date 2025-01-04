@@ -86,10 +86,6 @@ const AppRouter = () => {
 
       <Route path={Urls.ADMIN.PRODUCT.BASE.Route}>
         <Route path="" element={<ManageProduct />} />
-      </Route>
-
-      <Route path={Urls.ADMIN.PRODUCT.BASE.Route}>
-        <Route path="" element={<ManageProduct />} />
         <Route
           path={Urls.ADMIN.PRODUCT.ADD.Route}
           element={<AddProduct></AddProduct>}

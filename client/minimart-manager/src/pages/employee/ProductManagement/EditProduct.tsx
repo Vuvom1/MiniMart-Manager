@@ -4,9 +4,7 @@ import {
   updateProduct,
 } from "../../../services/api/ProductApi";
 import { getAllSubcategories } from "../../../services/api/SubCategoryApi";
-import { Product } from "../../../data/Entities/Product";
 import { useNavigate, useParams } from "react-router-dom";
-import ValidationUtil from "../../../utils/ValidationUtil";
 import TextField from "../../../components/InputField/TextField";
 interface SubCategory {
   _id: string;
@@ -73,7 +71,6 @@ const EditProduct: React.FC = () => {
       }
       try {
         const idProduct = await getProductById(id);
-        console.log(idProduct.dateOfManufacture);
         setFormData({
           _id: idProduct?._id,
           name: idProduct?.name,

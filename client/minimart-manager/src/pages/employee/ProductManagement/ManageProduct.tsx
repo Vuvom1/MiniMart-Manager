@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import RoundedButton from "../../../components/Button/RoundedButton";
 import { getAllProducts } from "../../../services/api/ProductApi";
-import OverviewTable from "../../../components/Table/OverviewTable";
 import { useNavigate } from "react-router-dom";
+import TableLayout from "../../../components/Table/TableLayout";
+import { ProductColumnData } from "../../../data/ColumnData/ProducColumnData";
 interface Product {
   _id: String;
   name: String;
@@ -19,12 +19,15 @@ const ManageProduct: React.FC = () => {
       const fetchedProducts = await getAllProducts();
       const extractedProducts: Product[] = fetchedProducts.map((p: any) => ({
         _id: p._id,
+        image: p.image,
         name: p.name,
+        category: p.subCategory.name,
         price: p.price,
         stock: p.stock,
         status: p.status,
       }));
       setData(extractedProducts);
+      console.log(fetchedProducts)
     } catch (error: any) {
       console.log(error);
     }
@@ -32,44 +35,23 @@ const ManageProduct: React.FC = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
-  const columnHeaders = ["ID", "Name", "Price", "Stock", "Status"];
-  const dataFields = ["_id", "name", "price", "stock", "status"];
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Manage Products</h1>
-
-      <div className="flex items-center mb-4">
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="flex-1 px-4 py-2 border rounded-lg outline-none focus:ring focus:border-blue-300"
+      <div >
+        <TableLayout
+          action={(id: string) => { nav(`${id}`) }}
+          addItem={() => { nav("add") }}
+          title={"Product list"}
+          data={data}
+          columns={ProductColumnData}
         />
-        <div className="ml-2 px-4 py-2">
-          <RoundedButton label="Search" color="text-white bg-cyan-500" />
-        </div>
       </div>
 
-      <div className="mb-4">
-        <div className="ml-2 px-4 py-2">
-          <RoundedButton
-            label="Add New Product"
-            color="text-white bg-cyan-500"
-            onClick={() => {
-              nav("add");
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="overflow-x-auto">
+      {/* <div className="overflow-x-auto">
         <table className="w-full border-collapse bg-white rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              {/* <th className="py-3 px-6 text-left">Product ID</th>
-              <th className="py-3 px-6 text-left">Name</th>
-              <th className="py-3 px-6 text-center">Price</th>
-              <th className="py-3 px-6 text-center">Stock</th>
-              <th className="py-3 px-6 text-center">Actions</th> */}
               {columnHeaders.map((cName) => (
                 <th className="py-3 px-6 text-center">{cName}</th>
               ))}
@@ -109,13 +91,7 @@ const ManageProduct: React.FC = () => {
             ))}
           </tbody>
         </table>
-        {/* <OverviewTable
-          title="Products Overview"
-          itemData={data}
-          columnHeaders={columnHeaders}
-          dataFields={dataFields}
-        /> */}
-      </div>
+      </div> */}
 
       {/* <div className="flex justify-between items-center mt-4">
         <div>

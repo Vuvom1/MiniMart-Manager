@@ -10,6 +10,7 @@ import { Customer } from "./Customer";
 import { GiftItem } from "./GiftItem";
 
 export interface Receipt {
+  _id?: string;
   receiptNumber?: string;
   employee?: Employee;
   promotion?: Promotion;

@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Urls from "../../constant/urls";
 import { useAuth } from "../../providers/AuthProvider";
+import { Role } from "../../constant/enum";
 
 function SideMenu() {
     const location = useLocation();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const auth = useAuth();
+    const userRole = auth.user?.role as Role;
     const navigate = useNavigate();
 
   const menuItems = [
@@ -14,42 +16,55 @@ function SideMenu() {
       label: "Dashboard",
       icon: <DashboardIcon />,
       path: Urls.ADMIN.DASHBOARD.Path,
+      roles: [Role.ADMIN, Role.MANAGER],
     },
     {
       label: "Employees",
       icon: <EmployeesIcon />,
       path: Urls.ADMIN.EMPLOYEE.BASE.Path,
+      roles: [Role.ADMIN, Role.MANAGER],  
     },
     {
       label: "Customers",
       icon: <CustomersIcon />,
       path: Urls.ADMIN.CUSTOMERS.Path,
+      roles: [Role.ADMIN, Role.MANAGER],
     },
     {
       label: "Schedule",
       icon: <ScheduleIcon />,
       path: Urls.ADMIN.SCHEDULE.Path,
+      roles: [Role.ADMIN, Role.MANAGER],
     },
     {
       label: "Products",
       icon: <ProductsIcon />,
       path: Urls.ADMIN.PRODUCT.BASE.Path,
+      roles: [Role.ADMIN, Role.MANAGER],  
     },
     {
       label: "Supplies",
       icon: <ImportIcon />,
       path: Urls.ADMIN.SUPPLIES.BASE.Path,
+      roles: [Role.ADMIN, Role.MANAGER],
     },
     {
       label: "Promotion",
       icon: <PromotionIcon />,
       path: Urls.ADMIN.PROMOTIONS.BASE.Path,
+      roles: [Role.ADMIN, Role.MANAGER],  
     },
-    { label: "Order", icon: <TruckIcon />, path: Urls.ADMIN.ORDER.BASE.Path },
+    { 
+      label: "Order", 
+      icon: <TruckIcon />, 
+      path: Urls.ADMIN.ORDER.BASE.Path, 
+      roles: [Role.ADMIN, Role.MANAGER, Role.STAFF],  
+    },
     {
       label: "Receipt",
       icon: <ReceiptIcon />,
       path: Urls.ADMIN.RECEIPT.BASE.Path,
+      roles: [Role.ADMIN, Role.MANAGER, Role.STAFF],
     },
   ];
 
@@ -60,6 +75,7 @@ function SideMenu() {
     );
     setActiveIndex(currentIndex !== -1 ? currentIndex : 0);
   }, [location.pathname]);
+ 
 
     return (
         <div className="flex flex-col shadow-lg text-slate-800 font-medium bg-white">
@@ -70,20 +86,22 @@ function SideMenu() {
                 </span>
             </a>
             <nav className="flex-1 mt-4">
-                {menuItems.map((item, index) => (
+                {menuItems
+                  .filter(item => item.roles.includes(userRole))
+                  .map((item, index) => (
                     <Link
-                        to={item.path}
-                        key={index}
-                        onClick={() => setActiveIndex(index)}
-                        className={`flex items-center px-6 py-2 transition duration-200 
-                        ${activeIndex === index ? 'bg-blue-100 mx-2 text-cyan-500 border-l-4 rounded-e-lg border-l-cyan-500' : 'text-gray-600 hover:bg-blue-50'}`}
+                      to={item.path}
+                      key={index}
+                      onClick={() => setActiveIndex(index)}
+                      className={`flex items-center px-6 py-2 transition duration-200 
+                      ${activeIndex === index ? 'bg-blue-100 mx-2 text-cyan-500 border-l-4 rounded-e-lg border-l-cyan-500' : 'text-gray-600 hover:bg-blue-50'}`}
                     >
-                        <span className="material-icons mr-2 flex gap-x-2 transition duration-200">{item.icon}</span>
-                        <p className="text-lg font-light transition duration-200">
-                            {item.label}
-                        </p>
+                      <span className="material-icons mr-2 flex gap-x-2 transition duration-200">{item.icon}</span>
+                      <p className="text-lg font-light transition duration-200">
+                        {item.label}
+                      </p>
                     </Link>
-                ))}
+                  ))}
             </nav>
             <button
                 onClick={() => {
