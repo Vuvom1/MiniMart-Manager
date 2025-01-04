@@ -17,6 +17,15 @@ const AddReceipt: React.FC = () => {
   });
   const [products, setProducts] = useState<Product[]>([]);
   const nav = useNavigate();
+  const generateRandomReceiptNumber = () => {
+    const prefix = "REC";
+    const timestamp = Date.now().toString(36);
+    const randomString = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase();
+    return `${prefix}-${timestamp}-${randomString}`;
+  };
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -29,7 +38,7 @@ const AddReceipt: React.FC = () => {
     fetchProducts();
   }, []);
   const [receipt, setReceipt] = useState<Receipt>({
-    receiptNumber: "",
+    receiptNumber: generateRandomReceiptNumber(),
     paymentMethod: PaymentMethod.CASH,
     time: new Date(),
     transactionType: TransactionType.IN_STORE,
@@ -105,9 +114,7 @@ const AddReceipt: React.FC = () => {
         <input
           type="text"
           value={receipt.receiptNumber}
-          onChange={(e) =>
-            setReceipt({ ...receipt, receiptNumber: e.target.value })
-          }
+          readOnly
           className="w-full p-2 border rounded"
         />
       </div>
