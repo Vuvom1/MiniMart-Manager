@@ -12,7 +12,6 @@ const shiftRoutes = require("./ShiftRoutes");
 const positionRoutes = require("./PositionRoutes");
 const promotionRoutes = require("./PromotionRoutes");
 const categoryRoutes = require("./CategoryRoutes");
-const subCategoryRoutes = require("./SubCategoryRoutes");
 const receiptRoutes = require("./ReceiptRoutes");
 const orderRoutes = require("./OrderRoutes");
 const reportRoutes = require("./ReportRoutes");
