@@ -28,8 +28,7 @@ import ManageReceipt from "../pages/employee/ReceiptManagement/ManageReceipt";
 
 
 const AppRouter = () => {
-  const { user, loading } = useAuth();
-  const userRole: Role = (user?.role as Role) ?? Role.STAFF;
+  const {loading } = useAuth();
 
   if (loading) {
     return <LoadingScreen />;

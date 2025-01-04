@@ -6,6 +6,7 @@ const errorHandler = require('./middlewares/ErrorHandler')
 const mongodbConfig = require('./config/MongodbConfig')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const notFound = require('./middlewares/NotFound');
 
 const allowedOrigins = [
     process.env.ALLOW_ORIGIN,
@@ -33,6 +34,7 @@ mongodbConfig();
  
 route(app);
 
+app.use(notFound);
 app.use(errorHandler);
 
 app.listen(port, () => {

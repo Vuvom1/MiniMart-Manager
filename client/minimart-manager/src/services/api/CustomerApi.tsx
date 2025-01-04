@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { api } from './Api';
 
 const BASE_URL = '/api/customers';

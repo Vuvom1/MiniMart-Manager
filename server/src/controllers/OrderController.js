@@ -15,7 +15,6 @@ class OrderController {
             .exec();
 
         res.status(200).json(orders);
-
     })
 
     getById_get = asyncErrorHandler(

@@ -1,3 +1,5 @@
+const notFound = require("../middlewares/NotFound");
+
 const errors = {
     unauthorized: {
         statusCode: 401,
@@ -201,6 +203,11 @@ const errors = {
         message: "Invalid promotion status",
         code: "invalidPromotionStatus",
     },
+    notFound: {
+        statusCode: 404,
+        message: "Not found",
+        code: "notFound",
+    }
 }
 
 module.exports = errors;
