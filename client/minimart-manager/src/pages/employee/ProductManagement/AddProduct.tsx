@@ -178,27 +178,28 @@ const AddProduct: React.FC = () => {
             validationPassed={handleValidationChange}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm mb-2 font-medium text-gray-700">
               Price (VND)
             </label>
             <input
               type="number"
               name="price"
+              placeholder="Enter price"
               value={formData.price}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-4 block w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Sub-category
             </label>
             <select
               name="subCategory"
               value={formData.subCategory}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="px-4 block w-full py-3 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             >
               <option value="">Select a subcategory</option>
               {subCate.map((v, i) => (
@@ -239,7 +240,7 @@ const AddProduct: React.FC = () => {
             validationPassed={handleBarcodeValidationChange}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Stock
             </label>
             <input
@@ -248,7 +249,7 @@ const AddProduct: React.FC = () => {
               value={formData.stock}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="px-4 block w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div className="col-span-1 md:col-span-2">
@@ -288,7 +289,7 @@ const AddProduct: React.FC = () => {
               name="dateOfManufacture"
               value={formData.dateOfManufacture}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-4 block w-full py-3 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div>
@@ -300,7 +301,7 @@ const AddProduct: React.FC = () => {
               name="expiryDate"
               value={formData.expiryDate}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-4 block w-full py-3 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           {/* <div>

@@ -23,8 +23,8 @@ export const CheckoutItemCard: React.FC<CheckoutItemProps> = ({ cartItem, onChan
                             <a href={"#"}>{cartItem.product.name}</a>
                         </h3>
                         <p className='text-lg font-semibold text-red-800'>
-                            ${CalculateUtil.calculateDiscountPrice(cartItem.product.price || 0, cartItem.product.promotion?.discountPercentage ?? 0)}
-                            {cartItem.product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-2'>${cartItem.product.price}</span>}
+                            {CalculateUtil.calculateDiscountPrice(cartItem.product.price || 0, cartItem.product.promotion?.discountPercentage ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                            {cartItem.product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-2'>{(cartItem.product.price || 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>}
                         </p>
                     </div>
                     <p className="mt-1 text-sm text-gray-500">{cartItem.product.subCategory.name}</p>

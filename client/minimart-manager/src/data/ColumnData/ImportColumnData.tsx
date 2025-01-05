@@ -50,7 +50,7 @@ export const importsColumnData: ColumnData[] = [
         field: "totalImportPrice",
         header: "Total Import Price",
         isEditable: false,
-        type: ColumnType.TEXT,
+        type: ColumnType.MONEY,
         isHidden: false,
     },
 ];

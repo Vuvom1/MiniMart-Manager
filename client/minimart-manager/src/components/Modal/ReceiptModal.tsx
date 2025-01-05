@@ -92,7 +92,7 @@ const ReceiptModal: React.FC<ReceiptModalProp> = ({ receipt, onClose }) => {
                     (total, item) => total + item.netPrice * item.quantity,
                     0
                   )
-                  .toFixed(2)}
+                  .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
               </p>
             </div>
           </div>
@@ -104,7 +104,7 @@ const ReceiptModal: React.FC<ReceiptModalProp> = ({ receipt, onClose }) => {
               {receipt.details.map((item, index) => (
                 <li key={index} className="text-gray-600">
                   {item.quantity}x Product {item.product.name} - $
-                  {item.netPrice * item.quantity}
+                  {(item.netPrice * item.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                 </li>
               ))}
             </ul>

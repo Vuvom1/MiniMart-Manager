@@ -156,6 +156,12 @@ const TableLayout: React.FC<TableLayoutProps> = ({
                                                                 <p>{timeUtil.convertToDayMonthYearShort(NestedValueUtil.getNestedValue(item, column.field))}</p>
                                                             </div>
                                                         );
+                                                    case ColumnType.MONEY:
+                                                        return (
+                                                            <div className='justify-start flex'>
+                                                                {NestedValueUtil.getNestedValue(item, column.field).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                            </div>
+                                                        );  
                                                     default:
                                                         return (
                                                             <div className='justify-start flex'>

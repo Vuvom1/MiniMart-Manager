@@ -20,6 +20,7 @@ const OrderTracking: React.FC = () => {
         try {
             const data = await getOrdersGroupByStatusByUserId(auth.user?._id!);
             setSortedOrders(data);
+            setDisplayedOrders(Object.values(sortedOrders || {}).flat());
         } catch (error) {
             console.log(error);
         }
@@ -50,15 +51,8 @@ const OrderTracking: React.FC = () => {
     }
 
     useEffect(() => {
-        if (auth.user)
             fetchOrders();
-    }, [auth.user, handelUpdateStatus]);
-
-    useEffect(() => {
-        if (sortedOrders) {
-            setDisplayedOrders(Object.values(sortedOrders || {}).flat());
-        }
-    }, [sortedOrders]);
+    }, []);
 
     return (
         <div className='flex flex-col w-full min-h-full 2xl:px-80 xl:px-50 lg:px-30 md:px-10 bg-gray-50'>
@@ -85,7 +79,7 @@ const OrderTracking: React.FC = () => {
                         <li key={`${index}-status`} role="presentation" className='w-1/6'>
                             <button
                                 onClick={() => {
-                                    setDisplayedOrders(sortedOrders![orderStatus]);
+                                    setDisplayedOrders(sortedOrders ? sortedOrders[orderStatus] || [] : []);
                                     setCurrentTab(index + 1);
                                 }}
                                 className={`inline-block w-full p-4 border-b-2 rounded-t-lg ${currentTab === index + 1 ? 'border-cyan-400 text-cyan-400' : ''
@@ -116,8 +110,7 @@ const OrderTracking: React.FC = () => {
                                             <p className='text-gray-500 font-light'>x{detail.quantity}</p>
                                         </div>
                                         <div className='flex items-center'>
-                                            <p className='text-cyan-700'>${detail.netPrice}</p>
-
+                                            <p>{detail.netPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                                         </div>
 
                                     </div>
@@ -130,15 +123,15 @@ const OrderTracking: React.FC = () => {
                             <div className='border-t border-gray-200 my-2'></div>
                             <div className='flex gap-x-2 justify-end items-center'>
                                 <p className='text-gray-500'>Delivery Fee:</p>
-                                <p className='text-cyan-700'>${order.deliveryFee}</p>
+                                <p className='text-cyan-700'>{order.deliveryFee.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className='flex gap-x-2 justify-end items-center'>
                                 <p className='text-gray-500'>Total product price:</p>
-                                <p className='text-cyan-700'>${(order.receipt.totalNetPrice ?? 0) - (order.deliveryFee ?? 0)}</p>
+                                <p className='text-cyan-700'>{((order.receipt.totalNetPrice ?? 0) - (order.deliveryFee ?? 0)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className='flex gap-x-2 justify-end items-center'>
                                 <p className='text-gray-500'>Total:</p>
-                                <p className='text-cyan-700 text-2xl'>${(order.receipt.totalNetPrice ?? 0) + (order.deliveryFee ?? 0)}</p>
+                                <p className='text-cyan-700 text-2xl'>{((order.receipt.totalNetPrice ?? 0) + (order.deliveryFee ?? 0)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             {
                                 (order.status === OrderStatus.PENDING || order.status ===  OrderStatus.WAIT_FOR_PAYMENT || order.status === OrderStatus.CONFIRM) && <div className='flex justify-end mt-2'>

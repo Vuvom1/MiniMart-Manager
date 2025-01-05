@@ -43,7 +43,7 @@ export const orderColumnData: ColumnData[] = [
         field: "receipt.totalNetPrice",
         header: "Total Amount",
         isEditable: false,
-        type: ColumnType.TEXT,
+        type: ColumnType.MONEY,
         isHidden: false,
     },
 ];

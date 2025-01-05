@@ -35,7 +35,7 @@ export const ProductColumnData: ColumnData[] = [
         header: "Price",
         isHidden: false,
         isEditable: false,
-        type: ColumnType.TEXT,
+        type: ColumnType.MONEY,
     },
     {
         field: "stock",

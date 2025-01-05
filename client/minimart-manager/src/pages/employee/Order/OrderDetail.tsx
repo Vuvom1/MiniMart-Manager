@@ -71,7 +71,7 @@ const OrderDetail: React.FC = () => {
                                                 <h3>
                                                     <a className='text-2xl font-light' href={"#"}>{detail.product.name}</a>
                                                 </h3>
-                                                <p className="ml-4 text-xl text-cyan-800">${detail.product.price}</p>
+                                                <p className="ml-4 text-xl text-cyan-800">${detail.product.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                                             </div>
                                             <p className="mt-1 text-sm text-gray-500">{detail.product.subCategory.name}</p>
                                         </div>
@@ -149,20 +149,20 @@ const OrderDetail: React.FC = () => {
                         <div className='flex flex-col gap-y-2 grow'>
                             <div className='flex justify-between'>
                                 <p className='text-gray-500'>Subtotal</p>
-                                <p className='text-cyan-900 font-medium'>${order?.receipt.totalPrice}</p>
+                                <p>{(order?.receipt.totalPrice ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className='flex justify-between'>
                                 <p className='text-gray-500'>Delivery fee</p>
-                                <p className='text-cyan-900 font-medium'>${order?.deliveryFee}</p>
+                                <p className='text-cyan-900 font-medium'>${order?.deliveryFee.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className='flex justify-between'>
                                 <p className='text-gray-500'>Coupon discount</p>    
-                                <p className='text-cyan-900 font-medium'>${CalculateUtil.calculateDiscountPriceByAmount(order?.receipt.totalPrice ?? 0, order?.receipt.totalNetPrice ?? 0)}</p>
+                                <p className='text-cyan-900 font-medium'>${CalculateUtil.calculateDiscountPriceByAmount(order?.receipt.totalPrice ?? 0, order?.receipt.totalNetPrice ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                             <div className='border-t border-gray-100 my-4' />
                             <div className='flex justify-between'>
                                 <p className='text-cyan-900 text-xl font-medium'>Total</p>
-                                <p className='text-cyan-900 text-xl font-medium'>${(order?.receipt.totalNetPrice ?? 0) + order.deliveryFee}</p>
+                                <p className='text-cyan-900 text-xl font-medium'>${((order?.receipt.totalNetPrice ?? 0) + order.deliveryFee).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
 
                         </div>

@@ -51,7 +51,7 @@ const ImportProductHorizontalCard: React.FC<ImportProductHorizontalCardProps> = 
                             height='25px'
                             value={importDetail.importPrice}
                             onChange={handlePriceChange}
-                            placeholder="$0.00"
+                            placeholder="0.00 VND"
                         />
                         <p>/product</p>
                     </div>

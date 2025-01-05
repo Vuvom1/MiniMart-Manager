@@ -35,14 +35,14 @@ export const receiptColumnData: ColumnData[] = [
         field: "totalPrice",
         header: "Total Price",
         isEditable: false,
-        type: ColumnType.TEXT,
+        type: ColumnType.MONEY,
         isHidden: false,
     },
     {
         field: "totalNetPrice",
         header: "Total Net Price",
         isEditable: false,
-        type: ColumnType.TEXT,
+        type: ColumnType.MONEY,
         isHidden: false,
     },
     {

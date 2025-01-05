@@ -134,6 +134,7 @@ export enum ColumnType {
     CHECK,  
     DATE,
     TIME,
+    MONEY,
     DATETIME,
 }
 

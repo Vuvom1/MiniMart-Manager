@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react';
 import { Carousel } from 'react-responsive-carousel';
-import { getAllCategories, getSubCategoriesWithProduct } from '../../services/api/CategoryApi';
+import { getSubCategoriesWithProduct } from '../../services/api/CategoryApi';
 import { useParams } from 'react-router-dom';
 import ProductCard from '../../components/Card/ProductCard';
 import { Product } from '../../data/Entities/Product';
 import { getProductsAndPromotionsBySubCategory } from '../../services/api/ProductApi';
-import { set } from 'date-fns';
 
 interface CustomerCategoryProps { }
 
 const CustomerCategory: React.FC<CustomerCategoryProps> = () => {
-    const [loading, setLoading] = React.useState<boolean>(false);
     const { id } = useParams<{ id: string }>();
+    const [loading, setLoading] = React.useState<boolean>(false);
     const [subCategories, setSubCategories] = React.useState<any[]>([]);
     const [selectedSubCategoryTab, setSelectedSubCategoryTab] = React.useState<number>(0);
     const [products, setProducts] = React.useState<Product[]>([]);
@@ -87,7 +86,7 @@ const CustomerCategory: React.FC<CustomerCategoryProps> = () => {
                     </div>
                 </Carousel>
 
-                <div className='flex flex-col gap-y-8'>
+                <div className='flex flex-col gap-y-8 px-8'>
                     <div className='flex gap-x-4'>
                         {subCategories.map((subCategory, index) => (
                             <button

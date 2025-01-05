@@ -13,10 +13,14 @@ const Urls = Object.freeze({
     BASE: baseCustomerUrl,
     LOGIN: createUrl(baseCustomerUrl, "login"),
     SIGNUP: createUrl(baseCustomerUrl, "signup"),
-    CATEGORY: createUrl(baseCustomerUrl, "category"),
+    CATEGORRY: {
+      BASE: createUrl(baseCustomerUrl, "category"),
+      DETAIL: createUrl(baseCustomerUrl, "category/:id"),  
+    },
     PRODUCT: createUrl(baseCustomerUrl, "product/:id"),
     CHECKOUT: createUrl(baseCustomerUrl, "checkout"),
     ORDER_TRACKING: createUrl(baseCustomerUrl, "order-tracking"),
+    PROFILE: createUrl(baseCustomerUrl, "profile"), 
   },
   ADMIN: {
     BASE: baseAdminUrl,

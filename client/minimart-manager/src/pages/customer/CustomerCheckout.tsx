@@ -20,7 +20,8 @@ import VoucherSelectionModal from '../../components/Modal/VoucherSelectionModal'
 import { Promotion } from '../../data/Entities/Promotion';
 import { CalculateUtil } from '../../utils/CalculateUtil';
 import { GiftItem } from '../../data/Entities/GiftItem';
-import { set } from 'date-fns';
+import { checkPaymentStatus, createPayment } from '../../services/api/PaymentApi';
+import QRCode from 'react-qr-code';
 
 const CustomerCheckout: React.FC = () => {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ const CustomerCheckout: React.FC = () => {
     const [isVoucherModelOpen, setIsVoucherModelOpen] = useState(false);
     const [promotion, setPromotion] = useState<Promotion>();
     const [giftItems, setGiftItems] = useState<GiftItem[]>([]);
+    const [qrPaymentCode, setQrPaymentCode] = useState<string>('');
 
     if (order) {
         order.deliveryFee = deliveryFee;
@@ -57,7 +59,6 @@ const CustomerCheckout: React.FC = () => {
             receipt.giftItems = giftItems;
 
             if (order && order.receipt) {
-                
                 setOrder(
                     {
                         ...order,
@@ -70,15 +71,22 @@ const CustomerCheckout: React.FC = () => {
             }
 
             if (user && order) {
-                const response = await createOrderWithUser(order, user);
+                const response = await createOrderWithUser(order, user).then(async () => {
+                    if (paymentMethod === PaymentMethod.ONLINE)
+                        await handleOnlinePayment();
+                    else {
+                        clearCart();
+    
+                        navigate(Urls.CUSTOMER.BASE);
+                    }
+                });
+
                 toast.custom((t) => (
                     <SuccessToast
-                        message={response}
+                        message='Order placed successfully'
                         onDismiss={() => toast.dismiss(t.id)}
                     />))
-
-                clearCart();
-                navigate(Urls.CUSTOMER.BASE);
+                
             } else {
                 toast.custom((t) => (
                     <ErrorToast
@@ -86,13 +94,36 @@ const CustomerCheckout: React.FC = () => {
                         onDismiss={() => toast.dismiss(t.id)}
                     />))
             }
-
         } catch (error: any) {
             toast.custom((t) => (
                 <ErrorToast
                     message={error || 'Something went wrong'}
                     onDismiss={() => toast.dismiss(t.id)}
                 />))
+        }
+    }
+
+    const handleOnlinePayment = async () => {
+        try {
+            const orderId = Math.floor(Math.random() * 90071);
+         
+            const response = await createPayment({
+                orderCode: orderId,
+                amount: 50000,
+                description: "VQRIO123",
+                buyerName: user?.firstname + ' ' + user?.lastname,
+                buyerEmail: user?.email ?? "",
+                buyerPhone: user?.phone?.toString() ?? "",
+                buyerAddress: user?.address ?? "",
+                items: order?.receipt?.details?.map(item => ({ name: item.product.name, quantity: item.quantity, price: item.product.price })) ?? [],
+                cancelUrl: "http://localhost:5173/minimartonline/",
+                returnUrl: "http://localhost:5173/minimartonline/",
+            })
+
+            window.location.href = `https://pay.payos.vn/web/88ec05f3a7bb48c9b5ca422cdc845036`;
+            
+        } catch (error: any) {
+            console.log(error);
         }
     }
 
@@ -112,21 +143,21 @@ const CustomerCheckout: React.FC = () => {
         cartItems.forEach(cartItem => {
             const productPromotion = cartItem.product.promotion;
             if (productPromotion?.discountType === DiscountType.GET_MORE && cartItem.quantity >= productPromotion?.requiredQuantity!) {
-            const existingGiftItem = newGiftItems.find(giftItem => giftItem.product._id === cartItem.product._id);
-            if (existingGiftItem) {
-                existingGiftItem.quantity += Math.floor(cartItem.quantity / productPromotion.requiredQuantity!) * productPromotion.rewardQuantity!;
-            } else {
-                newGiftItems.push({ product: cartItem.product, quantity: Math.floor(cartItem.quantity / productPromotion.requiredQuantity!) * productPromotion.rewardQuantity! });
-            }
+                const existingGiftItem = newGiftItems.find(giftItem => giftItem.product._id === cartItem.product._id);
+                if (existingGiftItem) {
+                    existingGiftItem.quantity += Math.floor(cartItem.quantity / productPromotion.requiredQuantity!) * productPromotion.rewardQuantity!;
+                } else {
+                    newGiftItems.push({ product: cartItem.product, quantity: Math.floor(cartItem.quantity / productPromotion.requiredQuantity!) * productPromotion.rewardQuantity! });
+                }
             }
 
             if (productPromotion?.discountType === DiscountType.FREE_GIFT) {
-            const existingGiftItem = newGiftItems.find(giftItem => giftItem.product._id === cartItem.product._id);
-            if (!existingGiftItem) {
-                newGiftItems.push({ product: cartItem.product, quantity: cartItem.quantity });
-            } else {
-                existingGiftItem.quantity += cartItem.quantity;
-            }
+                const existingGiftItem = newGiftItems.find(giftItem => giftItem.product._id === cartItem.product._id);
+                if (!existingGiftItem) {
+                    newGiftItems.push({ product: cartItem.product, quantity: cartItem.quantity });
+                } else {
+                    existingGiftItem.quantity += cartItem.quantity;
+                }
             }
         });
 
@@ -208,26 +239,24 @@ const CustomerCheckout: React.FC = () => {
                         ))
                     }
                 </div>
-
-
                 <div className='border-t border-gray-100 my-4' />
                 <div className='flex flex-col gap-y-2 grow'>
                     <div className='flex justify-between'>
                         <p className='text-gray-500'>Subtotal</p>
-                        <p className='text-cyan-900 font-medium'>${totalPrice}</p>
+                        <p className='text-cyan-900 font-medium'>{totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                     </div>
                     <div className='flex justify-between'>
                         <p className='text-gray-500'>Delivery fee</p>
-                        <p className='text-cyan-900 font-medium'>${order?.deliveryFee}</p>
+                        <p className='text-cyan-900 font-medium'>{order?.deliveryFee.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                     </div>
                     <div className='flex justify-between'>
                         <p className='text-gray-500'>Coupon discount</p>
-                        <p className='text-cyan-900 font-medium'>${CalculateUtil.calculateDiscountAmount(totalPrice, promotion?.discountPercentage ?? 0)}</p>
+                        <p className='text-cyan-900 font-medium'>{CalculateUtil.calculateDiscountAmount(totalPrice, promotion?.discountPercentage ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                     </div>
                     <div className='border-t border-gray-100 my-4' />
                     <div className='flex justify-between'>
                         <p className='text-cyan-900 text-xl font-medium'>Total</p>
-                        <p className='text-cyan-900 text-xl font-medium'>${totalNetPrice}</p>
+                        <p>{totalNetPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                     </div>
 
                 </div>
@@ -239,6 +268,26 @@ const CustomerCheckout: React.FC = () => {
         </div>
         {
             isVoucherModelOpen && <VoucherSelectionModal onClose={() => setIsVoucherModelOpen(false)} onSelectPromotion={(promotion) => setPromotion(promotion)} />
+        }
+        {
+            qrPaymentCode && <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
+
+                <div className='bg-white p-6 rounded-lg flex flex-col gap-y-4 '>
+                    <div className='flex justify-between'>
+                        <p className='text-2xl font-medium'>QR Code Payment</p>
+                        <button onClick={() => setQrPaymentCode('')} className='text-red-500'>Close</button>
+                    </div>
+                    <div className='flex flex-col items-center gap-y-4'>
+
+                        <QRCode className='w-32 h-32' value={qrPaymentCode} />
+                    </div>
+                    <div className=''>
+
+                        <p className='text-center mt-4'>Scan the QR code above to complete your payment.</p>
+                    </div>
+                </div>
+
+            </div>
         }
     </>
     );

@@ -36,7 +36,7 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
   }
 
   const onCategoryClick = (id: string) => {
-    navigate(`${Urls.CUSTOMER.CATEGORY.Path}/${id}`);
+    navigate(`/minimartonline/category/${id}`);
   }
 
   useEffect(() => {
@@ -73,8 +73,8 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
       </a>
 
       <div className='flex items-center gap-x-8 mx-6 text-gray-500'>
-      <p className='cursor-pointer'>About us</p>
-      <p className='cursor-pointer'>Wishlist</p>
+        <p className='cursor-pointer'>About us</p>
+        <p className='cursor-pointer'>Wishlist</p>
         <p onClick={() => navigate(Urls.CUSTOMER.ORDER_TRACKING.Path)} className='cursor-pointer'>Order tracking</p>
       </div>
 
@@ -101,7 +101,6 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
               <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
             </a>
           </div>
-
           <div className="ml-4 flow-root lg:ml-6">
             <a onClick={onCartOpen} className="group -m-2 flex items-center p-2">
               <ShoppingBagIcon
@@ -116,36 +115,15 @@ function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
         {user ? (
           <div className='flex gap-x-4'>
             <Avatar size="50px" src={auth?.user?.image} />
-            <Popover className="relative align-middle">
-                <Popover.Button className="flex items-center gap-x-2 bg-white rounded-md text-black">
-                    <div className="text-start">
-                        <p className="font-semibold">{auth?.user?.username}</p>
-                        <p className="text-slate-500">{auth?.user?.email}</p>
-                    </div>
-                    <div className="h-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                    </div>
-
-                   
-
-                </Popover.Button>
-
-                <Popover.Panel className="absolute z-10 bg-white border border-gray-200 rounded-lg mt-2 shadow-lg">
-                    <div className="flex flex-col space-y-2">
-                        <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Profile
-                        </button>
-                        <button className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Settings
-                        </button>
-                        <button onClick={handleLogout} className="text-gray-700 hover:bg-gray-100 px-12 py-2 rounded-md">
-                            Logout
-                        </button>
-                    </div>
-                </Popover.Panel>
-            </Popover>
+            <div className="text-start" onClick={() => navigate(Urls.CUSTOMER.PROFILE.Path)}>
+              <p className="font-semibold">{auth?.user?.username}</p>
+              <p className="text-slate-500">{auth?.user?.email}</p>
+            </div>
+            <button onClick={handleLogout} className="text-gray-700 hover:bg-gray-100 py-2 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+              </svg>
+            </button>
           </div>
         ) : (
           <div className="hidden lg:flex lg:items-center lg:justify-end lg:space-x-6">

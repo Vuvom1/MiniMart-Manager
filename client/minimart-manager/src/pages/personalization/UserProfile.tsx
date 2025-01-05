@@ -20,10 +20,22 @@ function UserProfile() {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [passwordLoading, setPasswordLoading] = useState<boolean>(false);
     const [infomationLoading, setInformationLoading] = useState<boolean>(false);
+    const [imageBase64, setImageBase64] = useState<string | null>(null);    
 
     if (!user) {
         return <LoadingScreen />;
     }
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageBase64(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleUpdateProfile = async (id: string, formData: FormData) => {
       setInformationLoading(true)
@@ -40,7 +52,7 @@ function UserProfile() {
                 email: formData.get('email') as string,
                 phone: formData.get('phone') as string,
                 address: formData.get('address') as string,
-                image: user.image,
+                image: imageBase64 || user.image,
             }
 
             const updatedUser =  await updateUserProfile(id, data);
@@ -102,10 +114,7 @@ function UserProfile() {
                         <Avatar style="rounded-lg row-span-3" size="150px" src={user?.image} />
                         <p className="text-2xl font-medium">{user?.username}</p>
                         <p className="text-xl text-gray-500 font-medium">{user?.role}</p>
-                        <RoundedButton prefixIcon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                        </svg>
-                        } label="Change image" width="full" />
+                        <input type="file" accept="image/*" onChange={handleImageChange} />
                     </div>
 
                     <form onSubmit={(e)=> {

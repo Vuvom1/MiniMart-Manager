@@ -233,7 +233,9 @@ class ProductController {
 
     const topSaleProductsWithPromotions = topSaleProducts.map((item) => {
       const productPromotion = promotions.find((promotion) =>
-        promotion.applicableProducts.includes(item.product._id)
+        promotion.applicableProducts.includes(item.product._id) &&
+        new Date(promotion.startDate) <= new Date() &&
+        new Date(promotion.endDate) >= new Date()
       );
       return {
         ...item.product,
@@ -256,7 +258,9 @@ class ProductController {
 
     const productsWithPromotions = products.map((product) => {
       const productPromotion = promotions.find((promotion) =>
-        promotion.applicableProducts.includes(product._id)
+        promotion.applicableProducts.includes(product._id) &&
+        new Date(promotion.startDate) <= new Date() &&
+        new Date(promotion.endDate) >= new Date()
       );
       return {
         ...product.toObject(),
@@ -286,15 +290,17 @@ class ProductController {
     try {
       const promotions = await Promotion.find({
         type: PromotionType.PRODUCT_BASED,
+        startDate: { $lte: new Date() },
+        endDate: { $gte: new Date() },
       }).exec();
       const productsWithPromotions = await Promise.all(
         promotions.map(async (promotion) => {
           const products = await Product.find({
-            _id: { $in: promotion.applicableProducts },
+        _id: { $in: promotion.applicableProducts },
           }).exec();
           return products.map((product) => ({
-            ...product.toObject(),
-            promotion: promotion,
+        ...product.toObject(),
+        promotion: promotion,
           }));
         })
       );
@@ -322,7 +328,9 @@ class ProductController {
       }).exec();
       const productsWithPromotions = products.map((product) => {
         const productPromotion = promotions.find((promotion) =>
-          promotion.applicableProducts.includes(product._id)
+          promotion.applicableProducts.includes(product._id) &&
+          new Date(promotion.startDate) <= new Date() &&
+          new Date(promotion.endDate) >= new Date()
         );
         return {
           ...product.toObject(),
@@ -345,7 +353,9 @@ class ProductController {
         type: PromotionType.PRODUCT_BASED,
       }).exec();
       const productPromotion = promotions.find((promotion) =>
-        promotion.applicableProducts.includes(product._id)
+        promotion.applicableProducts.includes(product._id) &&
+        new Date(promotion.startDate) <= new Date() &&
+        new Date(promotion.endDate) >= new Date()
       );
 
       res.status(200).json({

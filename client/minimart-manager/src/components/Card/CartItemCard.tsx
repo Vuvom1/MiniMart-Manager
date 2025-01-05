@@ -25,9 +25,9 @@ export const CartItemCard: React.FC<CartItemProps> = ({ id, cartItem, onChangeQu
                         </h3>
                         {
                             <p className='font-semibold text-red-800'>
-                                            ${CalculateUtil.calculateDiscountPrice(cartItem.product.price || 0, cartItem.product.promotion?.discountPercentage ?? 0)}
-                                            {cartItem.product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-1'>${cartItem.product.price}</span>}
-                                        </p>
+                                {CalculateUtil.calculateDiscountPrice(cartItem.product.price || 0, cartItem.product.promotion?.discountPercentage ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                {cartItem.product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-1'>{(cartItem.product.price || 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>}
+                            </p>
                         }
                         
                     </div>

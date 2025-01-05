@@ -130,7 +130,7 @@ class OrderController {
         
                 const createdOrder = await Order.create(order);
         
-                return res.status(201).json('Order created successfully');   
+                return res.status(201).json("Order created successfully");     
         }
     )
     

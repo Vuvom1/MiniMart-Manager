@@ -59,7 +59,7 @@ const CustomerProductDetail: React.FC = () => {
     return (
         <> {
             product && (
-                <div className='flex flex-col gap-y-4 bg-gray-100 px-20 xl:px-40'>
+                <div className='flex flex-col gap-y-4 bg-gray-100 px-16 xl:px-28'>
 
                     <div className='flex flex-col gap-x-20 m-10 bg-white rounded-lg md:p-10'>
                         <p className='text-3xl font-medium'>{product.name}</p>
@@ -90,13 +90,13 @@ const CustomerProductDetail: React.FC = () => {
                                 {product.promotion &&
                                     <div className='flex w-full items-center justify-between border p-4 rounded-lg'>
                                         <p className='text-xl'>{product.promotion.name}</p>
-                                        <CountdownTimer endTime={new Date(product.promotion.endTime)} />
+                                        <p>End in: {new Date(product.promotion.endDate).toLocaleDateString()}</p>
                                     </div>
 
                                 }
 
                                 <div className='flex flex-col gap-y-2'>
-                                    <p className='text-3xl font-medium text-red-700'>${CalculateUtil.calculateDiscountPrice(product.price || 0, product.promotion?.discountPercentage ?? 0)}
+                                    <p className='text-3xl font-medium text-red-700'>{CalculateUtil.calculateDiscountPrice(product.price || 0, product.promotion?.discountPercentage ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                         {product.promotion?.discountPercentage && <span className='line-through text-gray-500 ml-2'>${product.price}</span>}
                                     </p>
                                 </div>
@@ -125,7 +125,7 @@ const CustomerProductDetail: React.FC = () => {
                                     
                                     <button 
                                     onClick={()=>addToCart(product)}
-                                    className='bg-cyan-700/90 text-white px-12 py-3 rounded-full flex gap-x-2 transform transition-transform duration-300 hover:scale-105'>
+                                    className='bg-cyan-700/90 text-white px-12 py-3 rounded-full flex gap-x-2 transform transition-transform duration-300 hover:scale-105 text-xl'>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                             <path d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM3.75 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM16.5 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" />
                                         </svg>
@@ -165,18 +165,9 @@ const CustomerProductDetail: React.FC = () => {
                                     </svg>
                                     <p>1 Day Returns if you change your mind</p>
                                 </div>
-
-
-
                             </div>
 
-
                         </div>
-
-
-
-
-
                     </div>
 
                     <div className='rounded-lg mx-10 bg-white'>

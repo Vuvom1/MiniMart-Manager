@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { Order } from '../../data/Entities/Order';
 import { User } from '../../data/Entities/User';
 import {api} from './Api';
@@ -21,7 +20,7 @@ export const getOrdersSortedByStatuses = async () => {
 }
 
 export const getOrdersGroupByStatusByUserId = async (id: string) => {
-    const response = await api.get(`${BASE_URL}/getOrdersGroupByStatusByUserId/${id}`);
+    const response = await api.get(`${BASE_URL}/getOrdersGroupedByStatusByUserId/${id}`);
     return response.data;
 }
 
