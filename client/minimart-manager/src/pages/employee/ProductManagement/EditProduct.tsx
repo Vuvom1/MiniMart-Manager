@@ -8,6 +8,7 @@ import { Product } from "../../../data/Entities/Product";
 import { useNavigate, useParams } from "react-router-dom";
 import ValidationUtil from "../../../utils/ValidationUtil";
 import TextField from "../../../components/InputField/TextField";
+import { ProductStatus } from "../../../constant/enum";
 interface SubCategory {
   _id: string;
   name: string;
@@ -163,7 +164,7 @@ const EditProduct: React.FC = () => {
       setIsLoading(true);
       const response = await updateProduct(formData);
       alert(response.message);
-      nav("/products");
+      nav(-1);
     } catch (error: any) {
       console.error("Error updating product: ", error);
       if (error.response) {
@@ -331,8 +332,18 @@ const EditProduct: React.FC = () => {
               onChange={handleChange}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="Available">Available</option>
-              <option value="Unavailable">Unavailable</option>
+              <option value={ProductStatus.IN_STOCK}>
+                {ProductStatus.IN_STOCK}
+              </option>
+              <option value={ProductStatus.OUT_OF_STOCK}>
+                {ProductStatus.OUT_OF_STOCK}
+              </option>
+              <option value={ProductStatus.UNAVAILABLE}>
+                {ProductStatus.UNAVAILABLE}
+              </option>
+              <option value={ProductStatus.EXPIRED}>
+                {ProductStatus.EXPIRED}
+              </option>
             </select>
           </div>
           <div className="col-span-1 md:col-span-2">
@@ -359,7 +370,7 @@ const EditProduct: React.FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => nav("/products")}
+                onClick={() => nav(-1)}
                 className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
               >
                 Back

@@ -116,3 +116,12 @@ export const getSimilarProductsWithPromotions = async (id: string) => {
     throw error.response?.data?.message || "Fetch data failed";
   }
 };
+
+export const deleteProduct = async (id: String) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/${id}`);
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data?.message || "Delete data failed";
+  }
+};

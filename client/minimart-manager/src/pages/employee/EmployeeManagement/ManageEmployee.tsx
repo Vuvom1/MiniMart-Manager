@@ -52,14 +52,14 @@ const ManageEmployee = () => {
         </div>
       </div>
 
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div className="ml-2 px-4 py-2">
           <RoundedButton
             label="Add New Employee"
             color="text-white bg-cyan-500"
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {data.map((v, i) => (
