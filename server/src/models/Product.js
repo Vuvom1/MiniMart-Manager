@@ -38,6 +38,9 @@ const productSchema = new mongoose.Schema({
   expiryDate: {
     type: Date,
   },
+  status: {
+    type: String,
+  },
   sold: {
     type: Number,
     default: 0,

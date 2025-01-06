@@ -4,7 +4,12 @@ import {
   EditEmployee,
   getEmployeeById,
 } from "../../../services/api/EmployeeApi";
+import {
+  getSalaryByEmployee,
+  updateSalaries,
+} from "../../../services/api/SalaryApi";
 import defaultPic from "../../../assets/images/default_avatar.jpg";
+import { Salary } from "../../../data/Entities/Salary";
 
 interface Employee {
   id: string;
@@ -24,8 +29,13 @@ type RouteParams = {
 const EmployeeDetails: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const [employee, setEmployee] = useState<Employee | null>(null);
+  const [salary, setSalary] = useState<Salary | null>(null);
   const [newSalaryPerHour, setNewSalaryPerHour] = useState<number | string>("");
+  const [newTotalHours, setNewTotalHours] = useState<number | string>("");
+  const [newTotalSalary, setNewTotalSalary] = useState<number | string>("");
   const [isEditing, setIsEditing] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+
   function formatDate(dateString: string): string {
     // Create a Date object from the string
     const date = new Date(dateString);
@@ -59,8 +69,20 @@ const EmployeeDetails: React.FC = () => {
       });
       setNewSalaryPerHour(response.salaryPerHour); // Initialize salary for editing
     };
+    const fetchEmployeeSalary = async () => {
+      if (!id) {
+        console.error("No ID provided");
+        return;
+      }
+      const response = await getSalaryByEmployee(id);
+      console.log(response);
+      setSalary(response);
+      setNewTotalHours(response.totalHours);
+      setNewTotalSalary(response.totalSalary);
+    };
 
     fetchEmployeeDetails();
+    fetchEmployeeSalary();
   }, [id]);
 
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +90,7 @@ const EmployeeDetails: React.FC = () => {
   };
 
   const handleSaveSalary = async () => {
-    if (!employee) return;
+    if (!employee || !salary) return;
     try {
       const updatedData = {
         ...employee,
@@ -82,14 +104,23 @@ const EmployeeDetails: React.FC = () => {
       };
       const response = await EditEmployee(formData);
       setEmployee(updatedData);
+      const updatedSalary = {
+        ...salary,
+        totalHours: Number(newTotalHours),
+        totalSalary: Number(newTotalSalary),
+        isPaid,
+      };
+      const response2 = await updateSalaries(updatedSalary, salary._id || "");
+      setSalary(updatedSalary);
       alert(response);
+      alert(response2.message);
     } catch (error: any) {
-      console.error("Error updating product: ", error);
+      console.error("Error updating employee: ", error);
       if (error.response) {
         // Server responded with a status other than 2xx
         alert(
           error.response.data.message ||
-            "Failed to update product. Please check your input."
+            "Failed to update employee. Please check your input."
         );
       } else if (error.request) {
         // Request was made but no response was received
@@ -131,40 +162,68 @@ const EmployeeDetails: React.FC = () => {
           <p>Date of birth: {employee.dateOfBirth}</p>
 
           <div className="mt-4">
-            <h3 className="font-semibold">Salary</h3>
-            {!isEditing ? (
-              <div className="flex items-center gap-4">
-                <p>{employee.salaryPerHour}VND/hour</p>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-blue-500 hover:underline"
-                >
-                  Edit
-                </button>
-              </div>
+            <h3 className="font-semibold">
+              Salary per hours: {employee.salaryPerHour}
+            </h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold">Salary Details</h2>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+            >
+              {isEditing ? "Cancel Edit" : "Enable Edit"}
+            </button>
+          </div>
+          {/* Detailed Salary */}
+          <div className="mt-4">
+            <label className="font-bold">Total Hours:</label>
+            {isEditing ? (
+              <input
+                type="number"
+                value={newTotalHours}
+                onChange={(e) => setNewTotalHours(e.target.value)}
+                className="border p-2 rounded-md w-full"
+              />
             ) : (
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  value={newSalaryPerHour}
-                  onChange={handleSalaryChange}
-                  className="border p-2 rounded-md"
-                />
-                <button
-                  onClick={handleSaveSalary}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-red-500 hover:underline"
-                >
-                  Cancel
-                </button>
-              </div>
+              <p>{salary?.totalHours} hours</p>
             )}
           </div>
+          <div className="mt-4">
+            <label className="font-bold">Total Salary:</label>
+            {isEditing ? (
+              <input
+                type="number"
+                value={newTotalSalary}
+                onChange={(e) => setNewTotalSalary(e.target.value)}
+                className="border p-2 rounded-md w-full"
+              />
+            ) : (
+              <p>{salary?.totalSalary} $</p>
+            )}
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <label>Paid:</label>
+            {isEditing ? (
+              <input
+                type="checkbox"
+                checked={isPaid}
+                onChange={(e) => setIsPaid(e.target.checked)}
+              />
+            ) : (
+              <p>{isPaid ? "Yes" : "No"}</p>
+            )}
+          </div>
+
+          {/* Save Button */}
+          {isEditing && (
+            <button
+              onClick={handleSaveSalary}
+              className="mt-6 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            >
+              Save Changes
+            </button>
+          )}
         </div>
       </div>
     </div>

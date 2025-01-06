@@ -15,6 +15,7 @@ const categoryRoutes = require("./CategoryRoutes");
 const receiptRoutes = require("./ReceiptRoutes");
 const orderRoutes = require("./OrderRoutes");
 const reportRoutes = require("./ReportRoutes");
+const salaryRoutes = require("./SalaryRoutes");
 
 function route(app) {
   app.use("/api/auth", authRoutes);
@@ -33,6 +34,7 @@ function route(app) {
   app.use("/api/receipts", receiptRoutes);
   app.use("/api/orders", orderRoutes);
   app.use("/api/reports", reportRoutes);
+  app.use("/api/salaries", salaryRoutes);
 }
 
 module.exports = route;
