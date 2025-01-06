@@ -91,6 +91,7 @@ class ProductController {
       subCategory,
       status,
     } = req.body;
+    console.log(status);
     try {
       const product = await Product.create({
         name,
@@ -127,6 +128,7 @@ class ProductController {
         dateOfManufacture,
         expiryDate,
         subCategory,
+        status,
         promotion,
       } = req.body;
       const updatedProduct = await Product.findByIdAndUpdate(id, {
@@ -138,6 +140,7 @@ class ProductController {
         stock,
         dateOfManufacture,
         expiryDate,
+        status,
         subCategory,
         promotion,
       });
@@ -149,17 +152,17 @@ class ProductController {
       res.status(400).json({ message: error.message, code: error.code });
     }
   };
-  delete = (req, res) => {
+  delete = async (req, res) => {
     const { id } = req.params;
     try {
-      Product.findOneAndDelete({ id: id });
+      const deleted = await Product.findByIdAndDelete(id);
       res.status(200).json({ message: "Remove product successfully" });
     } catch (error) {
       console.error(error);
       res.status(400).json({ message: error.message, code: error.code });
     }
   };
-  
+
   allByCategory_get = async (req, res) => {
     try {
       const categoriesWithProducts = await Category.aggregate([

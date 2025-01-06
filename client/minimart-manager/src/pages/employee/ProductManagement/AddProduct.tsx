@@ -4,6 +4,7 @@ import { getAllSubcategories } from "../../../services/api/SubCategoryApi";
 import TextField from "../../../components/InputField/TextField";
 import ValidationUtil from "../../../utils/ValidationUtil";
 import { useNavigate } from "react-router-dom";
+import { ProductStatus } from "../../../constant/enum";
 interface SubCategory {
   _id: string;
   name: string;
@@ -32,14 +33,14 @@ const AddProduct: React.FC = () => {
   });
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
+    price: 0,
     barcode: "",
     detail: "",
     image: "",
-    stock: "In Stock",
+    stock: 0,
     dateOfManufacture: "",
     expiryDate: "",
-    status: "Available",
+    status: ProductStatus.IN_STOCK,
     subCategory: "",
   });
   useEffect(() => {
@@ -122,8 +123,9 @@ const AddProduct: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await addOneProduct(formData);
+      console.log(formData.status);
       alert(response.message);
-      nav("/products");
+      nav(-1);
     } catch (error: any) {
       console.error("Error adding product: ", error);
       if (error.response) {
