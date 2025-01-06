@@ -14,7 +14,8 @@ class SalaryController {
     const { employee, startDate, endDate, totalHours, totalSalary, isPaid } =
       req.body;
     const { id } = req.params;
-    const updatedSalary = Salary.findByIdAndUpdate(id, {
+    console.log(totalHours);
+    const updatedSalary = await Salary.findByIdAndUpdate(id, {
       employee,
       startDate,
       endDate,

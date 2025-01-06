@@ -181,7 +181,7 @@ const AddProduct: React.FC = () => {
           />
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Price (VND)
+              Price ($)
             </label>
             <input
               type="number"

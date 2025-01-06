@@ -10,6 +10,9 @@ import {
 } from "../../../services/api/SalaryApi";
 import defaultPic from "../../../assets/images/default_avatar.jpg";
 import { Salary } from "../../../data/Entities/Salary";
+import { LoadingScreen } from "../../../components/Loading/LoadingScreen";
+import { getAllSchedules } from "../../../services/api/ScheduleApi";
+import { Schedule } from "../../../data/Entities/Schedule";
 
 interface Employee {
   id: string;
@@ -29,6 +32,7 @@ type RouteParams = {
 const EmployeeDetails: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const [employee, setEmployee] = useState<Employee | null>(null);
+  const [empSchedules, setEmpSchedules] = useState<Schedule[]>([]);
   const [salary, setSalary] = useState<Salary | null>(null);
   const [newSalaryPerHour, setNewSalaryPerHour] = useState<number | string>("");
   const [newTotalHours, setNewTotalHours] = useState<number | string>("");
@@ -80,9 +84,19 @@ const EmployeeDetails: React.FC = () => {
       setNewTotalHours(response.totalHours);
       setNewTotalSalary(response.totalSalary);
     };
+    const fetchEmployeeSchedulesAndShifts = async () => {
+      const schedules: Schedule[] = await getAllSchedules();
+      if (schedules) {
+        const employeeSchedules = schedules.filter(
+          (sch) => sch.employee._id == id
+        );
+        setEmpSchedules(employeeSchedules);
+      }
+    };
 
     fetchEmployeeDetails();
     fetchEmployeeSalary();
+    fetchEmployeeSchedulesAndShifts();
   }, [id]);
 
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +121,7 @@ const EmployeeDetails: React.FC = () => {
       const updatedSalary = {
         ...salary,
         totalHours: Number(newTotalHours),
-        totalSalary: Number(newTotalSalary),
+        totalSalary: calculateTotalSalary(),
         isPaid,
       };
       const response2 = await updateSalaries(updatedSalary, salary._id || "");
@@ -133,8 +147,35 @@ const EmployeeDetails: React.FC = () => {
       setIsEditing(false);
     }
   };
+  const calculateTotalHours = () => {
+    let sum = 0;
+    empSchedules.forEach((sch, index) => {
+      sch.shifts.forEach((shift, i) => {
+        const [startHours, startMinutes] = shift.startTime
+          .split(":")
+          .map(Number);
+        const [endHours, endMinutes] = shift.endTime.split(":").map(Number);
+        const [breakHours, breakMinutes] = shift.breakDuration
+          .split(":")
+          .map(Number);
 
-  if (!employee) return <p>Loading...</p>;
+        const start = startHours + startMinutes / 60;
+        const end = endHours + endMinutes / 60;
+        const breakTime = breakHours + breakMinutes / 60;
+
+        const duration = end - start - breakTime;
+        sum += duration;
+      });
+    });
+    return sum;
+  };
+  const calculateTotalSalary = () => {
+    const salaryPerHour = Number(newSalaryPerHour);
+    const totalHours = calculateTotalHours();
+    return salaryPerHour * totalHours || 0;
+  };
+
+  if (!employee) return <LoadingScreen />;
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -161,11 +202,6 @@ const EmployeeDetails: React.FC = () => {
           <p>Address: {employee.address}</p>
           <p>Date of birth: {employee.dateOfBirth}</p>
 
-          <div className="mt-4">
-            <h3 className="font-semibold">
-              Salary per hours: {employee.salaryPerHour}
-            </h3>
-          </div>
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Salary Details</h2>
             <button
@@ -177,42 +213,30 @@ const EmployeeDetails: React.FC = () => {
           </div>
           {/* Detailed Salary */}
           <div className="mt-4">
-            <label className="font-bold">Total Hours:</label>
+            <label className="font-bold">Salary per hours:</label>
             {isEditing ? (
               <input
                 type="number"
-                value={newTotalHours}
-                onChange={(e) => setNewTotalHours(e.target.value)}
+                value={newSalaryPerHour}
+                onChange={handleSalaryChange}
                 className="border p-2 rounded-md w-full"
               />
             ) : (
-              <p>{salary?.totalHours} hours</p>
+              <p>{employee.salaryPerHour} $</p>
             )}
           </div>
           <div className="mt-4">
+            <label className="font-bold">Total Hours:</label>
+
+            <p>{calculateTotalHours()} hours</p>
+          </div>
+          <div className="mt-4">
             <label className="font-bold">Total Salary:</label>
-            {isEditing ? (
-              <input
-                type="number"
-                value={newTotalSalary}
-                onChange={(e) => setNewTotalSalary(e.target.value)}
-                className="border p-2 rounded-md w-full"
-              />
-            ) : (
-              <p>{salary?.totalSalary} $</p>
-            )}
+            <p>{calculateTotalSalary()} $</p>
           </div>
           <div className="mt-4 flex items-center gap-2">
             <label>Paid:</label>
-            {isEditing ? (
-              <input
-                type="checkbox"
-                checked={isPaid}
-                onChange={(e) => setIsPaid(e.target.checked)}
-              />
-            ) : (
-              <p>{isPaid ? "Yes" : "No"}</p>
-            )}
+            <p>{isPaid ? "Yes" : "No"}</p>
           </div>
 
           {/* Save Button */}
