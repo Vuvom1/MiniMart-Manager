@@ -168,8 +168,10 @@ export enum ReceiptStatus {
   
 export enum OrderStatus {
     PENDING= 'Pending',
-    WAIT_FOR_PAYMENT= 'Wait for Payment',
-    CONFIRM = 'Confirm',
+    WAIT_FOR_PAYMENT= 'Wait for payment',
+    PAID = 'Paid',
+    CONFIRM= 'Confirm',
+    DEVERING = 'Confirm',
     DELIVERED= 'Delivered',
     CANCELLED= 'Cancelled',
 }

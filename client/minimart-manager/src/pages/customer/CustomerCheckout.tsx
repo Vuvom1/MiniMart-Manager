@@ -71,15 +71,29 @@ const CustomerCheckout: React.FC = () => {
             }
 
             if (user && order) {
-                const response = await createOrderWithUser(order, user).then(async () => {
-                    if (paymentMethod === PaymentMethod.ONLINE)
-                        await handleOnlinePayment();
-                    else {
-                        clearCart();
-    
-                        navigate(Urls.CUSTOMER.BASE);
-                    }
-                });
+                if (paymentMethod === PaymentMethod.ONLINE) {
+                    const orderCode = Math.floor(Math.random() * 90071);
+
+                    order.orderCode = orderCode;
+                    order.status = OrderStatus.WAIT_FOR_PAYMENT;
+
+                    const response = await createOrderWithUser(order, user);
+
+                    clearCart();
+
+                    await handleOnlinePayment(orderCode);
+                } else {
+                    setOrder({
+                        ...order,
+                        status: OrderStatus.PENDING,
+                    });
+
+                    const response = await createOrderWithUser(order, user);
+
+                    clearCart();
+
+                    navigate(Urls.CUSTOMER.BASE);
+                }
 
                 toast.custom((t) => (
                     <SuccessToast
@@ -103,12 +117,10 @@ const CustomerCheckout: React.FC = () => {
         }
     }
 
-    const handleOnlinePayment = async () => {
-        try {
-            const orderId = Math.floor(Math.random() * 90071);
-         
+    const handleOnlinePayment = async (orderCode: number) => {
+        try {         
             const response = await createPayment({
-                orderCode: orderId,
+                orderCode: orderCode,
                 amount: 50000,
                 description: "VQRIO123",
                 buyerName: user?.firstname + ' ' + user?.lastname,
@@ -116,11 +128,11 @@ const CustomerCheckout: React.FC = () => {
                 buyerPhone: user?.phone?.toString() ?? "",
                 buyerAddress: user?.address ?? "",
                 items: order?.receipt?.details?.map(item => ({ name: item.product.name, quantity: item.quantity, price: item.product.price })) ?? [],
-                cancelUrl: "http://localhost:5173/minimartonline/",
-                returnUrl: "http://localhost:5173/minimartonline/",
+                cancelUrl: "http://localhost:5173/minimartonline/confirm-payment",  
+                returnUrl: "http://localhost:5173/minimartonline/confirm-payment",
             })
 
-            window.location.href = `https://pay.payos.vn/web/88ec05f3a7bb48c9b5ca422cdc845036`;
+            window.location.href = `https://pay.payos.vn/web/${response.data.paymentLinkId}`;
             
         } catch (error: any) {
             console.log(error);

@@ -20,6 +20,7 @@ const Urls = Object.freeze({
     PRODUCT: createUrl(baseCustomerUrl, "product/:id"),
     CHECKOUT: createUrl(baseCustomerUrl, "checkout"),
     ORDER_TRACKING: createUrl(baseCustomerUrl, "order-tracking"),
+    CONFIRM_PAYMENT: createUrl(baseCustomerUrl, "confirm-payment"),
     PROFILE: createUrl(baseCustomerUrl, "profile"), 
   },
   ADMIN: {

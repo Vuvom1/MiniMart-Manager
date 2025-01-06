@@ -3,6 +3,7 @@ import { Receipt } from "./Receipt";
 
 export interface Order {
     _id?: string;
+    orderCode: number;
     receipt: Receipt;
     deliveryFee: number;
     receipientName: string;

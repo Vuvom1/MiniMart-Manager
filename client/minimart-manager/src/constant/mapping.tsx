@@ -68,8 +68,9 @@ export const orderStatusColorMapping: { [key in OrderStatus]: string } = {
   [OrderStatus.WAIT_FOR_PAYMENT]: 'orange-200',
   [OrderStatus.PENDING]: 'yellow-200',
   [OrderStatus.CONFIRM]: 'green-200',
-  [OrderStatus.CANCELLED]: 'red-200',
+  [OrderStatus.CANCELLED]: 'gray-200',
   [OrderStatus.DELIVERED]: 'blue-200',
+  [OrderStatus.PAID]: "red-200",
 };
 
 export const employeeStatusColorMapping: { [key: string]: string } = {

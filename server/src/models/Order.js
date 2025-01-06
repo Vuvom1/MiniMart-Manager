@@ -8,6 +8,9 @@ const orderSchema = new mongoose.Schema({
         ref: Receipt,
         required: true,
     },
+    orderCode: {
+        type: Number,
+    },
     deliveryFee: {
         type: Number,
         default: 0,

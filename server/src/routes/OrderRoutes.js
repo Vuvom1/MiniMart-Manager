@@ -10,5 +10,6 @@ router.get('/getOrdersSortedByStatuses', authMiddleware([UserRole.Manager, UserR
 router.get('/getOrdersGroupedByStatusByUserId/:id', authMiddleware([UserRole.Manager, UserRole.Staff ,UserRole.Customer]), orderController.getOrderGroupedByStatusesByUserId_get);
 router.post('/createWithUser', authMiddleware([UserRole.Customer]), orderController.createWithUser_post);
 router.put('/updateStatus/:id', authMiddleware([UserRole.Manager, UserRole.Staff, UserRole.Customer]), orderController.updateStatus_put);
+router.put('/updateStatusByOrderCode/:orderCode', authMiddleware([UserRole.Manager, UserRole.Staff, UserRole.Customer]), orderController.updateStatusByOrderCode_put);
 
 module.exports = router;
