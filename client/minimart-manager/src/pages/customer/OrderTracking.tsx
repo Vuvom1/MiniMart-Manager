@@ -5,7 +5,6 @@ import { getOrdersGroupByStatusByUserId, updateOrderStatus } from '../../service
 import RoundedButton from '../../components/Button/RoundedButton';
 import { useAuth } from '../../providers/AuthProvider';
 import toast from 'react-hot-toast';
-import SuccessToast from '../../components/Toast/SuccessToast';
 import { TimeUtil } from '../../utils/TimeUtil';
 
 const OrderTracking: React.FC = () => {
@@ -15,10 +14,11 @@ const OrderTracking: React.FC = () => {
     const orderStatuses = Object.values(OrderStatus);
     const [sortedOrders, setSortedOrders] = React.useState<{ [key: string]: Order[] }>();
     const [displayedOrders, setDisplayedOrders] = React.useState<Order[]>();
+    const [userId, setUserId] = React.useState<string | undefined>(auth.user?._id);
 
     const fetchOrders = async () => {
         try {
-            const data = await getOrdersGroupByStatusByUserId(auth.user?._id!);
+            const data = await getOrdersGroupByStatusByUserId(auth.user?._id! || '67593246ca852cda04e17235');
             setSortedOrders(data);
             setDisplayedOrders(Object.values(sortedOrders || {}).flat());
         } catch (error) {
@@ -29,21 +29,13 @@ const OrderTracking: React.FC = () => {
     const handelUpdateStatus = async (id: string | undefined, status: OrderStatus) => {
         try {
             if (!id) {
-                toast.custom((t) => (
-                    <SuccessToast
-                        message={'Order not found'}
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+               toast.error("Order id is invalid");
 
                 return;
             }
 
             const response = await updateOrderStatus(id, status);
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.success(response);
 
         } catch (error) {
             console.log(error);

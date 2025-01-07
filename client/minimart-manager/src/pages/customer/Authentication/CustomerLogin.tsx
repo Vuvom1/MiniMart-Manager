@@ -30,12 +30,7 @@ function Login() {
         try {
             await auth.login(email, password);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message="Welcome back!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success("Login successful");
             navigate(Urls.CUSTOMER.BASE);
         } catch (err: any) {
             setError(`Login failed: ${err || "An unknown error occurred"}`);

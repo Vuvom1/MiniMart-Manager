@@ -36,19 +36,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         try {
             const response = await addSupplier(supplier);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success(response || "Add supplier successfully!");
             onClose();
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error || "Add supplier failed!"}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />));
+           toast.error(error || "Something went wrong");
         }
     }
 

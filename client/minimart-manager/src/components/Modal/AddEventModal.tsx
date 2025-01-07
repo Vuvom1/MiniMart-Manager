@@ -23,7 +23,6 @@ interface AddEventModalProps {
     initialDate: Date,
     onSave: () => void;
     onClose: () => void;
-
 }
 
 const AddEventModal: React.FC<AddEventModalProps> = ({ scheduleId, initialDate, onClose, onSave }) => {
@@ -47,22 +46,14 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ scheduleId, initialDate, 
 
             setPositions(data)
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error fetching schedules '}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.success(message || 'Error fetching positions')
         }
     }
 
     const handleAddEvent = async () => {
         try {
             if (!position) {
-                toast.custom((t) => (
-                    <CustomErrorToast
-                        message='Please select position'
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+                toast.error('Please select a position');
                 return;
             } else {
                 const response = await addshift({
@@ -77,21 +68,13 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ scheduleId, initialDate, 
                 }  
                 );
 
-                toast.custom((t) => (
-                    <SuccessToast
-                        message={response}
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+                toast.success(response.message || 'Shift added successfully');
 
                 onSave();
             }
 
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error fetching positions'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(message || 'Error adding shift')
         }
     }
 

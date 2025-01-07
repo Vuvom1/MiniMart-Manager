@@ -95,7 +95,6 @@ const CustomerCategory: React.FC<CustomerCategoryProps> = () => {
                                 className={`rounded-full  w-32 py-2 border font-semibold ${selectedSubCategoryTab == index ? 'bg-yellow-500/80 text-white' : 'text-gray-500 bg-white border-black/20'} `}>{subCategory.name}</button>
                         ))}
                     </div>
-
                     <div className='flex flex-col gap-y-4'>
                         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 gap-y-6'>
                             {products.map((product: Product) => (

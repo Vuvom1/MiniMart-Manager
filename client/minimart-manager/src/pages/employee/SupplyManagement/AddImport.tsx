@@ -69,20 +69,10 @@ function AddImport() {
 
             const message = await addImport(importData);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={message}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success(message);
             navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
         } catch (error: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={error || 'Add import failed'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(error || 'Failed to add import. Please check your input.');
         } finally {
             setLoading(false);
             
@@ -249,7 +239,7 @@ function AddImport() {
                         <div className="flex justify-between">
                             <p className="text-gray-600">Total import price:</p>
                             <p className="font-medium">
-                                ${importData.totalImportPrice?.toFixed(2) || '0.00'}
+                                {importData.totalImportPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || '0 ₫'}
                             </p>
                         </div>
                     </div>

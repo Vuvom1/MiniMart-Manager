@@ -48,18 +48,10 @@ function AddPromotion() {
         console.log(promotion);
         try {
             const response = await createPromotion(promotion);
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.success( "Add promotion successfully!");
             navigate(Urls.ADMIN.PROMOTIONS.BASE.Path);    
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(error || "Something went wrong");
         }
     }
 

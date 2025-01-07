@@ -47,24 +47,14 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ shift, OnEdit, onClose 
             const data = await getAllPositions();
             setPositions(data);
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error fetching positions'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(message || 'Error fetching positions');
         }
     };
 
     const handleUpdateEvent = async () => {
         try {
             if (!position) {
-                toast.custom((t) => (
-                    <CustomErrorToast
-                        message="Please select position"
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />
-                ));
+                toast.error('Please select a position');
                 
                 return;
             }
@@ -82,21 +72,11 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ shift, OnEdit, onClose 
 
             const response = await editShift(shift._id || "", updatedShift);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success(response || 'Shift updated successfully');
 
             OnEdit && OnEdit();
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error updating shift'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(message || 'Error updating shift');
         }
     };
 

@@ -45,12 +45,7 @@ function EditImport() {
                 setImportData(data);
             }
         } catch (error: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={error || 'Add import failed'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(error || 'Error fetching import');
         } finally {
             setLoading(false);
     }
@@ -69,8 +64,8 @@ function EditImport() {
 
             setSupplierOptions(newSupplierOptions);
 
-        } catch (error) {
-            console.error('Error fetching suppliers:', error);
+        } catch (error: any) {
+            toast.error(error || 'Error fetching suppliers');
         }
     };
 
@@ -84,22 +79,12 @@ function EditImport() {
 
             if (id) {
                 const message = await updateImport(id, importData);
-                toast.custom((t) => (
-                    <SuccessToast
-                        message={message}
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />
-                ));
+                toast.success(message || 'Update import successfully');
                 // navigate(Urls.ADMIN.SUPPLIES.IMPORTS.BASE.Path);
             }
             
         } catch (error: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={error || 'Add import failed'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+           toast.error(error || 'Error updating import');
         } finally {
             setLoading(false);
         }
@@ -229,10 +214,6 @@ function EditImport() {
                             onChange={(e) => setImportData({ ...importData, description: e.target.value })}
                             />
                     </div>
-
-
-
-
                 </div>
 
                 <div className="shadow-lg bg-white p-4 flex flex-col gap-y-4 w-2/3 rounded-lg divide-y">
@@ -279,7 +260,7 @@ function EditImport() {
                         <div className="flex justify-between">
                             <p className="text-gray-600">Total import price:</p>
                             <p className="font-medium">
-                                ${importData.totalImportPrice}
+                                {(importData.totalImportPrice ?? 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                             </p>
                         </div>
                     </div>

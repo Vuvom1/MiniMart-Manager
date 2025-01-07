@@ -57,7 +57,7 @@ function PromotionManagement() {
 } label="Export" color="text-white bg-cyan-500" />
             </div>
         </div>
-        <div className="flex gap-x-4 w-full">
+        {/* <div className="flex gap-x-4 w-full">
             <MetricCard title="Total Promotions" period={period == Period.DAILY ? "day" : (period == Period.MONTHLY ? "month" : "year")}
                 value={period == Period.DAILY ? (statistic?.statisticByDate.todayPromotions) : (period == Period.MONTHLY ? statistic?.statisticByMonth.thisMonthPromotions : statistic?.statisticByYear.thisYearPromotions)} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
@@ -68,7 +68,7 @@ function PromotionManagement() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
             </svg>
             } isPositive={false} />
-        </div>
+        </div> */}
         <div className="grow mb-4">
             <TableLayout
                 action={(id: string) => { navigate(`${id}`) }}

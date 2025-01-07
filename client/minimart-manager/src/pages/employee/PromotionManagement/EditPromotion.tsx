@@ -40,18 +40,10 @@ function EditPromotion() {
                 const data = await getPromotionById(id);
                 setPromotion(data);
             } else {
-                toast.custom((t) => (
-                    <ErrorToast
-                        message={"Promotion not found"}
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+                toast.success("Promotion not found");
             }
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(error||"Something went wrong");
         } finally {
             setLoading(false);
         }
@@ -62,31 +54,17 @@ function EditPromotion() {
             if (promotion) {
                 if (promotion._id) {
                     const response = await updatePromotion(promotion._id, promotion);
-                    toast.custom((t) => (
-                        <SuccessToast
-                            message={response}
-                            onDismiss={() => toast.dismiss(t.id)}
-                        />))
+                    toast.success(response || "Promotion updated successfully!");
                     fetchPromotion();
                 } else {
-                    toast.custom((t) => (
-                        <ErrorToast
-                            message={"Promotion not found"}
-                            onDismiss={() => toast.dismiss(t.id)}
-                        />))
+                   toast.error("Promotion not found");
                 }
 
             }
-
-
-
+            
             // navigate(Urls.ADMIN.PROMOTIONS.BASE.Path);    
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(error || "Something went wrong");   
         }
     }
 

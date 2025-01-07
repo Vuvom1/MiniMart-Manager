@@ -171,7 +171,7 @@ export enum OrderStatus {
     WAIT_FOR_PAYMENT= 'Wait for payment',
     PAID = 'Paid',
     CONFIRM= 'Confirm',
-    DEVERING = 'Confirm',
+    DEVERING = 'Delivering',
     DELIVERED= 'Delivered',
     CANCELLED= 'Cancelled',
 }

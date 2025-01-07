@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import RoundedButton from "../../../components/Button/RoundedButton";
 import DraggableFloatComponent from "../../../components/Dragable/DragableComponent";
 import ProductScannerComponent from "../../../components/Scanner/ProductScanner";
+import toast from "react-hot-toast";
 
 const AddReceipt: React.FC = () => {
   const [errors, setErrors] = useState<{ productName: string | null }>({
@@ -99,10 +100,10 @@ const AddReceipt: React.FC = () => {
     try {
       const response = await createReceipts(receipt);
       console.log(response.message);
-
+      toast.success("Receipt added successfully");
       return response;
     } catch (error) {
-      alert("Can't add receipt");
+      toast.error("Failed to add receipt");
     } finally {
       nav(-1);
     }
@@ -142,6 +143,7 @@ const AddReceipt: React.FC = () => {
               <thead>
               <tr>
                 <th className="border p-2">Product</th>
+                <th className="border p-2">Barcode</th>
                 <th className="border p-2">Quantity</th>
                 <th className="border p-2">Net Price</th>
                 <th className="border p-2">Actions</th>
@@ -162,7 +164,9 @@ const AddReceipt: React.FC = () => {
                     </option>
                   ))}
                   </select>
-                  <p className="flex">Barcode: <p className="font-medium ms-2">{detail.product.barcode} </p> </p>
+                  
+                </td>
+                <td className="border p-2">{detail.product.barcode}
                 </td>
                 <td className="border p-2">
                   <input

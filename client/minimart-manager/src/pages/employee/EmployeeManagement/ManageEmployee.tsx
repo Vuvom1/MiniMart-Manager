@@ -13,6 +13,7 @@ interface Employee {
   email: string;
   avatar: string;
   salaryPerHour: number;
+  status: string;
 }
 
 const ManageEmployee = () => {
@@ -28,10 +29,10 @@ const ManageEmployee = () => {
         lastname: p.user.lastname,
         avatar: p.user.image,
         email: p.user.email,
+        status: p.user.status,
         salaryPerHour: p.salaryPerHour,
       }));
       setData(extractedEmployees);
-      console.log(extractedEmployees);
     } catch (error: any) {
       console.log(error);
     }
@@ -58,7 +59,6 @@ const ManageEmployee = () => {
       <div className="grow mb-4">
         <TableLayout
           action={(id: string) => { navigate(`${id}`) }}
-          addItem={() => navigate(Urls.ADMIN.EMPLOYEE.ADD.Path)}
           title="Employee List"
           data={data}
           columns={EmployeeColumnData} />

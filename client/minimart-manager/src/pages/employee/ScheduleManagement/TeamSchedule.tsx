@@ -60,11 +60,7 @@ export function TeamSchedule() {
 
             setSchedules(scheduleData)
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error fetching schedules '}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(message || 'Error fetching schedules');
         } finally { 
             setLoading(false);
         }
@@ -76,17 +72,9 @@ export function TeamSchedule() {
         try {
             const response = await addEmployeeToSchedule(employeeId);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.success(response);
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error adding employee to schedule'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(message || 'Error adding employee');        
         } finally {
             setIsOpendAddEmployeeModal(false);
             fetchSchedules();
@@ -97,18 +85,10 @@ export function TeamSchedule() {
         try {
             const response = await deleteShift(shiftId);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.success(response || 'Shift deleted successfully');
             fetchSchedules();
         } catch (message: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message={message || 'Error delete event'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(message || 'Error deleting shift');
         } finally {
            
             setIsOpenModalDeleteEvent(false);
@@ -209,8 +189,7 @@ export function TeamSchedule() {
                                             className='sticky bg-white border border-gray-300 px-4 py-2 top-0'
                                         >
                                             <p className="font-semibold">{day.dayOfWeek}</p>
-                                            <p className="font-normal">{timeUtil.formatDate(day.date)}</p>
-
+                                            <p>{new Date(day.date).toLocaleDateString('en-GB')}</p>
                                         </th>
                                     ))}
                                 </tr>

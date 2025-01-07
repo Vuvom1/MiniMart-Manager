@@ -59,20 +59,10 @@ function UserProfile() {
 
             localStorage.setItem('user', JSON.stringify(updatedUser));
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={"User profile updated successfully"}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success('Update profile successfully!');
 
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error || ''}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(error || 'Something went wrong');
         } finally {
             setInformationLoading(false);
         }
@@ -86,20 +76,10 @@ function UserProfile() {
 
             const message = await updatePassword(id, currentPassword, newPassword);
 
-            toast.custom((t) => (
-                <SuccessToast
-                    message={message}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success('Update password successfully!');
 
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error || ''}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(error || 'Something went wrong');
         } finally {
             setPasswordLoading(false)
         }

@@ -8,8 +8,6 @@ import { DiscountType, OrderStatus, PaymentMethod, ReceiptStatus, TransactionTyp
 import { useAuth } from '../../providers/AuthProvider';
 import toast from 'react-hot-toast';
 import { Receipt } from '../../data/Entities/Receipt';
-import SuccessToast from '../../components/Toast/SuccessToast';
-import ErrorToast from '../../components/Toast/ErrorToast';
 import { Order } from '../../data/Entities/Order';
 import { useNavigate } from 'react-router-dom';
 import Urls from '../../constant/urls';
@@ -20,7 +18,7 @@ import VoucherSelectionModal from '../../components/Modal/VoucherSelectionModal'
 import { Promotion } from '../../data/Entities/Promotion';
 import { CalculateUtil } from '../../utils/CalculateUtil';
 import { GiftItem } from '../../data/Entities/GiftItem';
-import { checkPaymentStatus, createPayment } from '../../services/api/PaymentApi';
+import { createPayment } from '../../services/api/PaymentApi';
 import QRCode from 'react-qr-code';
 
 const CustomerCheckout: React.FC = () => {
@@ -95,25 +93,13 @@ const CustomerCheckout: React.FC = () => {
                     navigate(Urls.CUSTOMER.BASE);
                 }
 
-                toast.custom((t) => (
-                    <SuccessToast
-                        message='Order placed successfully'
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+                toast.success('Order has been placed successfully');
                 
             } else {
-                toast.custom((t) => (
-                    <ErrorToast
-                        message='User not found, please login to continue'
-                        onDismiss={() => toast.dismiss(t.id)}
-                    />))
+                toast.error('User not found, please login to continue');
             }
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error || 'Something went wrong'}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />))
+            toast.error(error || 'Something went wrong');
         }
     }
 
@@ -121,7 +107,7 @@ const CustomerCheckout: React.FC = () => {
         try {         
             const response = await createPayment({
                 orderCode: orderCode,
-                amount: 50000,
+                amount: totalNetPrice,
                 description: "VQRIO123",
                 buyerName: user?.firstname + ' ' + user?.lastname,
                 buyerEmail: user?.email ?? "",

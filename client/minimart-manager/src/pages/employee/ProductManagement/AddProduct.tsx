@@ -5,6 +5,7 @@ import TextField from "../../../components/InputField/TextField";
 import ValidationUtil from "../../../utils/ValidationUtil";
 import { useNavigate } from "react-router-dom";
 import { ProductStatus } from "../../../constant/enum";
+import toast from "react-hot-toast";
 interface SubCategory {
   _id: string;
   name: string;
@@ -49,8 +50,7 @@ const AddProduct: React.FC = () => {
         const fetched = await getAllSubcategories();
         setSubcate(fetched);
       } catch (error: any) {
-        console.error(error);
-        alert("No, we can't");
+        toast.error("Unable to fetch subcategories");
       }
     };
     getSubCategories();
@@ -124,22 +124,19 @@ const AddProduct: React.FC = () => {
       setIsLoading(true);
       const response = await addOneProduct(formData);
       console.log(formData.status);
-      alert(response.message);
+      toast.success(response.message || "Product added successfully!");
       nav(-1);
     } catch (error: any) {
       console.error("Error adding product: ", error);
       if (error.response) {
         // Server responded with a status other than 2xx
-        alert(
-          error.response.data.message ||
-            "Failed to add product. Please check your input."
-        );
+      toast.error(error.response.data.message || "Something went wrong");
       } else if (error.request) {
         // Request was made but no response was received
-        alert("Unable to connect to the server. Please try again later.");
+        toast.error("Unable to connect to the server. Please try again later.");
       } else {
         // Something else caused the error
-        alert("An unexpected error occurred. Please try again.");
+        toast.error("Something went wrong");
       }
     } finally {
       setIsLoading(false);
@@ -352,15 +349,15 @@ const AddProduct: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600"
               >
                 Submit
               </button>
             </>
           ) : (
             <div className="flex items-center justify-center space-x-2">
-              <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-blue-500">Submitting...</span>
+              <div className="w-6 h-6 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-cyan-500">Submitting...</span>
             </div>
           )}
         </div>{" "}

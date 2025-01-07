@@ -7,6 +7,7 @@ import { getAllSubcategories } from "../../../services/api/SubCategoryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import TextField from "../../../components/InputField/TextField";
 import { ProductStatus } from "../../../constant/enum";
+import toast from "react-hot-toast";
 interface SubCategory {
   _id: string;
   name: string;
@@ -62,12 +63,11 @@ const EditProduct: React.FC = () => {
         setSubcate(fetched);
       } catch (error: any) {
         console.error(error);
-        alert("No, we can't");
+        toast.error("Failed to fetch subcategories. Please try again later.");
       }
     };
     const getProduct = async (id: string) => {
       if (!id) {
-        console.error("No ID provided");
         return;
       }
       try {
@@ -88,10 +88,8 @@ const EditProduct: React.FC = () => {
           promotion: idProduct?.promotion,
         });
 
-        console.log("Name: ");
       } catch (error: any) {
-        console.error(error);
-        alert("No, we can't");
+        toast.error("Failed to fetch product. Please try again later.");
       }
     };
     getSubCategories();
@@ -160,22 +158,19 @@ const EditProduct: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await updateProduct(formData);
-      alert(response.message);
+      toast.success(response.message || "Product updated successfully!");
       nav(-1);
     } catch (error: any) {
       console.error("Error updating product: ", error);
       if (error.response) {
         // Server responded with a status other than 2xx
-        alert(
-          error.response.data.message ||
-            "Failed to update product. Please check your input."
-        );
+       toast.error(error.response.data.message || "An unexpected error occurred. Please try again.");
       } else if (error.request) {
         // Request was made but no response was received
-        alert("Unable to connect to the server. Please try again later.");
+        toast.error("Unable to connect to the server. Please try again later.");
       } else {
         // Something else caused the error
-        alert("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -235,7 +230,7 @@ const EditProduct: React.FC = () => {
               name="subCategory"
               value={formData.subCategory?._id}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-2 block w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             >
               <option value="">Select a subcategory</option>
               {subCate.map((v, i) => (
@@ -277,7 +272,7 @@ const EditProduct: React.FC = () => {
               value={formData?.stock}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-2 py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div className="col-span-1 md:col-span-2">
@@ -289,7 +284,7 @@ const EditProduct: React.FC = () => {
               value={formData?.detail}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-2 py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
             {errors.detail != null && (
               <p className="text-xs text-red-500">{errors.detail}</p>
@@ -304,7 +299,7 @@ const EditProduct: React.FC = () => {
               name="dateOfManufacture"
               value={formData?.dateOfManufacture}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block px-2 w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div>
@@ -316,7 +311,7 @@ const EditProduct: React.FC = () => {
               name="expiryDate"
               value={formData?.expiryDate}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-2 block w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             />
           </div>
           <div>
@@ -327,7 +322,7 @@ const EditProduct: React.FC = () => {
               name="status"
               value={formData?.status}
               onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-2 block w-full py-2 text-gray-900 ring-1 rounded-md ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 text-left"
             >
               <option value={ProductStatus.IN_STOCK}>
                 {ProductStatus.IN_STOCK}
@@ -375,15 +370,15 @@ const EditProduct: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600"
               >
                 Submit
               </button>
             </>
           ) : (
             <div className="flex items-center justify-center space-x-2">
-              <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-blue-500">Submitting...</span>
+              <div className="w-6 h-6 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-cyan-500">Submitting...</span>
             </div>
           )}
         </div>{" "}

@@ -86,18 +86,9 @@ function SupplyManagement() {
     const handleUpdateSupplier = async (updatedData: any) => {
         try {
             const response = await updateSupplier(updatedData._id, updatedData);
-            toast.custom((t) => (
-                <SuccessToast
-                    message={response || "Update supplier success!"}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success(response || "Update supplier successfully!");
         } catch (error: any) {
-            toast.custom((t) => (
-                <ErrorToast
-                    message={error || "Update supplier failed!"}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />));
+            toast.error(error || "Something went wrong");
 
         } finally {
             fetchSuppliers();

@@ -4,6 +4,7 @@ import { getAllImports } from "../../../services/api/ImportApi";
 import { importsColumnData } from "../../../data/ColumnData/ImportColumnData";
 import TableLayout from "../../../components/Table/TableLayout";
 import Urls from "../../../constant/urls";
+import toast from "react-hot-toast";
 
 
 function ImportList() {
@@ -16,7 +17,7 @@ function ImportList() {
 
             setImports(data)
         } catch (error) {
-            console.error('Error fetching imports:', error);
+            toast.error("Failed to fetch imports");
         }
     };
 

@@ -165,10 +165,10 @@ const EmployeeDetails: React.FC = () => {
 
           <div className="mt-4">
             <h3 className="font-semibold">
-              Salary per hours: {employee.salaryPerHour}
+            Salary per hours: {employee.salaryPerHour.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </h3>
           </div>
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Salary Details</h2>
             <button
               onClick={() => setIsEditing(!isEditing)}
@@ -176,9 +176,9 @@ const EmployeeDetails: React.FC = () => {
             >
               {isEditing ? "Cancel Edit" : "Enable Edit"}
             </button>
-          </div>
+          </div> */}
           {/* Detailed Salary */}
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <label className="font-bold">Total Hours:</label>
             {isEditing ? (
               <input
@@ -216,7 +216,7 @@ const EmployeeDetails: React.FC = () => {
             ) : (
               <p>{isPaid ? "Yes" : "No"}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Save Button */}
           {isEditing && (

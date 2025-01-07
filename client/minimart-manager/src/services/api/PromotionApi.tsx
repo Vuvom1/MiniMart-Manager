@@ -23,14 +23,14 @@ export const getPromotionById = async (id: string) => {
 }
 
 export const createPromotion = async (promotion: Promotion) => {
-    const response = await api.post(`${BASE_URL}/add`, promotion);
+    const response = await api.post(`${BASE_URL}/add`, {promotion: promotion});
 
     return response.data;
 }
 
 export const updatePromotion = async (id: string ,promotion: Promotion) => {
     
-    const response = await api.put(`${BASE_URL}/${id}`, promotion);
+    const response = await api.put(`${BASE_URL}/${id}`, {promotion: promotion});
 
     return response.data;
 }

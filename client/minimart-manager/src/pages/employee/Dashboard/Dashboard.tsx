@@ -136,7 +136,9 @@ function Dashboard() {
                         </svg>
                         } title="Earning" period="month" value={overallReport?.totalEarningsByMonths[0]?.total ?? 0} percentage={(overallReport?.totalEarningsByMonths[0]?.total ?? 0) * 100 / (overallReport?.totalEarningsByMonths[1]?.total ?? 1) - 100} isPositive={true} />
                         <MetricCard title="Total Expense" value={overallReport?.totalExpensesByMonths[0]?.total ?? 0} period="month" percentage={(overallReport?.totalExpensesByMonths[0]?.total ?? 0) * 100 / (overallReport?.totalExpensesByMonths[1]?.total ?? 1 ) - 100} isPositive={false} />
-                        <MetricCard title="Sales" value={overallReport?.totalSalesByMonths[0]?.total ?? 0} period="month" percentage={(overallReport?.totalSalesByMonths[0]?.total ?? 0) * 100 / (overallReport?.totalSalesByMonths[1]?.total ?? 1) - 100} isPositive={(overallReport?.totalSalesByMonths[0]?.total ?? 0) > 0} />
+                        <div className="flex justify-between">
+                            <MetricCard title="Sales" value={overallReport?.totalSalesByMonths[0]?.total ?? 0} period="month" percentage={(overallReport?.totalSalesByMonths[0]?.total ?? 0) * 100 / (overallReport?.totalSalesByMonths[1]?.total ?? 1) - 100} isPositive={(overallReport?.totalSalesByMonths[0]?.total ?? 0) > 0} />
+                        </div>
                         {/* <MetricCard title="Sales" value={overallReport?.totalSalesByMonths[0]?.total ?? 0} period="month" percentage={(overallReport?.totalSalesByMonths[0]?.total ?? 0) * 100 / (overallReport?.totalSalesByMonths[1]?.total ?? 1) - 100} isPositive={(overallReport?.totalSalesByMonths[0]?.total ?? 0) > 0} /> */}
                     </div>
                     <div className="flex flex-col w-1/2 shadow-lg bg-white rounded-lg p-4 h-full">

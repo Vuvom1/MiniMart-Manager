@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import TableLayout from "../../../components/Table/TableLayout";
 import { ProductColumnData } from "../../../data/ColumnData/ProducColumnData";
 
-import RoundedButton from "../../../components/Button/RoundedButton";
 import {
   deleteProduct,
   getAllProducts,
@@ -31,7 +30,7 @@ const ManageProduct: React.FC = () => {
   const fetchProducts = async () => {
     try {
       const fetchedProducts = await getAllProducts();
-      const extractedProducts: Product[] = fetchedProducts.map((p: any) => ({
+      const extractedProducts: Product[] = fetchedProducts.map((p: any) => ({ 
         _id: p._id,
         image: p.image,
         name: p.name,

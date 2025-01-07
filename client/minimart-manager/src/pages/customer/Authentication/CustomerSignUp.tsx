@@ -37,20 +37,10 @@ function CustomerSignup() {
         setLoading(true);
         try {
             await auth.signup(firstname, lastname, username, email, password, Role.CUSTOMER, dateOfBirth, phone, address)
-            toast.custom((t) => (
-                <SuccessToast
-                    message="Register user success!"
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.success("Sign up successful");
             navigate('../');
         } catch (err: any) {
-            toast.custom((t) => (
-                <CustomErrorToast
-                    message= {err || "Error sign up"}
-                    onDismiss={() => toast.dismiss(t.id)}
-                />
-            ));
+            toast.error(`Sign up failed: ${err || "An unknown error occurred"}`);
         } finally {
             setLoading(false);
         }
@@ -219,7 +209,7 @@ function CustomerSignup() {
                     <p className='text-sm'>Agree to Term of Use and Policy</p>
                 </div>
 
-                <RoundedButton onClick={() => handleSingup} disable={loading || !isValid} label={loading ? 'Signing Up...' : 'Sign Up'} color='bg-cyan-500 text-white' />
+                <RoundedButton type='submit' loading={loading} disable={!isValid} label={loading ? 'Signing Up...' : 'Sign Up'} color='bg-cyan-500 text-white' />
 
                 <div className='flex gap-x-2 justify-center'>
                     <p className=''>Already have an account?</p>
